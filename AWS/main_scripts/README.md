@@ -1,4 +1,4 @@
-# FortiOS FGCP AP HA (Dual AZ) with TGW Attachments in AWS
+# Main Scripts for AWS Terraform
 
 
 ## Table of Contents
