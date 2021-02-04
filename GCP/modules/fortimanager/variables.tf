@@ -20,7 +20,7 @@ variable "machine" {
 variable "password" {
   type        = string
   default     = "ftntCl0ud"
-  description = "FGT Password"
+  description = "FMG Password"
 }
 
 variable "image" {

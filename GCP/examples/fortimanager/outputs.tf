@@ -1,12 +1,12 @@
 # Output
-output "FortiGate-Cluster-IP" {
-  value = module.instances.fgt_ha_cluster_ip
+output "FortiManager-Cluster-IP" {
+  value = module.instances.fmg_ip
 }
 
-output "Active-FortiGate-Username" {
-  value = module.instances.active_fgt_username
+output "FortiManager-Username" {
+  value = module.instances.fmg_username
 }
 
-output "FortiGate-Password" {
-  value = module.instances.active_fgt_password
+output "FortiManager-Password" {
+  value = module.instances.fmg_password
 }

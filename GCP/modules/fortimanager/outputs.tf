@@ -1,14 +1,14 @@
 # HA-Cluster-IP
-output "fgt_ha_cluster_ip" {
+output "fmg_ip" {
   value = "${google_compute_instance.fmg_instance.network_interface.0.access_config.0.nat_ip}"
 }
 
-# Active-FortiGate-Username
-output "active_fgt_username" {
+# FortiManager-Username
+output "fmg_username" {
   value = "admin"
 }
 
-# Active-FortiGate-Password
-#output "active_fgt_password" {
-#  value = var.password
-#}
+# FortiManager-Password
+output "fmg_password" {
+  value = var.password
+}

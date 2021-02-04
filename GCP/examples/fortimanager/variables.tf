@@ -10,7 +10,7 @@ variable "license_file" {}
 variable "password" {
   type        = string
   default     = "ftntCl0ud"
-  description = "FGT Password"
+  description = "FMG Password"
 }
 # vpc module
 variable "vpcs" {}
