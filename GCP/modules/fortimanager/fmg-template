@@ -1,0 +1,9 @@
+
+config system global
+    set adom-status enable
+end
+config system admin user
+    edit "fadmin"
+       set rpc-permit read-write
+    next
+end
