@@ -8,5 +8,6 @@ output "FortiManager-Username" {
 }
 
 output "FortiManager-Password" {
-  value = module.instances.fmg_password
+  value = module.instances.fmg_instance_id
 }
+
