@@ -1,5 +1,5 @@
 provider "google" {
-  version     = "3.20.0"
+  version     = "3.49.0"
   credentials = file(var.credentials_file_path)
   project     = var.project
   region      = var.region
@@ -7,6 +7,7 @@ provider "google" {
 }
 
 provider "google-beta" {
+  version     = "3.49.0"
   credentials = file(var.credentials_file_path)
   project     = var.project
   region      = var.region
@@ -74,7 +75,7 @@ module "cloud_nat" {
 
 # Instance Template
 resource "google_compute_instance_template" "default" {
-  name        = "terraform-instance-template-${module.random.random_string}"
+  name        = "${var.name}-${module.random.random_string}"
   description = "Fortigate Instance Template"
 
   instance_description = "FortiGate Instance Template"
@@ -92,12 +93,14 @@ resource "google_compute_instance_template" "default" {
     auto_delete  = true
     boot         = true
   }
+
   # Logging Disk
   disk {
     auto_delete  = true
     boot         = false
     disk_size_gb = 30
   }
+
   # Public Network
   network_interface {
     network    = module.vpc.vpc_networks[0]
@@ -112,7 +115,7 @@ resource "google_compute_instance_template" "default" {
 
   # Metadata to bootstrap FGT
   metadata = {
-    user-data = "${data.template_file.setup-fgt-instance.rendered}"
+    user-data = data.template_file.setup-fgt-instance.rendered
   }
 
   # Email will be the service account
@@ -125,7 +128,7 @@ resource "google_compute_instance_template" "default" {
 ### Managed Instance Group ###
 # Health Check
 resource "google_compute_health_check" "autohealing" {
-  name                = "terraform-healthcheck-mig-${module.random.random_string}"
+  name                = "${var.name}-mig-${module.random.random_string}"
   check_interval_sec  = var.autohealing_check_interval_sec
   timeout_sec         = var.autohealing_timeout_sec
   healthy_threshold   = var.autohealing_healthy_threshold
@@ -138,12 +141,12 @@ resource "google_compute_health_check" "autohealing" {
 
 # Regional Instance Group Manager
 resource "google_compute_region_instance_group_manager" "mig" {
-  name                      = "terraform-mig-${module.random.random_string}"
-  base_instance_name        = "terraform-instance-${module.random.random_string}"
+  name                      = "${var.name}-mig-${module.random.random_string}"
+  base_instance_name        = "${var.name}-instance-${module.random.random_string}"
   region                    = var.region
   distribution_policy_zones = data.google_compute_zones.get_zones.names
 
-  target_pools = ["${google_compute_target_pool.default.self_link}"]
+  target_pools = [google_compute_target_pool.default.self_link]
   target_size  = var.target_size
 
   auto_healing_policies {
@@ -160,7 +163,7 @@ resource "google_compute_region_instance_group_manager" "mig" {
 
 ### External Load Balancer ###
 resource "google_compute_forwarding_rule" "external_load_balancer" {
-  name       = "terraform-external-loadbalancer-rule-${module.random.random_string}"
+  name       = "${var.name}-external-loadbalancer-rule-${module.random.random_string}"
   region     = var.region
   port_range = "1-65535"
 
@@ -170,7 +173,7 @@ resource "google_compute_forwarding_rule" "external_load_balancer" {
 
 # Health Check
 resource "google_compute_http_health_check" "ext_lb_health_check" {
-  name                = "terraform-healthcheck-ext-backend-${module.random.random_string}"
+  name                = "${var.name}-healthcheck-ext-backend-${module.random.random_string}"
   check_interval_sec  = var.elb_check_interval_sec
   timeout_sec         = var.elb_timeout_sec
   unhealthy_threshold = var.elb_unhealthy_threshold
@@ -179,7 +182,7 @@ resource "google_compute_http_health_check" "ext_lb_health_check" {
 
 # Target Pool
 resource "google_compute_target_pool" "default" {
-  name = "terraform-external-lb-${module.random.random_string}"
+  name = "${var.name}-external-lb-${module.random.random_string}"
 
   health_checks = [
     google_compute_http_health_check.ext_lb_health_check.name
@@ -189,24 +192,36 @@ resource "google_compute_target_pool" "default" {
 
 ### Internal Load Balancer ###
 resource "google_compute_forwarding_rule" "internal_load_balancer" {
-  name   = "terraform-internal-lb-${module.random.random_string}"
-  region = var.region
+  provider   = google-beta
+  name       = "${var.name}-internal-lb-${module.random.random_string}"
+  region     = var.region
+  ip_address = var.ilb_vip
 
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.internal_load_balancer_backend.self_link
   all_ports             = true
-  network               = module.vpc.vpc_networks[1]
-  subnetwork            = module.subnet.subnets[1]
+  network               = module.vpc.vpc_networks[0]
+  subnetwork            = module.subnet.subnets[0]
 }
 
 resource "google_compute_region_backend_service" "internal_load_balancer_backend" {
-  name          = "terraform-internal-lb-backend-${module.random.random_string}"
-  region        = var.region
-  health_checks = [google_compute_health_check.int_lb_health_check.self_link]
+  provider = google-beta
+  name     = "${var.name}-internal-lb-backend-${module.random.random_string}"
+  region   = var.region
+  network  = module.vpc.vpc_networks[0]
+
+  backend {
+    group       = google_compute_region_instance_group_manager.mig.instance_group
+    description = "test-description"
+  }
+
+  health_checks = [google_compute_region_health_check.int_lb_health_check.self_link]
 }
 
-resource "google_compute_health_check" "int_lb_health_check" {
-  name               = "terraform-healthcheck-internal-lb-${module.random.random_string}"
+## Regional Health Check
+resource "google_compute_region_health_check" "int_lb_health_check" {
+  name               = "${var.name}-fgt-lbhealth-${module.random.random_string}"
+  region             = var.region
   check_interval_sec = var.int_check_interval_sec
   timeout_sec        = var.int_timeout_sec
   tcp_health_check {
@@ -214,7 +229,6 @@ resource "google_compute_health_check" "int_lb_health_check" {
   }
 }
 ### End Internal Load Balancer ###
-
 
 ### Bastion Host ###
 module "static-ip" {
@@ -241,4 +255,4 @@ module "bastionhost_windows" {
   public_subnet      = module.subnet.subnets[0]
   static_ip          = module.static-ip.static_ip
 }
-### End Bastion Host ###s
+### End Bastion Host ###

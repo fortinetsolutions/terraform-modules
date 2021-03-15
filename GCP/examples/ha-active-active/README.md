@@ -20,13 +20,13 @@ This example creates a HA Active-Active configuration.
     - Including Bootstrap of configuration for FortiGate.
         - Configures admin_port, static route, probe-response, firewall service custom, firewall policy.
         - Adds loopback, Virtual IPs.
-1. 2 FortiGate Compute Instances
+1. 2 FortiGate Instances
 1. 1 Bastion Host with Windows Image to connect to FortiGate Management GUI
-1. External Load Balancer
-1. Internal Load Balancer
-1. Health Check(s)
 1. Cloud Router
 1. Cloud NAT
+1. Internal Load Balancer
+1. Health Check(s)
+1. External Load Balancer
 
 ## Connection to FortiGate Management GUI
 - To connect to the FortiGate Management GUI, one has to RDP into the Bastion Host and install Firefox.
