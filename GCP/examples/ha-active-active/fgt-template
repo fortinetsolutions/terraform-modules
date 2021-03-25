@@ -50,23 +50,6 @@ config firewall vip
         set extport 8008
         set mappedport 8008
     next
-    edit "to-internal-loadbalancer-port80"
-        set extip ${external_loadbalancer_ip}
-        set extintf "port1"
-        set portforward enable
-        # Internal Load Balancer IP
-        set mappedip ${ilb_vip}
-        set extport 80
-        set mappedport 80
-    next
-    edit "to-internal-loadbalancer-port443"
-        set extip ${external_loadbalancer_ip}
-        set extintf "port1"
-        set portforward enable
-        set mappedip ${ilb_vip}
-        set extport 443
-        set mappedport 443
-    next
     edit "int-lb-probe"
         # Internal Load Balancer IP
         set extip ${ilb_vip}
@@ -99,29 +82,5 @@ config firewall policy
         set fsso disable
         set nat enable
         set comments "Default Policy to enable GCP loadbalancer probes on port 8008"
-    next
-    edit 2
-        set name "toLoadBalancerPort80"
-        set srcintf "port1"
-        set dstintf "port2"
-        set srcaddr "all"
-        set dstaddr "to-internal-loadbalancer-port80"
-        set action accept
-        set schedule "always"
-        set service "HTTP"
-        set fixedport enable
-        set nat enable
-    next
-    edit 3
-        set name "toLoadBalancerPort443"
-        set srcintf "port1"
-        set dstintf "port2"
-        set srcaddr "all"
-        set dstaddr "to-internal-loadbalancer-port443"
-        set action accept
-        set schedule "always"
-        set service "HTTP"
-        set fixedport enable
-        set nat enable
     next
 end

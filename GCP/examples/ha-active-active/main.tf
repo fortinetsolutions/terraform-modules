@@ -49,7 +49,7 @@ module "firewall" {
 }
 
 ### Cloud Nat ###
-# Allows for egress traffic on Private/Protected Subnet
+# Allows for egress traffic on External/Public VPC
 module "cloud_router" {
   source = "../../modules/cloud_router"
 
