@@ -65,7 +65,6 @@ tput clear
 
 sudo apt remove python python3.5 python3.6 python3.7 --yes
 sudo apt-get install python3.7 python3.7-venv python3-pip --yes
-sudo apt-get upgrade --yes
 python3.7 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
@@ -85,20 +84,6 @@ sed -i '/^availability_zone1/ s/"[^"][^"]*"/"'$region'a"/' ./terraform/terraform
 sed -i '/^availability_zone2/ s/"[^"][^"]*"/"'$region'b"/' ./terraform/terraform.tfvars
 sed -i '/^customer_prefix/ s/"[^"][^"]*"/"'$customer_prefix'"/' ./terraform/terraform.tfvars
 sed -i '/^environment/ s/"[^"][^"]*"/"'$customer_environment'"/' ./terraform/terraform.tfvars
-#
-# replace everything between the second set of two quotes on the line that contains with "aws_region":
-# with the region user input for the autoscale/zappa_settings.json file
-#
-#sed -i '/"aws_region":/ s/"[^"][^"]*"/"'$region'"/2' ./lambda_code/autoscale/zappa_settings.json
-#
-# replace everything between the second set of two quotes on the line that contains with "s3_bucket":
-# with the s3_bucket user input for the autoscale/zappa_settings.json file
-#
-#sed -i '/"s3_bucket":/ s/"[^"][^"]*"/"'$s3_bucket'"/2' ./lambda_code/autoscale/zappa_settings.json
-#
-# replace everything between the set of two quotes on the line that contains with "keypair":
-# with the keypair user input for the terraform.tfvars file
-#
 sed -i '/^keypair/ s/"[^"][^"]*"/"'$keypair'"/' ./terraform/terraform.tfvars
 
 tput clear

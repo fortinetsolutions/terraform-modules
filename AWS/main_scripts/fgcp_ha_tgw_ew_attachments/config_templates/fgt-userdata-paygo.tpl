@@ -56,7 +56,7 @@ set gateway ${PublicSubnetRouterIP}
 next
 edit 2
 set device port2
-set dst ${PrivateSubnet}
+set dst ${security_cidr}
 set gateway ${PrivateSubnetRouterIP}
 next
 edit 3
