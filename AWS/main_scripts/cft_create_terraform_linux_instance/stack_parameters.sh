@@ -1,4 +1,4 @@
-terraform#!/usr/bin/env bash
+#!/usr/bin/env bash
 
 stack_prefix=terraform-linux-dev
 stack1=$stack_prefix-base
