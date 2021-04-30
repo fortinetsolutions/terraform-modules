@@ -1,8 +1,6 @@
 
 provider "aws" {
   region     = var.aws_region
-  access_key = var.access_key
-  secret_key = var.secret_key
 }
 
 data "template_file" "fmgr_userdata_byol" {
@@ -39,8 +37,6 @@ data "aws_ami" "fortimanager_byol" {
 module "iam_profile" {
   source = "../../modules/ec2_instance_iam_role"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
@@ -51,8 +47,6 @@ module "iam_profile" {
 #
 module "allow_public_subnets" {
   source = "../../modules/security_group"
-  access_key              = var.access_key
-  secret_key              = var.secret_key
   aws_region              = var.aws_region
   vpc_id                  = var.vpc_id
   name                    = "${var.fortimanager_sg_name} Allow Public Subnets"
@@ -92,8 +86,6 @@ resource aws_security_group "fortimanager_sg" {
 module "fortimanager" {
   source                      = "../../modules/ec2_instance"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   availability_zone           = var.availability_zone
   customer_prefix             = var.customer_prefix

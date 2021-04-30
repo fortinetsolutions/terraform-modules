@@ -2,8 +2,13 @@ provider "aws" {
   region     = var.aws_region
 }
 
+resource "random_string" "random" {
+  length           = 5
+  special          = false
+}
+
 resource "aws_iam_role" "linux_role" {
-  name = "${var.customer_prefix}-${var.environment}-instance_role"
+  name = "${var.customer_prefix}-${var.environment}-${random_string.random.result}-instance_role"
 
   assume_role_policy = <<EOF
 {

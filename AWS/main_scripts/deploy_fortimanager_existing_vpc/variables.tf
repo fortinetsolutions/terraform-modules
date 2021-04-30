@@ -1,5 +1,3 @@
-variable "access_key" {}
-variable "secret_key" {}
 
 variable "aws_region" {
   description = "The AWS region to use"

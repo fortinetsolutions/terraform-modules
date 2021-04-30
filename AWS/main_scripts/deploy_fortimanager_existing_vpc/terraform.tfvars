@@ -1,5 +1,3 @@
-access_key                   = ""
-secret_key                   = ""
 
 #
 # Variable to be defined for user environment
