@@ -43,3 +43,7 @@ variable "elb_port" {}
 variable "int_check_interval_sec" {}
 variable "int_timeout_sec" {}
 variable "int_port" {}
+variable "ilb_vip" {}
+# Custom
+variable "gcp_lb1" {}
+variable "gcp_lb2" {}

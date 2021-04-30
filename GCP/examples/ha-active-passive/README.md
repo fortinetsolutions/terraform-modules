@@ -2,6 +2,8 @@
 
 This example creates a HA Active-Passive configuration.
 
+![Image of HA Active/Passive](/GCP/examples/ha-active-passive/ha-a-p.png)
+
 ## Instances included in this Example
 
 1. 4 VPC Networks

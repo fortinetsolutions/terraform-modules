@@ -1,33 +1,33 @@
-credentials_file_path       = "<credentials_file_path>"
-service_account             = "<service_account_email>"
-project                     = "<project>"
-name                        = "terraform"
-region                      = "us-central1"
-zone                        = "us-central1-c"
-machine                     = "n1-standard-2"
+credentials_file_path           = "<credentials_file_path>"
+service_account                 = "<service_account_email>"
+project                         = "<project>"
+name                            = "terraform-a-a"
+region                          = "us-central1"
+zone                            = "us-central1-c"
+machine                         = "n1-standard-2"
 # FortiGate Image name
 # 6.4.2 payg is projects/fortigcp-project-001/global/images/fortinet-fgtondemand-642-20200810-001-w-license
 # 6.4.2 byol is projects/fortigcp-project-001/global/images/fortinet-fgt-642-20200810-001-w-license
-image                       = "projects/fortigcp-project-001/global/images/fortinet-fgtondemand-642-20200810-001-w-license"
-bastionhost_image           = "windows-cloud/windows-2019"
-bastionhost_machine         = "n1-standard-2"
-admin_port                  = 8443
+image                           = "projects/fortigcp-project-001/global/images/fortinet-fgtondemand-644-20201217-001-w-license"  # 6.4.4
+bastionhost_image               = "windows-cloud/windows-2019"
+bastionhost_machine             = "n1-standard-2"
+admin_port                      = 8443
 # VPCs
-vpcs                        = ["public-vpc", "private-vpc"]
+vpcs                            = ["public-vpc", "private-vpc"]
 # Subnet
-subnets                     = ["public-subnet", "private-subnet"]
-subnet_cidrs                = ["172.14.0.0/24", "172.14.1.0/24"]
+subnets                         = ["public-subnet", "private-subnet"]
+subnet_cidrs                    = ["172.14.0.0/24", "172.14.1.0/24"]
 # Instance Template Variables
-private_vpc_cidr            = "172.14.1.0"
-private_vpc_gateway         = "172.14.1.1"
-mapped_ip                   = "192.168.195.1"
+private_vpc_cidr                = "172.14.1.0"
+private_vpc_gateway             = "172.14.1.1"
+mapped_ip                       = "192.168.195.1"
 # Managed Instance Group Variables
 target_size                     = 2
 autohealing_check_interval_sec  = 5
 autohealing_timeout_sec         = 5
 autohealing_healthy_threshold   = 2
 autohealing_unhealthy_threshold = 10 # 50 seconds
-autohealing_tcp_health_check    = 541
+autohealing_tcp_health_check    = 8443
 initial_delay_sec               = 500
 # External Load Balancer
 elb_check_interval_sec          = 3
@@ -37,4 +37,8 @@ elb_port                        = 8008
 # Internal Load Balancer
 int_check_interval_sec          = 3
 int_timeout_sec                 = 2
-int_port                        = 80
+int_port                        = 8008
+ilb_vip                         = "172.14.0.200"
+# Custom
+gcp_lb1                         = "130.211.0.0/22"  
+gcp_lb2                         = "35.191.0.0/16"

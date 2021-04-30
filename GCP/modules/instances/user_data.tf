@@ -15,8 +15,8 @@ data "template_file" "setup-active-instance" {
     passive_hb_ip     = var.passive_port3_ip // Passive Sync (HeartBeat) IP
     hb_netmask        = var.mgmt_mask        // Management netmask
     public_gateway    = var.public_subnet_gateway
-    clusterip         = "terraform-cluster-ip-${var.random_string}"
-    internalroute     = "terraform-internal-route-${var.random_string}"
+    clusterip         = "${var.name}-cluster-ip-${var.random_string}"
+    internalroute     = "${var.name}-internal-route-${var.random_string}"
   }
 }
 
@@ -37,7 +37,7 @@ data "template_file" "setup-passive-instance" {
     active_hb_ip       = var.active_port3_ip // Active Sync (HeartBeat) IP
     hb_netmask         = var.mgmt_mask       // Management netmask
     public_gateway     = var.public_subnet_gateway
-    clusterip          = "terraform-cluster-ip-${var.random_string}"
-    internalroute      = "terraform-internal-route-${var.random_string}"
+    clusterip         = "${var.name}-cluster-ip-${var.random_string}"
+    internalroute     = "${var.name}-internal-route-${var.random_string}"
   }
 }
