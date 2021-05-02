@@ -1,6 +1,3 @@
-provider "aws" {
-  region     = var.aws_region
-}
 
 resource "aws_eip" "EIP" {
   count                 = var.enable_public_ips ? 1 : 0
@@ -74,7 +71,6 @@ resource "aws_network_interface" "ha_eni" {
 }
 
 resource "aws_instance" "ec2" {
-
   ami                         = var.aws_ami
   instance_type               = var.instance_type
   availability_zone           = var.availability_zone

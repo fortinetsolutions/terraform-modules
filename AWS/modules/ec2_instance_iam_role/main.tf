@@ -1,6 +1,3 @@
-provider "aws" {
-  region     = var.aws_region
-}
 
 resource "random_string" "random" {
   length           = 5
@@ -31,12 +28,12 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "linux_profile" {
-  name = "${var.customer_prefix}-${var.environment}-instance_profile"
+  name = "${var.customer_prefix}-${var.environment}-${random_string.random.result}-instance_profile"
   role = aws_iam_role.linux_role.name
 }
 
 resource "aws_iam_role_policy" "linux_policy" {
-  name = "${var.customer_prefix}-${var.environment}-instance_policy"
+  name = "${var.customer_prefix}-${var.environment}-${random_string.random.result}-instance_policy"
   role = aws_iam_role.linux_role.id
 
   policy = <<EOF

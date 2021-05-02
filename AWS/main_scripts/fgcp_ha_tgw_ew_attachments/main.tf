@@ -774,8 +774,9 @@ module "linux_iam_profile" {
 #
 # East Linux Instance for Generating East->West Traffic
 #
-module "aws_east_linux_instance" {
+module "east_instance" {
   source                      = "../../modules/ec2_instance"
+  count                       = var.enable_linux_instances ? 1 : 0
 
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
@@ -797,8 +798,9 @@ module "aws_east_linux_instance" {
 #
 # West Linux Instance for Generating West->East Traffic
 #
-module "aws_west_linux_instance" {
+module "west_instance" {
   source                      = "../../modules/ec2_instance"
+  count                       = var.enable_linux_instances ? 1 : 0
 
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
@@ -815,4 +817,30 @@ module "aws_west_linux_instance" {
   acl                         = var.acl
   iam_instance_profile_id     = module.iam_profile.id
   userdata_rendered           = data.template_file.web_userdata.rendered
+}
+
+#
+# Fortimanager
+#
+module "fortimanager" {
+  source                      = "../deploy_fortimanager_existing_vpc"
+  count                       = var.enable_fortimanager ? 1 : 0
+
+  aws_region                  = var.aws_region
+  customer_prefix             = var.customer_prefix
+  environment                 = var.environment
+  availability_zone           = var.availability_zone_1
+  vpc_id                      = module.base-vpc.vpc_id
+  subnet_id                   = module.private1-subnet-tgw.id
+  ip_address                  = var.fortimanager_ip_address
+  keypair                     = var.keypair
+  fortimanager_instance_type  = var.fortimanager_instance_type
+  fortimanager_instance_name  = var.fortimanager_instance_name
+  fortimanager_sg_name        = var.fortigate_sg_name
+  fortimanager_os_version     = var.fortimanager_os_version
+  fmgr_byol_license           = var.fortimanager_byol_license
+  acl                         = var.acl
+  enable_public_ips           = false
+  use_fortimanager_byol       = var.use_fortimanager_byol
+  fmgr_admin_password         = var.fgt_admin_password
 }

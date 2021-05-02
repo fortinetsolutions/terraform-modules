@@ -50,11 +50,11 @@ output "fortigate_2_instance_id" {
   value       = module.fortigate_2.instance_id
   description = "The Fortigate Instance ID for AZ 2"
 }
-output "aws_east_linux_instance_id" {
-  value       = module.aws_east_linux_instance.instance_id
-  description = "The Linux Instance ID for East VPC"
-}
-output "aws_west_linux_instance_id" {
-  value       = module.aws_west_linux_instance.instance_id
-  description = "The Linux Instance ID for West VPC"
-}
+//output "east_instance_id" {
+//  value       = module.east_instance.instance_id
+//  description = "The Linux Instance ID for East VPC"
+//}
+//output "west_instance_id" {
+//  value       = module.west_instance.instance_id
+//  description = "The Linux Instance ID for West VPC"
+//}

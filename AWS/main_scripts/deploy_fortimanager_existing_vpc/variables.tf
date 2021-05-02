@@ -48,3 +48,6 @@ variable "enable_public_ips" {
 variable "use_fortimanager_byol" {
   description = "Use BYOL version of FortiManager"
 }
+variable "fmgr_admin_password" {
+  description = "Fortimanager Admin Password"
+}

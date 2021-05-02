@@ -1,13 +1,10 @@
 
-provider "aws" {
-  region     = var.aws_region
-}
-
 data "template_file" "fmgr_userdata_byol" {
   template = file("./config_templates/fmgr-userdata-byol.tpl")
 
   vars = {
     fmgr_byol_license      = file("${path.module}/${var.fmgr_byol_license}")
+    fmgr_admin_password     = var.fmgr_admin_password
   }
 }
 
@@ -15,6 +12,7 @@ data "template_file" "fmgr_userdata_paygo" {
   template = file("./config_templates/fmgr-userdata-paygo.tpl")
 
   vars = {
+    fmgr_admin_password     = var.fmgr_admin_password
   }
 }
 
@@ -88,7 +86,7 @@ module "fortimanager" {
 
   aws_region                  = var.aws_region
   availability_zone           = var.availability_zone
-  customer_prefix             = var.customer_prefix
+  customer_prefix             = "${var.customer_prefix}-fortimanager"
   environment                 = var.environment
   instance_name               = var.fortimanager_instance_name
   instance_type               = var.fortimanager_instance_type
