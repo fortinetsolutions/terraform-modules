@@ -28,7 +28,7 @@ edit port2
 set alias private
 set mode static
 set ip ${Port2IP} ${private_subnet_mask}
-set allowaccess ping
+set allowaccess ping fgfm
 set mtu-override enable
 set mtu 9001
 next
@@ -56,7 +56,7 @@ set gateway ${PublicSubnetRouterIP}
 next
 edit 2
 set device port2
-set dst ${PrivateSubnet}
+set dst ${security_cidr}
 set gateway ${PrivateSubnetRouterIP}
 next
 edit 3
@@ -120,6 +120,20 @@ set extintf "port1"
 set portforward enable
 set mappedip "192.168.1.11"
 set extport 2223
+set mappedport 22
+next
+edit "vip_to_fortimanager_https"
+set extintf "port1"
+set portforward enable
+set mappedip "10.0.6.50"
+set extport 9443
+set mappedport 443
+next
+edit "vip_to_fortimanager_ssh"
+set extintf "port1"
+set portforward enable
+set mappedip "10.0.6.50"
+set extport 2224
 set mappedport 22
 next
 end
@@ -187,6 +201,28 @@ set srcintf "port1"
 set dstintf "port2"
 set srcaddr "all"
 set dstaddr "vip_to_west_http"
+set action accept
+set schedule "always"
+set service "ALL"
+set logtraffic all
+next
+edit 7
+set name "vip_to_fortimanager_443"
+set srcintf "port1"
+set dstintf "port2"
+set srcaddr "all"
+set dstaddr "vip_to_fortimanager_https"
+set action accept
+set schedule "always"
+set service "ALL"
+set logtraffic all
+next
+edit 8
+set name "vip_to_fortimanager_22"
+set srcintf "port1"
+set dstintf "port2"
+set srcaddr "all"
+set dstaddr "vip_to_fortimanager_ssh"
 set action accept
 set schedule "always"
 set service "ALL"

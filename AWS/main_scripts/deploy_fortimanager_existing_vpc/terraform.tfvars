@@ -1,5 +1,3 @@
-access_key                   = ""
-secret_key                   = ""
 
 #
 # Variable to be defined for user environment
@@ -23,8 +21,9 @@ fortimanager_sg_name         = "fortimanager security group"
 fortimanager_instance_type   = "c5.xlarge"
 
 fortimanager_instance_name   = "fortimanager"
-fortimanager_os_version      = "6.4.2"
+fortimanager_os_version      = "6.4.5"
 acl                          = "private"
+fmgr_admin_password          = "Texas4me!"
 
 
 

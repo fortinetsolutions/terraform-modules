@@ -1,5 +1,3 @@
-variable "access_key" {}
-variable "secret_key" {}
 
 variable "aws_region" {
   description = "The AWS region to use"
@@ -49,4 +47,7 @@ variable "enable_public_ips" {
 }
 variable "use_fortimanager_byol" {
   description = "Use BYOL version of FortiManager"
+}
+variable "fmgr_admin_password" {
+  description = "Fortimanager Admin Password"
 }

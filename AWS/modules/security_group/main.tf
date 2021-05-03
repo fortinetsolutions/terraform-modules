@@ -1,9 +1,10 @@
-provider "aws" {
-  region        = var.aws_region
+resource "random_string" "random" {
+  length           = 5
+  special          = false
 }
 
 resource "aws_security_group" "sg" {
-  name = "${var.customer_prefix}-${var.environment}-${var.name}"
+  name = "${var.customer_prefix}-${var.environment}-${random_string.random.result}-${var.name}"
   description = "Allow required ports to the ec2 instance"
   vpc_id = var.vpc_id
   ingress {

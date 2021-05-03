@@ -1,15 +1,10 @@
 
-provider "aws" {
-  region     = var.aws_region
-  access_key = var.access_key
-  secret_key = var.secret_key
-}
-
 data "template_file" "fmgr_userdata_byol" {
   template = file("./config_templates/fmgr-userdata-byol.tpl")
 
   vars = {
     fmgr_byol_license      = file("${path.module}/${var.fmgr_byol_license}")
+    fmgr_admin_password     = var.fmgr_admin_password
   }
 }
 
@@ -17,6 +12,7 @@ data "template_file" "fmgr_userdata_paygo" {
   template = file("./config_templates/fmgr-userdata-paygo.tpl")
 
   vars = {
+    fmgr_admin_password     = var.fmgr_admin_password
   }
 }
 
@@ -39,8 +35,6 @@ data "aws_ami" "fortimanager_byol" {
 module "iam_profile" {
   source = "../../modules/ec2_instance_iam_role"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
@@ -51,8 +45,6 @@ module "iam_profile" {
 #
 module "allow_public_subnets" {
   source = "../../modules/security_group"
-  access_key              = var.access_key
-  secret_key              = var.secret_key
   aws_region              = var.aws_region
   vpc_id                  = var.vpc_id
   name                    = "${var.fortimanager_sg_name} Allow Public Subnets"
@@ -92,11 +84,9 @@ resource aws_security_group "fortimanager_sg" {
 module "fortimanager" {
   source                      = "../../modules/ec2_instance"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   availability_zone           = var.availability_zone
-  customer_prefix             = var.customer_prefix
+  customer_prefix             = "${var.customer_prefix}-fortimanager"
   environment                 = var.environment
   instance_name               = var.fortimanager_instance_name
   instance_type               = var.fortimanager_instance_type

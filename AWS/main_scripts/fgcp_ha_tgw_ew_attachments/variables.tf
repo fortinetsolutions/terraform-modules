@@ -1,5 +1,4 @@
 
-
 variable "aws_region" {
   description = "The AWS region to use"
 }
@@ -219,4 +218,40 @@ variable "linux_instance_name_east" {
 variable "linux_instance_name_west" {
   description = "Linux Endpoint Instance Name"
 }
-
+#
+# Fortimanager Varaibles
+#
+variable "enable_fortimanager" {
+  description = "Boolean to allow creation of Fortimanager Instance in Security VPC"
+  type        = bool
+}
+variable "use_fortimanager_byol" {
+  description = "Boolean Use the Fortimanager BYOL AMI"
+  type = bool
+}
+variable "fortimanager_enable_public_ips" {
+  description = "Boolean to allocatee a public IP (EIP) for Fortimanager"
+  type = bool
+}
+variable "fortimanager_use_byol" {
+  description = "Boolean to use Fortimanager license, ami, and configuration template"
+  type = bool
+}
+variable "fortimanager_sg_name" {
+  description = "Fortimanager Security Group Name"
+}
+variable "fortimanager_instance_type" {
+  description = "Instance type for fortimanager"
+}
+variable "fortimanager_instance_name" {
+  description = "Instance Name for fortimanager"
+}
+variable "fortimanager_os_version" {
+  description = "Fortimanager OS Version for the AMI Search String"
+}
+variable "fortimanager_ip_address" {
+  description = "Fortimanager IP Address"
+}
+variable "fortimanager_byol_license" {
+  description = "Fortimanager byol license"
+}

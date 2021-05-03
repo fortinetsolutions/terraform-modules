@@ -5,8 +5,16 @@ aws_region                  = "us-west-2"
 #
 # Allow creation of Linux instances in east/west VPCs
 #
-enable_linux_instances                = true
+enable_linux_instances                = false
+
+#
+# If Fortimanager is enabled, fill in the fortimanager variables at the bottom
+#
+enable_fortimanager                   = false
+
+use_fortimanager_byol                 = true
 use_fortigate_byol                    = true
+
 #
 # Variables likely to change
 #
@@ -82,7 +90,7 @@ fortigate_instance_type     = "c5n.xlarge"
 fortigate_instance_name_1   = "Fortigate One HA Pair"
 fortigate_instance_name_2   = "Fortigate Two HA Pair"
 acl                         = "private"
-fortios_version             = "6.4.2"
+fortios_version             = "6.4.5"
 fgt_byol_1_license          = "./licenses/fgt1-license.lic"
 fgt_byol_2_license          = "./licenses/fgt2-license.lic"
 fgt_ha_password             = "pocpassword727"
@@ -98,4 +106,15 @@ linux_instance_name_east    = "East Linux Instance"
 linux_instance_name_west    = "West Linux Instance"
 linux_instance_type         = "t2.micro"
 
+#
+# Fortimanager Variables
+#
+fortimanager_enable_public_ips     = false
+fortimanager_use_byol              = true
+fortimanager_sg_name               = "fortimanager security group"
+fortimanager_instance_type         = "c5.xlarge"
 
+fortimanager_instance_name         = "fortimanager"
+fortimanager_os_version            = "6.4.5"
+fortimanager_ip_address            = "10.0.6.50"
+fortimanager_byol_license          = "./licenses/fmgr-license.lic"
