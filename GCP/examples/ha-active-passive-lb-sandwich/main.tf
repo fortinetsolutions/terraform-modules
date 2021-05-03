@@ -304,14 +304,15 @@ resource "google_compute_region_backend_service" "internal_load_balancer_backend
     group = google_compute_instance_group.umig_passive.self_link
   }
 
-  health_checks = [google_compute_health_check.int_lb_health_check.self_link]
+  health_checks = [
+    google_compute_health_check.int_lb_health_check.id
+  ]
 }
 
+# Health Check
 resource "google_compute_health_check" "int_lb_health_check" {
-  name               = "${var.name}-healthcheck-ilb-${module.random.random_string}"
-  check_interval_sec = var.int_check_interval_sec
-  timeout_sec        = var.int_timeout_sec
-  tcp_health_check {
+  name = "${var.name}-healthcheck-ilb-${module.random.random_string}"
+  http_health_check {
     port = var.int_port
   }
 }
@@ -351,8 +352,7 @@ resource "google_compute_forwarding_rule" "elb-tcp2" {
   region     = var.region
   ip_address = module.static-ip-elb2.static_ip
   port_range = "1-65535"
-
-  target = google_compute_target_pool.default.self_link
+  target     = google_compute_target_pool.default.self_link
 }
 
 resource "google_compute_forwarding_rule" "elb_udp1" {
@@ -413,3 +413,17 @@ resource "google_compute_route" "ilb_route" {
   priority     = var.priority
 }
 
+### Web Server ###
+module "instances_nginx" {
+  source = "../../modules/nginx_instance"
+
+  # Pass Variables
+  name    = var.name
+  zone    = var.zone[0]
+  machine = var.machine
+  image   = var.ubuntu_image
+  # Values fetched from the Modules
+  random_string      = module.random.random_string
+  public_vpc_network = module.vpc.vpc_networks[1]
+  public_subnet      = module.subnet.subnets[1]
+}
