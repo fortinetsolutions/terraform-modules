@@ -231,13 +231,13 @@ data "google_compute_zones" "available" {
 }
 
 resource "google_compute_instance_from_template" "active_fgt_instance" {
-  name                     = "${var.name}-active-fgt-${module.random.random_string}"
+  name                     = "${var.name}-fgt-0-${module.random.random_string}"
   zone                     = element(data.google_compute_zones.available.names, 0)
   source_instance_template = google_compute_instance_template.active.self_link
 }
 
 resource "google_compute_instance_from_template" "passive_fgt_instance" {
-  name                     = "${var.name}-passive-fgt-${module.random.random_string}"
+  name                     = "${var.name}-fgt-1-${module.random.random_string}"
   zone                     = element(data.google_compute_zones.available.names, 1)
   source_instance_template = google_compute_instance_template.passive.self_link
 
@@ -248,7 +248,7 @@ resource "google_compute_instance_from_template" "passive_fgt_instance" {
 # UnManaged Instance Group
 ###########################
 resource "google_compute_instance_group" "umig_active" {
-  name    = "${var.name}-unmig-active-${module.random.random_string}"
+  name    = "${var.name}-unmig-0-${module.random.random_string}"
   project = var.project
   zone    = element(data.google_compute_zones.available.names, 0)
   instances = matchkeys(
@@ -259,7 +259,7 @@ resource "google_compute_instance_group" "umig_active" {
 }
 
 resource "google_compute_instance_group" "umig_passive" {
-  name    = "${var.name}-unmig-passive-${module.random.random_string}"
+  name    = "${var.name}-unmig-1-${module.random.random_string}"
   project = var.project
   zone    = element(data.google_compute_zones.available.names, 1)
   instances = matchkeys(
@@ -378,6 +378,7 @@ resource "google_compute_http_health_check" "ext_lb_health_check" {
   name                = "${var.name}-elbhealth-${module.random.random_string}"
   check_interval_sec  = var.elb_check_interval_sec
   timeout_sec         = var.elb_timeout_sec
+  healthy_threshold   = var.elb_healthy_threshold
   unhealthy_threshold = var.elb_unhealthy_threshold
   port                = var.elb_port
 }

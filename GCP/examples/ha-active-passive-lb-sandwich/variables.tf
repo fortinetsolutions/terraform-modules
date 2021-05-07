@@ -44,5 +44,6 @@ variable "int_port" {}
 # External Load Balancer
 variable "elb_check_interval_sec" {}
 variable "elb_timeout_sec" {}
+variable "elb_healthy_threshold" {}
 variable "elb_unhealthy_threshold" {}
 variable "elb_port" {}

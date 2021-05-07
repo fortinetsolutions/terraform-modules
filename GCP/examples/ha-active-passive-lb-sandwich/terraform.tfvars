@@ -36,7 +36,8 @@ int_port                    = 8008
 dest_range                  = "0.0.0.0/0"
 priority                    = 100
 # External Load Balancer
-elb_check_interval_sec      = 3
-elb_timeout_sec             = 2
-elb_unhealthy_threshold     = 3
+elb_check_interval_sec      = 5
+elb_timeout_sec             = 3
+elb_healthy_threshold       = 1
+elb_unhealthy_threshold     = 2
 elb_port                    = 8008
