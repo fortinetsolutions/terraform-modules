@@ -7,8 +7,8 @@ This example creates a HA Active-Active configuration.
 ## Instances included in this Configuration
 
 1. 2 VPC Networks
-    - Public/Internal
-    - Private/External
+    - Public/External/Untrust
+    - Private/Internal/Trust
 1. Subnets for each VPC Network
     - Public
     - Private
@@ -20,8 +20,7 @@ This example creates a HA Active-Active configuration.
     - Including Bootstrap of configuration for FortiGate.
         - Configures admin_port, static route, probe-response, firewall service custom, firewall policy.
         - Adds loopback, Virtual IPs.
-1. 2 FortiGate Instances
-1. 1 Bastion Host with Windows Image to connect to FortiGate Management GUI
+1. 2 Instances
 1. Cloud Router
 1. Cloud NAT
 1. Internal Load Balancer

@@ -200,15 +200,15 @@ resource "google_compute_forwarding_rule" "internal_load_balancer" {
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.internal_load_balancer_backend.self_link
   all_ports             = true
-  network               = module.vpc.vpc_networks[0]
-  subnetwork            = module.subnet.subnets[0]
+  network               = module.vpc.vpc_networks[1]
+  subnetwork            = module.subnet.subnets[1]
 }
 
 resource "google_compute_region_backend_service" "internal_load_balancer_backend" {
   provider = google-beta
   name     = "${var.name}-internal-lb-backend-${module.random.random_string}"
   region   = var.region
-  network  = module.vpc.vpc_networks[0]
+  network  = module.vpc.vpc_networks[1]
 
   backend {
     group       = google_compute_region_instance_group_manager.mig.instance_group
@@ -229,6 +229,16 @@ resource "google_compute_region_health_check" "int_lb_health_check" {
   }
 }
 ### End Internal Load Balancer ###
+
+#### Routes for ILB
+resource "google_compute_route" "outbound_lb_route" {
+  name         = "${var.name}-outbound-route-${module.random.random_string}"
+  dest_range   = "0.0.0.0/0"
+  network      = module.vpc.vpc_networks[1]
+  next_hop_ilb = google_compute_forwarding_rule.internal_load_balancer.id
+  priority     = 100
+}
+#### Routes for ILB
 
 ### Bastion Host ###
 module "static-ip" {

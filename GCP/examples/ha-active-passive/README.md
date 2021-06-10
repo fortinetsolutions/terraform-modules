@@ -7,8 +7,8 @@ This example creates a HA Active-Passive configuration.
 ## Instances included in this Example
 
 1. 4 VPC Networks
-    - Public/Internal
-    - Private/External
+    - Public/External/Untrust
+    - Private/Internal/Trust
     - Sync
     - Management
 1. Subnets for each VPC Network
