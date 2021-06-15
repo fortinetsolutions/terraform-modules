@@ -1,6 +1,7 @@
 # HA Active-Active with FGSP (FortiGate Session Life Support Protocol)
 
 This example creates a HA Active-Active configuration with FGSP.
+###### NOTE: FGSP is not enabled by default and needs to be applied manually after the configuration is deployed.
 
 ![Image of HA Active/Active FGSP](/GCP/examples/ha-active-active-fgsp/HA-FGSP.png)
 
@@ -31,8 +32,8 @@ This example creates a HA Active-Active configuration with FGSP.
 1. FGSP Configurations (Refer to the fgsp-config file)
 
 ## Connection to FortiGate Management GUI
-- To connect to the FortiGate Management GUI, one has to RDP into the Bastion Host and install Firefox.
-- Once done, enter the Internal IP (nic0) of the FortiGate with port 8443 (or whatever defined in terraform.tfvars for 'admin_port')
+1. To connect to the FortiGate Management GUI, one have to RDP into the Bastion Host and install Firefox/Chrome to access the FortiGate GUI.
+1. Once done, enter the Internal IP (nic0) of the FortiGate with port 8443 (or whatever defined in terraform.tfvars for 'admin_port')
 
 ## References
 https://docs.fortinet.com/document/fortigate/6.2.0/ports-and-protocols/796662/fgsp-fortigate-session-life-support-protocol
