@@ -5,10 +5,7 @@ name                            = "terraform-a-a"
 region                          = "us-central1"
 zone                            = "us-central1-c"
 machine                         = "n1-standard-2"
-# FortiGate Image name
-# 6.4.2 payg is projects/fortigcp-project-001/global/images/fortinet-fgtondemand-642-20200810-001-w-license
-# 6.4.2 byol is projects/fortigcp-project-001/global/images/fortinet-fgt-642-20200810-001-w-license
-image                           = "projects/fortigcp-project-001/global/images/fortinet-fgtondemand-644-20201217-001-w-license"  # 6.4.4
+image                           = "<IMAGE>"
 bastionhost_image               = "windows-cloud/windows-2019"
 bastionhost_machine             = "n1-standard-2"
 admin_port                      = 8443
@@ -38,7 +35,7 @@ elb_port                        = 8008
 int_check_interval_sec          = 3
 int_timeout_sec                 = 2
 int_port                        = 8008
-ilb_vip                         = "172.14.0.200"
+ilb_vip                         = "172.14.1.200"
 # Custom
 gcp_lb1                         = "130.211.0.0/22"  
 gcp_lb2                         = "35.191.0.0/16"

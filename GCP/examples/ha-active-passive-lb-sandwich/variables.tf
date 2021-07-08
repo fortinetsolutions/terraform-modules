@@ -13,6 +13,7 @@ variable "password" {
   default     = "fortinet"
   description = "FGT Password"
 }
+variable "ubuntu_image" {}
 # Instance Template variables
 variable "tags" {}
 variable "active_port1_ip" {}
@@ -38,9 +39,11 @@ variable "dest_range" {}
 variable "priority" {}
 variable "int_check_interval_sec" {}
 variable "int_timeout_sec" {}
+variable "int_unhealthy_threshold" {}
 variable "int_port" {}
 # External Load Balancer
 variable "elb_check_interval_sec" {}
 variable "elb_timeout_sec" {}
+variable "elb_healthy_threshold" {}
 variable "elb_unhealthy_threshold" {}
 variable "elb_port" {}

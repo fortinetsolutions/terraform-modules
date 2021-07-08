@@ -231,13 +231,13 @@ data "google_compute_zones" "available" {
 }
 
 resource "google_compute_instance_from_template" "active_fgt_instance" {
-  name                     = "${var.name}-active-fgt-${module.random.random_string}"
+  name                     = "${var.name}-fgt-0-${module.random.random_string}"
   zone                     = element(data.google_compute_zones.available.names, 0)
   source_instance_template = google_compute_instance_template.active.self_link
 }
 
 resource "google_compute_instance_from_template" "passive_fgt_instance" {
-  name                     = "${var.name}-passive-fgt-${module.random.random_string}"
+  name                     = "${var.name}-fgt-1-${module.random.random_string}"
   zone                     = element(data.google_compute_zones.available.names, 1)
   source_instance_template = google_compute_instance_template.passive.self_link
 
@@ -248,7 +248,7 @@ resource "google_compute_instance_from_template" "passive_fgt_instance" {
 # UnManaged Instance Group
 ###########################
 resource "google_compute_instance_group" "umig_active" {
-  name    = "${var.name}-unmig-active-${module.random.random_string}"
+  name    = "${var.name}-unmig-0-${module.random.random_string}"
   project = var.project
   zone    = element(data.google_compute_zones.available.names, 0)
   instances = matchkeys(
@@ -259,7 +259,7 @@ resource "google_compute_instance_group" "umig_active" {
 }
 
 resource "google_compute_instance_group" "umig_passive" {
-  name    = "${var.name}-unmig-passive-${module.random.random_string}"
+  name    = "${var.name}-unmig-1-${module.random.random_string}"
   project = var.project
   zone    = element(data.google_compute_zones.available.names, 1)
   instances = matchkeys(
@@ -304,14 +304,15 @@ resource "google_compute_region_backend_service" "internal_load_balancer_backend
     group = google_compute_instance_group.umig_passive.self_link
   }
 
-  health_checks = [google_compute_health_check.int_lb_health_check.self_link]
+  health_checks = [
+    google_compute_health_check.int_lb_health_check.id
+  ]
 }
 
+# Health Check
 resource "google_compute_health_check" "int_lb_health_check" {
-  name               = "${var.name}-healthcheck-ilb-${module.random.random_string}"
-  check_interval_sec = var.int_check_interval_sec
-  timeout_sec        = var.int_timeout_sec
-  tcp_health_check {
+  name = "${var.name}-healthcheck-ilb-${module.random.random_string}"
+  http_health_check {
     port = var.int_port
   }
 }
@@ -351,8 +352,7 @@ resource "google_compute_forwarding_rule" "elb-tcp2" {
   region     = var.region
   ip_address = module.static-ip-elb2.static_ip
   port_range = "1-65535"
-
-  target = google_compute_target_pool.default.self_link
+  target     = google_compute_target_pool.default.self_link
 }
 
 resource "google_compute_forwarding_rule" "elb_udp1" {
@@ -378,6 +378,7 @@ resource "google_compute_http_health_check" "ext_lb_health_check" {
   name                = "${var.name}-elbhealth-${module.random.random_string}"
   check_interval_sec  = var.elb_check_interval_sec
   timeout_sec         = var.elb_timeout_sec
+  healthy_threshold   = var.elb_healthy_threshold
   unhealthy_threshold = var.elb_unhealthy_threshold
   port                = var.elb_port
 }
@@ -413,3 +414,17 @@ resource "google_compute_route" "ilb_route" {
   priority     = var.priority
 }
 
+### Web Server ###
+module "instances_nginx" {
+  source = "../../modules/nginx_instance"
+
+  # Pass Variables
+  name    = var.name
+  zone    = var.zone[0]
+  machine = var.machine
+  image   = var.ubuntu_image
+  # Values fetched from the Modules
+  random_string      = module.random.random_string
+  public_vpc_network = module.vpc.vpc_networks[1]
+  public_subnet      = module.subnet.subnets[1]
+}

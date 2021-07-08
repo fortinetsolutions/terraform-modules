@@ -1,0 +1,42 @@
+# FortiGate1
+config system standalone-cluster 
+    set standalone-group-id 1
+    set group-member-id 2
+    set layer2-connection unavailable 
+    unset session-sync-dev 
+end
+
+config system ha
+    set session-pickup enable
+    set session-pickup-connectionless enable
+    set session-pickup-nat enable 
+    set override disable
+end
+
+config system cluster-sync
+    edit 1
+        set peerip 10.130.150.3
+    next
+end
+
+# FortiGate2
+config system standalone-cluster 
+    set standalone-group-id 1
+    set group-member-id 3
+    set layer2-connection unavailable 
+    unset session-sync-dev 
+end
+
+
+config system cluster-sync
+    edit 1
+        set peerip 10.130.150.2
+    next
+end
+
+config system ha
+    set session-pickup enable
+    set session-pickup-connectionless enable
+    set session-pickup-nat enable
+    set override disable
+end
