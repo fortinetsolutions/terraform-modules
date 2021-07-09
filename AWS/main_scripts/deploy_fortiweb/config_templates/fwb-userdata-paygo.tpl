@@ -1,16 +1,6 @@
-Content-Type: multipart/mixed; boundary="===============0086047718136476635=="
-MIME-Version: 1.0
-
---===============0086047718136476635==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="config"
-
---===============0086047718136476635==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="license"
-
---===============0086047718136476635==--
+fwb_json_start {
+"HaCloudInit": "disable"
+"cloud-initd": "enable"
+"bucket": "${fwb_s3_bucket}"
+"region": "${fwb_aws_region}"
+}

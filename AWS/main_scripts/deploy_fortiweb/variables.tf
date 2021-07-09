@@ -87,6 +87,9 @@ variable fortiweb_sg_name {
 variable "fortiweb_os_version" {
   description = "FortiWeb OS Version got AMI Search String"
 }
+variable "fwb_s3_bucket" {
+  description = "FortiWeb S3 Bucket used for config files"
+}
 variable "fwb_byol_license_1" {
   description = "Fortiweb license file"
 }

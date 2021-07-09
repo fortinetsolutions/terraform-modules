@@ -29,10 +29,11 @@ private2_description        = "private2-az2"
 fwb_byol_license_1           = "./licenses/fwb-license-1.lic"
 fwb_byol_license_2           = "./licenses/fwb-license-1.lic"
 keypair                      = "mdw-key-oregon"
+fwb_s3_bucket                = "mdw-fwb-demo"
 
 enable_public_ips_1          = true
 enable_public_ips_2          = true
-use_fortiweb_byol            = false
+use_fortiweb_byol            = true
 
 
 fortiweb_sg_name             = "fortiweb security group"

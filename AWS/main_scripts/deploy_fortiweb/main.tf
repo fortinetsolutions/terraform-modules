@@ -8,7 +8,10 @@ data "template_file" "fwb_userdata_byol_1" {
 
   vars = {
     fwb_byol_license      = file("${path.module}/${var.fwb_byol_license_1}")
-    fwb_admin_password     = var.fwb_admin_password
+    fwb_admin_password    = var.fwb_admin_password
+    fwb_s3_bucket         = var.fwb_s3_bucket
+    fwb_aws_region        = var.aws_region
+    fwb_license_file      = var.fwb_byol_license_1
   }
 }
 
@@ -17,26 +20,35 @@ data "template_file" "fwb_userdata_byol_2" {
 
   vars = {
     fwb_byol_license      = file("${path.module}/${var.fwb_byol_license_2}")
-    fwb_admin_password     = var.fwb_admin_password
+    fwb_admin_password    = var.fwb_admin_password
+    fwb_s3_bucket         = var.fwb_s3_bucket
+    fwb_aws_region        = var.aws_region
+    fwb_license_file      = var.fwb_byol_license_2
   }
 }
+/*
 
 data "template_file" "fwb_userdata_paygo_1" {
   template = file("./config_templates/fwb-userdata-paygo.tpl")
 
   vars = {
     fwb_admin_password     = var.fwb_admin_password
+    fwb_s3_bucket          = var.fwb_s3_bucket
+    fwb_aws_region         = var.aws_region
   }
 }
+
 
 data "template_file" "fwb_userdata_paygo_2" {
   template = file("./config_templates/fwb-userdata-paygo.tpl")
 
   vars = {
     fwb_admin_password     = var.fwb_admin_password
+    fwb_s3_bucket          = var.fwb_s3_bucket
+    fwb_aws_region         = var.aws_region
   }
 }
-
+*/
 data "aws_ami" "fortiweb_byol" {
   most_recent = true
 
@@ -52,6 +64,7 @@ data "aws_ami" "fortiweb_byol" {
 
   owners                         = ["679593333241"] # Canonical
 }
+/*
 
 data "aws_ami" "fortiweb_paygo" {
   most_recent = true
@@ -68,6 +81,7 @@ data "aws_ami" "fortiweb_paygo" {
 
   owners                         = ["679593333241"] # Canonical
 }
+*/
 
 module "iam_profile" {
   source = "../../modules/ec2_instance_iam_role"
@@ -152,12 +166,12 @@ module "fortiweb_1" {
   instance_type               = var.fortiweb_instance_type
   public_subnet_id            = module.base-vpc.public1_subnet_id
   public_ip_address           = var.public1_ip_address
-  aws_ami                     = var.use_fortiweb_byol ? data.aws_ami.fortiweb_byol.id : data.aws_ami.fortiweb_paygo.id
+  aws_ami                     = data.aws_ami.fortiweb_byol.id
   enable_public_ips           = var.enable_public_ips_1
   keypair                     = var.keypair
   security_group_public_id    = aws_security_group.fortiweb_sg.id
   iam_instance_profile_id     = module.iam_profile.id
-  userdata_rendered           = var.use_fortiweb_byol ? data.template_file.fwb_userdata_byol_1.rendered : data.template_file.fwb_userdata_paygo_2.rendered
+  userdata_rendered           = data.template_file.fwb_userdata_byol_1.rendered
 }
 
 
@@ -172,11 +186,11 @@ module "fortiweb_2" {
   instance_type               = var.fortiweb_instance_type
   public_subnet_id            = module.base-vpc.public2_subnet_id
   public_ip_address           = var.public2_ip_address
-  aws_ami                     = var.use_fortiweb_byol ? data.aws_ami.fortiweb_byol.id : data.aws_ami.fortiweb_paygo.id
+  aws_ami                     = data.aws_ami.fortiweb_byol.id
   enable_public_ips           = var.enable_public_ips_2
   keypair                     = var.keypair
   security_group_public_id    = aws_security_group.fortiweb_sg.id
   iam_instance_profile_id     = module.iam_profile.id
-  userdata_rendered           = var.use_fortiweb_byol ? data.template_file.fwb_userdata_byol_1.rendered : data.template_file.fwb_userdata_paygo_2.rendered
+  userdata_rendered           = data.template_file.fwb_userdata_byol_1.rendered
 }
 
