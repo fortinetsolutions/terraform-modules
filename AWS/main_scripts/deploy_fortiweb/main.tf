@@ -3,7 +3,6 @@ provider "aws" {
   region     = var.aws_region
 }
 
-templatefile("${path.module}/config_templates/fwb-userdata-byol.tpl",
 data "template_file" "fwb_userdata_byol_1" {
   template = file("./config_templates/fwb-userdata-byol.tpl")
 
@@ -17,7 +16,7 @@ data "template_file" "fwb_userdata_byol_2" {
   template = file("./config_templates/fwb-userdata-byol.tpl")
 
   vars = {
-    fwb_byol_license      = file("${path.module}/${var.fwb_byol_license_1}")
+    fwb_byol_license      = file("${path.module}/${var.fwb_byol_license_2}")
     fwb_admin_password     = var.fwb_admin_password
   }
 }
