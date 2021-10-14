@@ -1,0 +1,14 @@
+#! /bin/bash
+sudo apt-get update -y
+sudo apt-get install apache2 -y
+sudo apt-get install php7.0 -y
+mv /var/www/html/index.html /var/html/index.php
+cat <<EOF> /var/www/html/index.php
+	<html>
+	<body>Instance Details :</br></body>
+	<?php
+	echo gethostname();
+	?>
+	</body>
+	</html>
+EOF

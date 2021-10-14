@@ -1,0 +1,321 @@
+provider "google" {
+  version     = "3.49.0"
+  credentials = file(var.credentials_file_path)
+  project     = var.project
+  region      = var.spoke1_region
+  zone        = var.spoke1_zone
+}
+
+module "random" {
+  source = "../../modules/random-generator"
+}
+
+#############
+# Spoke - 1 #
+#############
+module "vpc_spoke" {
+  source = "../../modules/vpc"
+  # Pass Variables
+  name = var.name
+  vpcs = var.spoke1_vpcs
+  # Values fetched from the Modules
+  random_string = module.random.random_string
+  routing_mode  = var.vpc_routing_mode
+}
+
+# module "vpc_spoke1" {
+#   source = "../../modules/vpc"
+#   # Pass Variables
+#   name = var.name
+#   vpcs = var.spoke1_vpcs
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+#   routing_mode  = var.vpc_routing_mode
+# }
+
+# module "subnet_spoke1" {
+#   source = "../../modules/subnet"
+
+#   # Pass Variables
+#   name         = var.name
+#   region       = var.spoke1_region
+#   subnets      = var.spoke1_subnets
+#   subnet_cidrs = var.spoke1_subnet_cidrs
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+#   vpcs          = module.vpc_spoke1.vpc_networks
+# }
+
+# module "firewall_spoke1" {
+#   source = "../../modules/firewall"
+
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+#   vpcs          = module.vpc_spoke1.vpc_networks
+# }
+
+# # #####################################
+# # # These are one time configurations #
+# # #####################################
+# locals {
+#   timestamp = formatdate("YYMMDDhhmmss", timestamp())
+# }
+
+# # Compress source code
+# data "archive_file" "source" {
+#   type        = "zip"
+#   source_dir  = "./cfunction"
+#   output_path = "/tmp/function-${local.timestamp}.zip"
+# }
+
+# # Create bucket that will host the source code
+# resource "google_storage_bucket" "bucket" {
+#   name = "${var.name}-${module.random.random_string}-ncc-bucket"
+# }
+
+# # Add source code zip to bucket
+# resource "google_storage_bucket_object" "zip" {
+#   # Append file MD5 to force bucket to be recreated
+#   name   = "source.zip#${data.archive_file.source.output_md5}"
+#   bucket = google_storage_bucket.bucket.name
+#   source = data.archive_file.source.output_path
+# }
+
+# # Enable Cloud Functions API
+# resource "google_project_service" "cf" {
+#   project = var.project
+#   service = "cloudfunctions.googleapis.com"
+
+#   disable_dependent_services = true
+#   disable_on_destroy         = false
+# }
+
+# # Enable Cloud Build API
+# resource "google_project_service" "cb" {
+#   project = var.project
+#   service = "cloudbuild.googleapis.com"
+
+#   disable_dependent_services = true
+#   disable_on_destroy         = false
+# }
+# # #################################
+# # # End - One time configurations #
+# # #################################
+
+# # ################
+# # # Cloud Router #
+# # ################
+# resource "google_compute_router" "cloud_router_spoke1" {
+#   name    = "${var.name}-cr-${module.random.random_string}-spoke1"
+#   region  = var.spoke1_region
+#   network = module.vpc_spoke1.vpc_networks[0]
+#   # bgp {
+#   #   asn = var.cr_bgp_asn_spoke1
+#   # }
+# }
+
+# # Permissions to invoke the Cloud Function
+# resource "google_cloudfunctions_function_iam_member" "invoker_spoke1" {
+#   project        = var.project
+#   region         = var.spoke1_region
+#   cloud_function = google_cloudfunctions_function.spoke1_function.name
+#   role           = "roles/cloudfunctions.invoker"
+#   # use AllUsers since config-url does not support IAM.
+#   member = "allUsers"
+# }
+
+# ##################
+# # Cloud Function #
+# ##################
+# resource "google_cloudfunctions_function" "spoke1_function" {
+#   name                  = "${var.name}-${module.random.random_string}-spoke1-function"
+#   description           = "Network Connectivity Center - Spoke1"
+#   region                = var.spoke1_region
+#   runtime               = "nodejs14"
+#   ingress_settings      = "ALLOW_INTERNAL_ONLY"
+#   available_memory_mb   = 1024
+#   source_archive_bucket = google_storage_bucket.bucket.name
+#   source_archive_object = google_storage_bucket_object.zip.name
+#   trigger_http          = true
+#   timeout               = 540
+#   entry_point           = "invokeNCC"
+
+#   environment_variables = {
+#     NAME                         = "spoke1"
+#     CREDENTIALS_FILE_PATH        = var.credentials_file_path
+#     PROJECT_ID                   = var.project
+#     HUB_NAME                     = var.hub_name
+#     FGT_INSTANCE_SPOKE           = "${var.name}-fgt-${module.random.random_string}-spoke1-fgt-byol-instance"
+#     REGION_SPOKE                 = var.spoke1_region
+#     ZONE_SPOKE                   = var.spoke1_zone
+#     CLOUD_ROUTER_SPOKE           = google_compute_router.cloud_router_spoke1.name
+#     VPC_SPOKE                    = module.vpc_spoke1.vpc_networks_selflink[0]
+#     SUBNET_SPOKE                 = module.subnet_spoke1.subnets_selflink[0]
+#     CR_BGP_ASN_SPOKE             = var.cr_bgp_asn_spoke1
+#     CR_BGPPEERS_PEERASN_SPOKE    = var.cr_bgppeers_peerasn_spoke1
+#     INTERFACE_PRIVATE_IP_1_SPOKE = var.cr_interface1_private_ip_spoke1
+#     INTERFACE_PRIVATE_IP_2_SPOKE = var.cr_interface2_private_ip_spoke1
+#   }
+# }
+
+# # Static IP
+# module "static_ip_spoke1" {
+#   source = "../../modules/static-ip"
+
+#   # Pass Variables
+#   name   = var.name
+#   region = var.spoke1_region
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+# }
+
+# ###########################
+# # Compute Engine Instance #
+# ###########################
+# module "fgt_spoke1" {
+#   source = "../../modules/fortigate_byol"
+
+#   # Pass Variables
+#   name            = "${var.name}-fgt-${module.random.random_string}-spoke1"
+#   service_account = var.service_account
+#   zone            = var.spoke1_zone
+#   machine         = var.machine
+#   image           = var.image
+#   license_file    = var.license_file_1
+#   function_name   = google_cloudfunctions_function.spoke1_function.https_trigger_url
+#   # Values fetched from the Modules
+#   random_string         = module.random.random_string
+#   public_vpc_network    = module.vpc_spoke1.vpc_networks[0]
+#   private_vpc_network   = module.vpc_spoke1.vpc_networks[1]
+#   public_subnet         = module.subnet_spoke1.subnets[0]
+#   private_subnet        = module.subnet_spoke1.subnets[1]
+#   static_ip             = module.static_ip_spoke1.static_ip
+#   public_subnet_gateway = module.subnet_spoke1.public_subnet_gateway_address
+# }
+
+############
+# Spoke -2 #
+############
+
+# module "vpc_spoke2" {
+#   source = "../../modules/vpc"
+#   # Pass Variables
+#   name = var.name
+#   vpcs = var.spoke2_vpcs
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+#   routing_mode  = var.vpc_routing_mode
+# }
+
+# module "subnet_spoke2" {
+#   source = "../../modules/subnet"
+
+#   # Pass Variables
+#   name         = var.name
+#   region       = var.spoke2_region
+#   subnets      = var.spoke2_subnets
+#   subnet_cidrs = var.spoke2_subnet_cidrs
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+#   vpcs          = module.vpc_spoke2.vpc_networks
+# }
+
+# module "firewall_spoke2" {
+#   source = "../../modules/firewall"
+
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+#   vpcs          = module.vpc_spoke2.vpc_networks
+# }
+
+# ################
+# # Cloud Router #
+# ################
+# resource "google_compute_router" "cloud_router_spoke2" {
+#   name    = "${var.name}-cr-${module.random.random_string}-spoke2"
+#   region  = var.spoke2_region
+#   network = module.vpc_spoke2.vpc_networks[0]
+#   # bgp {
+#   #   asn = var.cr_bgp_asn_spoke2
+#   # }
+# }
+
+# # Permissions to invoke the Cloud Function
+# resource "google_cloudfunctions_function_iam_member" "invoker_spoke2" {
+#   project        = var.project
+#   region         = var.spoke2_region
+#   cloud_function = google_cloudfunctions_function.spoke2_function.name
+#   role           = "roles/cloudfunctions.invoker"
+#   # use AllUsers since config-url does not support IAM.
+#   member = "allUsers"
+# }
+
+# ##################
+# # Cloud Function #
+# ##################
+# resource "google_cloudfunctions_function" "spoke2_function" {
+#   depends_on            = [google_cloudfunctions_function.spoke1_function]
+#   name                  = "${var.name}-${module.random.random_string}-spoke2-function"
+#   description           = "Network Connectivity Center - Spoke2"
+#   region                = var.spoke2_region
+#   runtime               = "nodejs14"
+#   ingress_settings      = "ALLOW_INTERNAL_ONLY"
+#   available_memory_mb   = 1024
+#   source_archive_bucket = google_storage_bucket.bucket.name
+#   source_archive_object = google_storage_bucket_object.zip.name
+#   trigger_http          = true
+#   timeout               = 540
+#   entry_point           = "invokeNCC"
+
+#   environment_variables = {
+#     NAME                         = "spoke2"
+#     CREDENTIALS_FILE_PATH        = var.credentials_file_path
+#     PROJECT_ID                   = var.project
+#     HUB_NAME                     = var.hub_name
+#     FGT_INSTANCE_SPOKE           = "${var.name}-fgt-${module.random.random_string}-spoke2-fgt-byol-instance"
+#     REGION_SPOKE                 = var.spoke2_region
+#     ZONE_SPOKE                   = var.spoke2_zone
+#     CLOUD_ROUTER_SPOKE           = google_compute_router.cloud_router_spoke2.name
+#     VPC_SPOKE                    = module.vpc_spoke2.vpc_networks_selflink[0]
+#     SUBNET_SPOKE                 = module.subnet_spoke2.subnets_selflink[0]
+#     CR_BGP_ASN_SPOKE             = var.cr_bgp_asn_spoke2
+#     CR_BGPPEERS_PEERASN_SPOKE    = var.cr_bgppeers_peerasn_spoke2
+#     INTERFACE_PRIVATE_IP_1_SPOKE = var.cr_interface1_private_ip_spoke2
+#     INTERFACE_PRIVATE_IP_2_SPOKE = var.cr_interface2_private_ip_spoke2
+#   }
+# }
+
+# # Static IP
+# module "static_ip_spoke2" {
+#   source = "../../modules/static-ip"
+
+#   # Pass Variables
+#   name   = "${var.name}-static-ip-${module.random.random_string}-spoke2"
+#   region = var.spoke2_region
+#   # Values fetched from the Modules
+#   random_string = module.random.random_string
+# }
+
+# ###########################
+# # Compute Engine Instance #
+# ###########################
+# module "fgt_spoke2" {
+#   source = "../../modules/fortigate_byol"
+
+#   # Pass Variables
+#   name            = "${var.name}-fgt-${module.random.random_string}-spoke2"
+#   service_account = var.service_account
+#   zone            = var.spoke2_zone
+#   machine         = var.machine
+#   image           = var.image
+#   license_file    = var.license_file_2
+#   function_name   = google_cloudfunctions_function.spoke2_function.https_trigger_url
+#   # Values fetched from the Modules
+#   random_string         = module.random.random_string
+#   public_vpc_network    = module.vpc_spoke2.vpc_networks[0]
+#   private_vpc_network   = module.vpc_spoke2.vpc_networks[1]
+#   public_subnet         = module.subnet_spoke2.subnets[0]
+#   private_subnet        = module.subnet_spoke2.subnets[1]
+#   static_ip             = module.static_ip_spoke2.static_ip
+#   public_subnet_gateway = module.subnet_spoke2.public_subnet_gateway_address
+# }

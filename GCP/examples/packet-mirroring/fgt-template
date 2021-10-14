@@ -1,0 +1,9 @@
+config system global
+    set admin-sport ${admin_port}
+    set hostname packet-mirroring
+end
+config system admin
+    edit "admin"
+        set password ${fgt_password}
+    next
+end

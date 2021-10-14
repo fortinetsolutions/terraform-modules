@@ -1,0 +1,46 @@
+config sys glo
+set hostname byol
+end
+config system admin
+    edit "admin"
+        set password ${fgt_password}
+    next
+end
+config router static
+    edit 1
+       set device port1
+       set gateway ${public_gateway}
+    next
+end
+config firewall vip
+    edit "terraform-vip"
+        set extip ${externalip}
+        set extintf "port1"
+        set mappedip ${internalip}
+    next
+end
+config firewall policy
+    edit 1
+        set name "allow-all"
+        set srcintf "port1"
+        set dstintf "port1"
+        set srcaddr "all"
+        set dstaddr "terraform-vip"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+    next
+end
+config system sdn-connector
+    edit "gcp"
+        set type gcp
+        config external-ip
+            edit ${clusterip}
+            next
+        end
+        config route
+            edit ${internalroute}
+            next
+        end
+    next
+end

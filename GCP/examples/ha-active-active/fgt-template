@@ -1,0 +1,86 @@
+config system global
+    set admin-sport ${admin_port}
+    set hostname active-active
+end
+config system admin
+    edit "admin"
+        set password ${fgt_password}
+    next
+end
+config router static
+    edit 1
+       set device port2
+       set dst ${private_vpc_cidr} 255.255.255.0
+       set gateway ${private_vpc_gateway}
+    next
+    edit 2
+       set device port2
+       set dst ${gcp_lb1}
+       set gateway ${private_vpc_gateway}
+    next
+    edit 3
+       set device port2
+       set dst ${gcp_lb2}
+       set gateway ${private_vpc_gateway}
+    next
+end
+config system probe-response
+    set mode http-probe
+end
+config system interface
+    edit "port2"
+        set defaultgw enable
+        set allowaccess ping https ssh
+    next
+    edit "loopback"
+        set vdom "root"
+        set ip ${mapped_ip} 255.255.255.255
+        set allowaccess ping probe-response
+        set type loopback
+        set role lan
+    next
+end
+config firewall vip
+    edit "ext-lb-probe"
+        # External Load Balancer IP
+        set extip ${external_loadbalancer_ip}
+        set extintf "port1"
+        set portforward enable
+        set mappedip ${mapped_ip}
+        set extport 8008
+        set mappedport 8008
+    next
+    edit "int-lb-probe"
+        # Internal Load Balancer IP
+        set extip ${ilb_vip}
+        set extintf "port2"
+        set portforward enable
+        set mappedip ${mapped_ip}
+        set extport 8008
+        set mappedport 8008
+    next
+end
+config firewall service custom
+    edit "ProbeService-8008"
+        set comment "Default Probe Service for GCP on port 8008"
+        set tcp-portrange 8008
+    next
+end
+config system settings
+    set gui-multiple-interface-policy enable
+end
+config firewall policy
+    edit 1
+        set name "DefaultGCPProbePolicy"
+        set srcintf "port1" "port2"
+        set dstintf "loopback"
+        set srcaddr "all"
+        set dstaddr "ext-lb-probe" "int-lb-probe"
+        set action accept
+        set schedule "always"
+        set service "ProbeService-8008"
+        set fsso disable
+        set nat enable
+        set comments "Default Policy to enable GCP loadbalancer probes on port 8008"
+    next
+end

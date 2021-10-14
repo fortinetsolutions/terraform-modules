@@ -1,0 +1,10 @@
+
+config system global
+    set adom-status enable
+end
+config system admin user
+    edit "admin"
+       set rpc-permit read-write
+       set password ${fmg_password}
+    next
+end

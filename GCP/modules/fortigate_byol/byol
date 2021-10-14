@@ -1,0 +1,8 @@
+config sys glo
+set hostname byol
+end
+config system admin
+    edit "admin"
+        set password ${fgt_password}
+    next
+end

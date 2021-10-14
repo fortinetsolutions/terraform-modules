@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+echo "*****    Installing Nginx    *****"
+sudo apt update
+sudo apt install -y nginx
+sudo ufw allow '${ufw_allow_nginx}'
+sudo systemctl enable nginx
+sudo systemctl restart nginx
+#service nginx start
+# sed -i -- 's/nginx/Google Cloud Platform - '"$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
+vm_hostname="$(curl -H "Metadata-Flavor:Google" http://169.254.169.254/computeMetadata/v1/instance/name)"
+echo "Page served from: $vm_hostname" | tee /var/www/html/index.html  
+sudo systemctl restart nginx
+echo "*****   Installation Done!!   *****"

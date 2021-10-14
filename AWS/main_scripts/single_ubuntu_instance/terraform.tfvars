@@ -1,0 +1,20 @@
+
+aws_region                  = "us-west-2"
+customer_prefix             = "mdw"
+environment                 = "dev"
+availability_zone_1         = "us-west-2a"
+vpc_cidr                    = "10.0.0.0/16"
+public_subnet_cidr1         = "10.0.0.0/24"
+public1_description         = "public"
+public1_ip_address          = "10.0.0.10"
+private_subnet_cidr1        = "10.0.1.0/24"
+private1_description        = "private"
+private1_ip_address         = "10.0.1.10"
+keypair                     = "mdw-key-oregon"
+cidr_for_access             = "0.0.0.0/0"
+public_ip                   = 1
+acl                         = "private"
+ec2_sg_name                 = "ec2"
+linux_instance_name         = "Linux Instance"
+linux_instance_type         = "t2.medium"
+

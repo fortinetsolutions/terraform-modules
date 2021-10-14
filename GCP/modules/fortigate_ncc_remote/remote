@@ -1,0 +1,160 @@
+config sys glo
+    set hostname ${hostname}
+    set admintimeout 60
+end
+config system admin
+    edit "admin"
+        set password ${fgt_password}
+    next
+end
+config system sdn-connector
+    edit "gcp"
+        set type gcp
+        set ha-status enable
+    next
+end
+# Router - BGP
+config router bgp
+    set as ${asn_remote}
+    set router-id ${router_ip_remote}
+    config neighbor
+        edit ${router_ip_spoke}
+            set ebgp-enforce-multihop enable
+            set soft-reconfiguration enable
+            set remote-as ${cr_bgppeers_peerasn_spoke}
+        next
+    end
+    config network
+        edit 1
+            set prefix ${subnet_cidr_remote}
+        next
+    end
+end
+# IPSec Tunnel
+config vpn ipsec phase1-interface
+    edit "remotetunnel"
+        set interface "port1"
+        set comments "IPSec Tunnel-Phase1"
+        set wizard-type static-fortigate
+        set remote-gw ${spoke_site_ip}
+        set psksecret "fortinet"
+    next
+end
+config vpn ipsec phase2-interface
+    edit "remotetunnel"
+        set phase1name "remotetunnel"
+        set comments "IPSec Tunnel-Phase2"
+        set src-addr-type name
+        set dst-addr-type name
+        set src-name "all"
+        set dst-name "all"
+    next
+end
+# Interface - Tunnel
+config system interface
+    edit "port2"
+        set allowaccess ping ssh
+    next
+    edit "remotetunnel"
+        set ip ${router_ip_remote} 255.255.255.255
+        set remote-ip ${router_ip_spoke} 255.255.255.248
+        set allowaccess ping ssh
+    next
+end
+
+# Firewall Address
+config firewall address
+    edit "remotetunnel_local_subnet_1"
+        set allow-routing enable
+        set subnet ${remote_internal_ip_nic0} 255.255.255.255
+    next
+    edit "remotetunnel_local_subnet_2"
+        set allow-routing enable
+        set subnet ${remote_internal_ip_nic1} 255.255.255.255
+    next
+    edit "remotetunnel_remote_subnet_1"
+        set allow-routing enable
+        set subnet ${subnet_cidr_ncc}
+    next
+    edit "remotetunnel_remote_subnet_2"
+        set allow-routing enable
+        set subnet ${subnet_cidr_spoke}
+    next
+end
+
+# Firewall Address Group
+config firewall addrgrp
+    edit "remotetunnel_local"
+        set member "remotetunnel_local_subnet_1" "remotetunnel_local_subnet_2"
+        set comment "VPN: remotetunnel"
+        set allow-routing enable
+    next
+    edit "remotetunnel_remote"
+        set member "remotetunnel_remote_subnet_1" "remotetunnel_remote_subnet_2"
+        set comment "VPN: remotetunnelremotetunnel"
+        set allow-routing enable
+    next
+end
+
+# Static Router
+config router static
+    edit 1
+        set device "remotetunnel"
+        set comment "VPN: remotetunnel"
+        set dstaddr "remotetunnel_remote"
+    next
+    edit 2
+        set distance 254
+        set comment "VPN: remotetunnel"
+        set blackhole enable
+        set dstaddr "remotetunnel_remote"
+    next
+end
+
+# Firewall Policy
+config firewall policy
+    edit 1
+        set name "vpn_remotetunnel_local_0"
+        set srcintf "port1"
+        set dstintf "remotetunnel"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: remotetunnel"
+    next
+    edit 2
+        set name "vpn_remotetunnel_local_1"
+        set srcintf "port2"
+        set dstintf "remotetunnel"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: remotetunnel"
+    next
+    edit 3
+        set name "vpn_remotetunnel_remote_0"
+        set srcintf "remotetunnel"
+        set dstintf "port1"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: remotetunnel"
+    next
+    edit 4
+        set name "vpn_remotetunnel_remote_1"
+        set srcintf "remotetunnel"
+        set dstintf "port2"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: remotetunnel"
+    next
+end

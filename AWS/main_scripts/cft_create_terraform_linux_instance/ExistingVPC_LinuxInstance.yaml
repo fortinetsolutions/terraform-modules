@@ -1,0 +1,148 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation Template to Add Linux Terraform Instance to an Existing VPC
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Linux Instance Configuration
+      Parameters:
+      - VPCID
+      - AZForInstance1
+      - Public1Subnet
+      - KeyPair
+      - CIDRForInstanceAccess
+      - InstanceType
+    ParameterLabels:
+      VPCID:
+        default: Please enter the VPC specific details here
+Parameters:
+  VPCID:
+    Type: AWS::EC2::VPC::Id
+    Description: Enter the VPC that you want to use
+  AZForInstance1:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Enter the AZ for the primary instance
+  Public1Subnet:
+    Type: AWS::EC2::Subnet::Id
+    Description: Enter the value of the Public1 subnet
+  CIDRForInstanceAccess:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: Enter the CIDR from which instance needs to be accessed
+  InstanceType:
+    Type: String
+    Default: c4.large
+    AllowedValues:
+    - m3.medium
+    - m3.large
+    - m3.xlarge
+    - m3.2xlarge
+    - c4.large
+    - c4.xlarge
+    - c4.2xlarge
+    - c3.large
+    - c3.xlarge
+    - c3.2xlarge
+    Description: Enter the instance type and size that you want for the Linux Instances
+  KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Enter the keypair that you want to associate with the launch of the
+      Instances
+Mappings:
+    RegionMap:
+      us-west-2:
+          ubuntuami: ami-c62eaabe
+Conditions: {}
+Resources:
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+  InstancePolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: root
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - cloudwatch:*
+          Resource:
+          - "*"
+        - Effect: Allow
+          Action:
+          - ec2:*
+          - iam:*
+          Resource:
+          - "*"
+      Roles:
+      - Ref: InstanceRole
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - Ref: InstanceRole
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Ref: VPCID
+      GroupDescription: Allow SSH and Web
+      SecurityGroupIngress:
+      - IpProtocol: TCP
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp:
+          Ref: CIDRForInstanceAccess
+  LinuxInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref 'AWS::Region', ubuntuami]
+      UserData:
+        Fn::Base64: |
+           #!/bin/bash
+           apt-get update -y
+           sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl
+           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+           sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+           sudo apt-get update && sudo apt-get install terraform
+      InstanceType:
+        Ref: InstanceType
+      KeyName:
+        Ref: KeyPair
+      IamInstanceProfile:
+        Ref: InstanceProfile
+      NetworkInterfaces:
+      - AssociatePublicIpAddress: 'true'
+        DeviceIndex: '0'
+        GroupSet:
+        - Ref: SecurityGroup
+        SubnetId:
+          Ref: Public1Subnet
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - ''
+          - - Ref: AWS::StackName
+            - "-Linux"
+Outputs:
+  LinuxInstanceIP:
+    Value: !GetAtt LinuxInstance.PublicIp
+    Description: Connect to Linux instance using ssh to this IP
+  LinuxInstanceID:
+    Value:
+      Ref: LinuxInstance
+    Description: Instance ID of LinuxInstance
+

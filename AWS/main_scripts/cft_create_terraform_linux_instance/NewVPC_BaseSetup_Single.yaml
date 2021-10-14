@@ -1,0 +1,110 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation Template to launch VPC with Single Subnet, an InternetGateway
+  and RouteTables in a VPC.
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: VPC Configuration
+      Parameters:
+      - VPCCIDR
+      - AZForSubnet1
+      - Public1Subnet
+Parameters:
+  VPCCIDR:
+    Type: String
+    Default: 10.0.0.0/16
+    Description: Enter the VPC CIDR that you want to use
+  AZForSubnet1:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Enter the AZ for the primary subnets
+  Public1Subnet:
+    Type: String
+    Default: 10.0.0.0/24
+    Description: Enter the value of the Public1 subnet
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock:
+        Ref: VPCCIDR
+      EnableDnsHostnames: 'true'
+      EnableDnsSupport: 'true'
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - ''
+          - - Ref: AWS::StackName
+            - "-vpc"
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      CidrBlock:
+        Ref: Public1Subnet
+      AvailabilityZone:
+        Ref: AZForSubnet1
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - ''
+          - - Ref: AWS::StackName
+            - "-subnet"
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - ''
+          - - Ref: AWS::StackName
+            - "-Route Table"
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - ''
+          - - Ref: AWS::StackName
+            - "-igw"
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+  Route1:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+  SubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: Subnet
+      RouteTableId:
+        Ref: RouteTable
+Outputs:
+  VPCID:
+    Value:
+      Ref: VPC
+    Description: Base VPC ID
+  SubnetID:
+    Value:
+      Ref: Subnet
+    Description: Base VPC Subnet ID

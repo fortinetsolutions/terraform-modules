@@ -1,0 +1,93 @@
+# remote-gw => GCP Tunnels Cloud VPN gateway (IP)
+config vpn ipsec phase1-interface
+    edit GCP-HA-VPN-INT0
+        set interface "port1"
+        set ike-version 2
+        set keylife 36000
+        set peertype any
+        set net-device disable
+        set proposal aes128-sha256 aes256-sha256 aes128gcm-prfsha256 aes256gcm-prfsha384 chacha20poly1305-prfsha256
+        set remote-gw 35.242.102.54
+        set psksecret fortinet
+    next
+    edit GCP-HA-VPN-INT1
+        set interface "port1"
+        set ike-version 2
+        set keylife 36000
+        set peertype any
+        set net-device disable
+        set proposal aes128-sha256 aes256-sha256 aes128gcm-prfsha256 aes256gcm-prfsha384 chacha20poly1305-prfsha256
+        set remote-gw 35.220.94.107
+        set psksecret fortinet
+    next
+end
+
+config vpn ipsec phase2-interface
+    edit GCP-HA-VPN-INT0
+        set phase1name GCP-HA-VPN-INT0
+        set proposal aes128-sha1 aes256-sha1 aes128-sha256 aes256-sha256 aes128gcm aes256gcm chacha20poly1305
+        set src-addr-type name
+        set dst-addr-type name
+        set keylifeseconds 10800
+        set src-name "all"
+        set dst-name "all"
+    next
+    edit GCP-HA-VPN-INT1
+        set phase1name GCP-HA-VPN-INT1
+        set proposal aes128-sha1 aes256-sha1 aes128-sha256 aes256-sha256 aes128gcm aes256gcm chacha20poly1305
+        set src-addr-type name
+        set dst-addr-type name
+        set keylifeseconds 10800
+        set src-name "all"
+        set dst-name "all"
+    next
+end
+
+# ip -> Tunnel(s) -> BGP PeerIP 
+# remote-ip -> Tunnel(s) -> Cloud Router BGP IP 
+config system interface
+    edit GCP-HA-VPN-INT0
+        set ip 169.254.0.2 255.255.255.255
+        set remote-ip 169.254.0.1/30
+    next
+    edit GCP-HA-VPN-INT1
+        set ip 169.254.1.2 255.255.255.255
+        set remote-ip 169.254.1.1/30
+    next
+end
+
+# as ==> Cloud Router -> Peer ASN
+# edit -> Cloud Router -> Cloud Router BGP IP
+# remote-as -> Cloud Router -> Google ASN
+config router bgp
+    set as 64515
+    set router-id 13.67.233.73
+    config neighbor
+        edit 169.254.0.1
+            set soft-reconfiguration enable
+            set remote-as 64514
+        next
+    end
+    config neighbor
+        edit 169.254.1.1
+            set soft-reconfiguration enable
+            set remote-as 64514
+        next
+    end
+    config redistribute connected
+        set status enable
+    end
+end
+
+config firewall policy
+    edit 1
+        set name allow-gcp-to-lan
+        set srcintf GCP-HA-VPN-INT0 GCP-HA-VPN-INT1
+        set dstintf port2
+        set srcaddr all
+        set dstaddr all
+        set action accept
+        set schedule always
+        set service ALL
+    next
+end

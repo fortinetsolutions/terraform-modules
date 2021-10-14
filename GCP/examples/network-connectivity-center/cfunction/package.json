@@ -1,0 +1,15 @@
+{
+    "name": "ncc",
+    "version": "0.0.1",
+    "main": "index.js",
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "dependencies": {
+        "@google-cloud/functions-framework": "^1.9.0",
+        "@google-cloud/network-connectivity": "^1.1.5",
+        "axios": "^0.21.1",
+        "google-auth-library": "^7.3.0",
+        "googleapis": "^81.0.0"
+    }
+}

@@ -1,0 +1,232 @@
+config sys glo
+    set hostname ${hostname}
+    set admintimeout 60
+end
+config system admin
+    edit "admin"
+        set password ${fgt_password}
+    next
+end
+config system sdn-connector
+    edit "gcp"
+        set type gcp
+        set ha-status enable
+    next
+end
+# Automation Stitch
+config system automation-action
+    edit "gcp-ncc-cloud-function"
+        set action-type google-cloud-function
+        # delay - only available for BOYL Image, it is added into the automation-stitch block for PAYG
+        set delay 30
+        set uri "${ncc_cloud_function}"
+    next
+end
+# Automation Triggered on License Valid Status Event
+config system automation-trigger
+    edit "gcp-ncc-trigger"
+        set event-type event-log
+        set logid 22804
+    next
+end
+# Below config for BOYL image
+config system automation-stitch
+    edit "gcp-ncc-stitch"
+        set trigger "gcp-ncc-trigger"
+        set action "gcp-ncc-cloud-function"
+    next
+end
+# Below config for PAYG image
+# config system automation-stitch
+#    edit "gcp-ncc-stitch"
+#        set trigger "gcp-ncc-trigger"
+#        config actions
+#            edit 1
+#                set action "gcp-ncc-cloud-function"
+#                set delay 30
+#                set required enable
+#            next
+#        end
+#    next
+#end
+# route-map
+config router route-map
+    edit "nexthop1"
+        config rule
+            edit 1
+                set set-ip-nexthop ${cr_interface1_private_ip_spoke}
+                unset set-ip6-nexthop
+                unset set-ip6-nexthop-local
+                unset set-originator-id
+            next
+        end
+    next
+    edit "nexthop2"
+        config rule
+            edit 1
+                set set-ip-nexthop ${cr_interface2_private_ip_spoke}
+                unset set-ip6-nexthop
+                unset set-ip6-nexthop-local
+                unset set-originator-id
+            next
+        end
+    next
+end
+# Router - BGP
+config router bgp
+    set as ${cr_bgppeers_peerasn_spoke}
+    set router-id ${router_id_remote}
+    config neighbor
+        edit ${cr_interface1_private_ip_spoke}
+            set ebgp-enforce-multihop enable
+            set soft-reconfiguration enable
+            set remote-as ${cr_bgp_asn_spoke}
+            set route-map-in "nexthop1"
+        next
+        edit ${cr_interface2_private_ip_spoke}
+            set ebgp-enforce-multihop enable
+            set soft-reconfiguration enable
+            set remote-as ${cr_bgp_asn_spoke}
+            set route-map-in "nexthop2"
+        next
+        edit ${router_ip_remote}
+            set ebgp-enforce-multihop enable
+            set soft-reconfiguration enable
+            set remote-as ${asn_remote}
+        next
+    end
+    config network
+        edit 1
+            set prefix ${subnet_cidr_spoke}
+        next
+    end
+end
+# IPSec Tunnel
+config vpn ipsec phase1-interface
+    edit "spoketunnel"
+        set interface "port1"
+        set comments "IPSec Tunnel-Phase1"
+        set wizard-type static-fortigate
+        set remote-gw ${remote_site_ip}
+        set psksecret "fortinet"
+    next
+end
+config vpn ipsec phase2-interface
+    edit "tunnel"
+        set phase1name "spoketunnel"
+        set comments "IPSec Tunnel-Phase2"
+        set src-addr-type name
+        set dst-addr-type name
+        set src-name "all"
+        set dst-name "all"
+    next
+end
+
+# Interface - Tunnel
+config system interface
+    edit "port2"
+        set allowaccess ping ssh
+    next
+    edit "spoketunnel"
+        set ip ${router_ip_spoke} 255.255.255.255
+        set remote-ip ${router_ip_remote} 255.255.255.248
+        set allowaccess ping ssh
+    next
+end
+
+# Firewall Address
+config firewall address
+    edit "spoketunnel_local_subnet_1"
+        set allow-routing enable
+        set subnet ${remote_internal_ip_nic0} 255.255.255.255
+    next
+    edit "spoketunnel_local_subnet_2"
+        set allow-routing enable
+        set subnet ${remote_internal_ip_nic1} 255.255.255.255
+    next
+    edit "spoketunnel_remote_subnet_1"
+        set allow-routing enable
+        set subnet ${subnet_cidr_ncc}
+    next
+    edit "spoketunnel_remote_subnet_2"
+        set allow-routing enable
+        set subnet ${subnet_cidr_spoke}
+    next
+end
+
+# Firewall Address Group
+config firewall addrgrp
+    edit "spoketunnel_local"
+        set member "spoketunnel_local_subnet_1" "spoketunnel_local_subnet_2"
+        set comment "VPN: spoketunnel"
+        set allow-routing enable
+    next
+    edit "spoketunnel_remote"
+        set member "spoketunnel_remote_subnet_1" "spoketunnel_remote_subnet_2"
+        set comment "VPN: spoketunnel"
+        set allow-routing enable
+    next
+end
+
+# Static Router
+config router static
+    edit 1
+        set device "spoketunnel"
+        set comment "VPN: spoketunnel"
+        set dstaddr "spoketunnel_remote"
+    next
+    edit 2
+        set distance 254
+        set comment "VPN: spoketunnel"
+        set blackhole enable
+        set dstaddr "spoketunnel_remote"
+    next
+end
+
+# Firewall Policy
+config firewall policy
+    edit 1
+        set name "vpn_spoketunnel_local_0"
+        set srcintf "port1"
+        set dstintf "spoketunnel"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: spoketunnel"
+    next
+    edit 2
+        set name "vpn_spoketunnel_local_1"
+        set srcintf "port2"
+        set dstintf "spoketunnel"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: spoketunnel"
+    next
+    edit 3
+        set name "vpn_spoketunnel_remote_1"
+        set srcintf "spoketunnel"
+        set dstintf "port2"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: spoketunnel"
+    next
+    edit 4
+        set name "vpn_spoketunnel_remote_0"
+        set srcintf "spoketunnel"
+        set dstintf "port1"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set comments "VPN: spoketunnel"
+    next
+end
