@@ -121,7 +121,7 @@ config system ha
         next
     end
     set override disable
-    set priority 255
+    set priority 200
     set unicast-hb enable
     set unicast-hb-peerip ${passive_hb_ip}
     set unicast-hb-netmask ${hb_netmask}
