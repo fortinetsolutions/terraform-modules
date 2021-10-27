@@ -1,6 +1,6 @@
 # HA-Cluster-IP
 output "fgt_ip" {
-  value = "${google_compute_instance.fgt_byol_instance.network_interface.0.access_config.0.nat_ip}"
+  value = google_compute_instance.fgt_byol_instance.network_interface.0.access_config.0.nat_ip
 }
 
 # Active-FortiGate-Username
@@ -17,4 +17,3 @@ output "active_fgt_password" {
 output "instance_id" {
   value = google_compute_instance.fgt_byol_instance.id
 }
-
