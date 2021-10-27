@@ -235,12 +235,56 @@ resource "google_compute_instance_from_template" "active_fgt_instance" {
   name                     = "${var.name}-fgt-0-${module.random.random_string}"
   zone                     = element(data.google_compute_zones.available.names, 0)
   source_instance_template = google_compute_instance_template.active.self_link
+
+  network_interface {
+    network_ip = var.active_port1_ip
+    network    = module.vpc.vpc_networks[0]
+    subnetwork = module.subnet.subnets[0]
+  }
+  network_interface {
+    network_ip = var.active_port2_ip
+    network    = module.vpc.vpc_networks[1]
+    subnetwork = module.subnet.subnets[1]
+  }
+  network_interface {
+    network_ip = var.active_port3_ip
+    network    = module.vpc.vpc_networks[2]
+    subnetwork = module.subnet.subnets[2]
+  }
+  network_interface {
+    network_ip = var.active_port4_ip
+    network    = module.vpc.vpc_networks[3]
+    subnetwork = module.subnet.subnets[3]
+    access_config {}
+  }
 }
 
 resource "google_compute_instance_from_template" "passive_fgt_instance" {
   name                     = "${var.name}-fgt-1-${module.random.random_string}"
   zone                     = element(data.google_compute_zones.available.names, 1)
   source_instance_template = google_compute_instance_template.passive.self_link
+
+  network_interface {
+    network_ip = var.passive_port1_ip
+    network    = module.vpc.vpc_networks[0]
+    subnetwork = module.subnet.subnets[0]
+  }
+  network_interface {
+    network_ip = var.passive_port2_ip
+    network    = module.vpc.vpc_networks[1]
+    subnetwork = module.subnet.subnets[1]
+  }
+  network_interface {
+    network_ip = var.passive_port3_ip
+    network    = module.vpc.vpc_networks[2]
+    subnetwork = module.subnet.subnets[2]
+  }
+  network_interface {
+    network_ip = var.passive_port4_ip
+    network    = module.vpc.vpc_networks[3]
+    subnetwork = module.subnet.subnets[3]
+    access_config {}
+  }
 
   depends_on = [google_compute_instance_from_template.active_fgt_instance]
 }
@@ -328,6 +372,7 @@ module "static-ip-elb1" {
   name = "${var.name}-static-ip-elb1"
   # Values fetched from the Modules
   random_string = module.random.random_string
+  region = var.region
 }
 
 module "static-ip-elb2" {
@@ -337,6 +382,7 @@ module "static-ip-elb2" {
   name = "${var.name}-static-ip-elb2"
   # Values fetched from the Modules
   random_string = module.random.random_string
+  region = var.region
 }
 
 resource "google_compute_forwarding_rule" "elb-tcp1" {
