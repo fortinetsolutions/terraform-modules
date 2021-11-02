@@ -53,15 +53,6 @@ config router static
       set dst ${cidrhost(subnet_cidr_port2, 1)}/32
       set device "port2"
     next
-    edit 12
-      set dst ${subnet_cidr_port3}
-      set device "port3"
-      set gateway ${cidrhost(subnet_cidr_port3, 1)}
-    next
-    edit 22
-      set dst ${cidrhost(subnet_cidr_port3, 1)}/32
-      set device "port3"
-    next
 
 end
 config system interface
