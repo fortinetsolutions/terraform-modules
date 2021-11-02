@@ -1,6 +1,6 @@
 # Configuration for BYOL Instance using user-data
 data "template_file" "setup-remote-instance" {
-  template = "${file("${path.module}/remote")}"
+  template = file("${path.module}/remote")
   vars = {
     fgt_password              = var.password
     hostname                  = var.hostname

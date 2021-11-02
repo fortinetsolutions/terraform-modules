@@ -17,38 +17,29 @@ end
 config system automation-action
     edit "gcp-ncc-cloud-function"
         set action-type google-cloud-function
-        # delay - only available for BOYL Image, it is added into the automation-stitch block for PAYG
-        set delay 30
         set uri "${ncc_cloud_function}"
     next
 end
 # Automation Triggered on License Valid Status Event
+# https://docs.fortinet.com/document/fortigate/7.0.1/fortios-log-message-reference/22804/22804-log-id-lic-status-chg
 config system automation-trigger
     edit "gcp-ncc-trigger"
         set event-type event-log
         set logid 22804
     next
 end
-# Below config for BOYL image
 config system automation-stitch
-    edit "gcp-ncc-stitch"
-        set trigger "gcp-ncc-trigger"
-        set action "gcp-ncc-cloud-function"
-    next
+   edit "gcp-ncc-stitch"
+       set trigger "gcp-ncc-trigger"
+       config actions
+           edit 1
+               set action "gcp-ncc-cloud-function"
+               set delay 60
+               set required enable
+           next
+       end
+   next
 end
-# Below config for PAYG image
-# config system automation-stitch
-#    edit "gcp-ncc-stitch"
-#        set trigger "gcp-ncc-trigger"
-#        config actions
-#            edit 1
-#                set action "gcp-ncc-cloud-function"
-#                set delay 30
-#                set required enable
-#            next
-#        end
-#    next
-#end
 # route-map
 config router route-map
     edit "nexthop1"

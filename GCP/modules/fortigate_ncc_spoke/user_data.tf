@@ -1,6 +1,6 @@
 # Configuration for NCC using user-data
 data "template_file" "setup-ncc-instance" {
-  template = "${file("${path.module}/ncc")}"
+  template = file("${path.module}/ncc")
   vars = {
     fgt_password                   = var.password
     hostname                       = var.hostname
@@ -24,3 +24,19 @@ data "template_file" "setup-ncc-instance" {
   }
 }
 
+# data "template_cloudinit_config" "config" {
+#   gzip          = false
+#   base64_encode = false
+
+#   # Main cloud-config configuration file.
+#   part {
+#     filename     = "init.cfg"
+#     content_type = "text/cloud-config"
+#     content      = "${data.template_file.setup-ncc-instance.rendered}"
+#   }
+
+#   part {
+#     content_type = "text/cloud-config"
+#     content      = "{'config-url':'${var.function_name}'}"
+#   }
+# }

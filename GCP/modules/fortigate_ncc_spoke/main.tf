@@ -29,7 +29,7 @@ resource "google_compute_instance" "fgt_spoke_instance" {
 
   # Metadata which will deploy the license and bootstraps the configuration
   metadata = {
-    user-data = "${data.template_file.setup-ncc-instance.rendered}"
+    user-data = data.template_file.setup-ncc-instance.rendered
     license   = file(var.license_file) # Placeholder for the license file for BYOL image, Need to fetch the License File
   }
 
