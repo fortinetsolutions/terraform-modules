@@ -159,8 +159,6 @@ data "aws_ami" "fortigate_paygo" {
 #
 module "allow_private_subnets" {
   source = "../../modules/security_group"
-  access_key              = var.access_key
-  secret_key              = var.secret_key
   aws_region              = var.aws_region
   vpc_id                  = var.vpc_id
   name                    = "${var.fortigate_sg_name} Allow Private Subnets"
@@ -181,8 +179,6 @@ module "allow_private_subnets" {
 #
 module "allow_public_subnets" {
   source = "../../modules/security_group"
-  access_key              = var.access_key
-  secret_key              = var.secret_key
   aws_region              = var.aws_region
   vpc_id                  = var.vpc_id
   name                    = "${var.fortigate_sg_name} Allow Public Subnets"
@@ -201,8 +197,6 @@ module "allow_public_subnets" {
 module "sync-subnet-1" {
   source = "../../modules/subnet"
 
-  access_key                 = var.access_key
-  secret_key                 = var.secret_key
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
@@ -215,8 +209,6 @@ module "sync-subnet-1" {
 module "sync-subnet-2" {
   source = "../../modules/subnet"
 
-  access_key                 = var.access_key
-  secret_key                 = var.secret_key
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
@@ -229,8 +221,6 @@ module "sync-subnet-2" {
 module "ha-subnet-1" {
   source = "../../modules/subnet"
 
-  access_key                 = var.access_key
-  secret_key                 = var.secret_key
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
@@ -245,8 +235,6 @@ module "ha-subnet-1" {
 module "ha-subnet-2" {
   source = "../../modules/subnet"
 
-  access_key                 = var.access_key
-  secret_key                 = var.secret_key
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
@@ -264,8 +252,6 @@ module "ha-subnet-2" {
 module "iam_profile" {
   source = "../../modules/fortigate_ha_instance_iam_role"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
@@ -274,8 +260,6 @@ module "iam_profile" {
 module "fortigate_1" {
   source                      = "../../modules/ec2_instance"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   availability_zone           = var.availability_zone_1
   customer_prefix             = var.customer_prefix
@@ -307,8 +291,6 @@ module "fortigate_1" {
 module "fortigate_2" {
   source                      = "../../modules/ec2_instance"
 
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
   aws_region                  = var.aws_region
   availability_zone           = var.availability_zone_2
   customer_prefix             = var.customer_prefix
