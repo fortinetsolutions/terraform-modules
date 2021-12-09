@@ -28,10 +28,10 @@ variable "image" {
   description = "FortiGate Image"
 }
 
-variable "license_file" {
-  type        = string
-  description = "License File"
-}
+# variable "license_file" {
+#   type        = string
+#   description = "License File"
+# }
 
 variable "public_subnet_gateway" {
   type        = string

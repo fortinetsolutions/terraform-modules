@@ -29,7 +29,7 @@ resource "google_compute_instance" "fgt_byol_instance" {
 
   # Metadata which will deploy the license and configure the HA
   metadata = {
-    user-data = "${data.template_file.setup-byol-instance.rendered}"
+    user-data = data.template_file.setup-byol-instance.rendered
     license   = file(var.license_file) # Placeholder for the license file for BYOL image, Need to fetch the License File
   }
 

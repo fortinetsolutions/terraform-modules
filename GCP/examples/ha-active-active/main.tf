@@ -213,7 +213,7 @@ resource "google_compute_region_backend_service" "internal_load_balancer_backend
 
   backend {
     group       = google_compute_region_instance_group_manager.mig.instance_group
-    description = "test-description"
+    description = "ILB-Region-Backend-Service"
   }
 
   health_checks = [google_compute_region_health_check.int_lb_health_check.self_link]

@@ -149,7 +149,7 @@ resource "google_cloudfunctions_function" "spoke1_function" {
     NAME                         = "spoke1"
     CREDENTIALS_FILE_PATH        = var.credentials_file_path
     PROJECT_ID                   = var.project
-    HUB_NAME                     = var.hub_name
+    HUB_NAME                     = "${var.hub_name}-${module.random.random_string}"
     FGT_INSTANCE_SPOKE           = "${var.name}-fgt-${module.random.random_string}-spoke1-fgt-spoke-instance"
     REGION_SPOKE                 = var.spoke1_region
     ZONE_SPOKE                   = var.spoke1_zone
@@ -385,7 +385,7 @@ resource "google_cloudfunctions_function" "spoke2_function" {
     NAME                         = "spoke2"
     CREDENTIALS_FILE_PATH        = var.credentials_file_path
     PROJECT_ID                   = var.project
-    HUB_NAME                     = var.hub_name
+    HUB_NAME                     = "${var.hub_name}-${module.random.random_string}"
     FGT_INSTANCE_SPOKE           = "${var.name}-fgt-${module.random.random_string}-spoke2-fgt-spoke-instance"
     REGION_SPOKE                 = var.spoke2_region
     ZONE_SPOKE                   = var.spoke2_zone

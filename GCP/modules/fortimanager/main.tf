@@ -23,8 +23,8 @@ resource "google_compute_instance" "fmg_instance" {
 
   # Metadata which will deploy the license and configure the HA
   metadata = {
-    user-data = "${data.template_file.setup-fmg-instance.rendered}"
-    license   = file(var.license_file) # Placeholder for the license file for BYOL image, Need to fetch the License File
+    user-data = data.template_file.setup-fmg-instance.rendered
+    # license   = file(var.license_file) # Placeholder for the license file for BYOL image, Need to fetch the License File
   }
 
   # Service Account and Scope

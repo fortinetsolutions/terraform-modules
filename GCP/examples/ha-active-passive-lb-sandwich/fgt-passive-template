@@ -1,5 +1,6 @@
 config sys glo
     set hostname "ha-a-p-fgt2"
+    set admintimeout 60
 end
 config system admin
     edit "admin"
