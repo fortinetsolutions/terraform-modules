@@ -321,6 +321,7 @@ resource "google_compute_address" "internal_address" {
   name         = "${var.name}-ilb-address-${module.random.random_string}"
   subnetwork   = module.subnet.subnets[1]
   address_type = "INTERNAL"
+  address      = cidrhost(var.subnet_cidrs[1], 5)
   region       = var.region
 }
 
@@ -461,17 +462,3 @@ resource "google_compute_route" "ilb_route" {
   priority     = var.priority
 }
 
-### Web Server ###
-module "instances_nginx" {
-  source = "../../modules/nginx_instance"
-
-  # Pass Variables
-  name    = var.name
-  zone    = var.zone[0]
-  machine = var.machine
-  image   = var.ubuntu_image
-  # Values fetched from the Modules
-  random_string      = module.random.random_string
-  public_vpc_network = module.vpc.vpc_networks[1]
-  public_subnet      = module.subnet.subnets[1]
-}
