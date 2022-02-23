@@ -1,0 +1,20 @@
+
+variable "region" {}
+variable "availability_zone1" {}
+variable "availability_zone2" {}
+variable "vpc_id" {}
+variable "vpc_cidr" {}
+variable "gwlb_ip1" {}
+variable "gwlb_ip2" {}
+variable "public_subnet1_id" {}
+variable "public_subnet2_id" {}
+variable "instance_type" {}
+variable "keypair" {}
+variable "cidr_for_access" {}
+variable "license_type" {}
+variable "fgt1_byol_license" {}
+variable "fgt2_byol_license" {}
+variable "tag_name_prefix" {}
+variable "fgt1_public_ip" {}
+variable "fgt2_public_ip" {}
+variable "fortigate_admin_password" {}
