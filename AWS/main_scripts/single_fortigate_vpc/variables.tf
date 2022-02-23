@@ -1,5 +1,3 @@
-variable "access_key" {}
-variable "secret_key" {}
 
 variable "aws_region" {
   description = "The AWS region to use"
@@ -20,28 +18,41 @@ variable "vpc_cidr" {
     description = "CIDR for the whole VPC"
 }
 
-variable "public_subnet_cidr1" {
-    description = "CIDR for the Public 1 Subnet"
+variable "public_subnet_cidr" {
+    description = "CIDR for the Public Subnet"
 }
 
-variable "public1_ip_address" {
-  description = "IP Address for Public 1 Subnet Fortigate ENI"
+variable "use_fortigate_byol" {
+  description = "Boolean Use the Fortigate BYOL AMI"
+  type = bool
 }
 
-variable "public1_description" {
-    description = "Description Public 1 Subnet TAG"
+variable "fortios_version" {
+  description = "FortiOS Version for the AMI Search String"
 }
 
-variable "private_subnet_cidr1" {
-    description = "CIDR for the Private 1 Subnet"
+variable "fortigate_instance_name_1" {
+  description = "Instance Name for fortigate"
 }
 
-variable "private1_ip_address" {
-  description = "IP Address for Private 1 Subnet Fortigate ENI"
+variable "public_ip_address" {
+  description = "IP Address for Public Subnet Fortigate ENI"
 }
 
-variable "private1_description" {
-    description = "Description Private 1 Subnet TAG"
+variable "public_description" {
+    description = "Description Public Subnet TAG"
+}
+
+variable "private_subnet_cidr" {
+    description = "CIDR for the Private Subnet"
+}
+
+variable "private_ip_address" {
+  description = "IP Address for Private Subnet Fortigate ENI"
+}
+
+variable "private_description" {
+    description = "Description Private Subnet TAG"
 }
 
 variable "keypair" {
@@ -65,9 +76,6 @@ variable "s3_license_bucket" {
 variable "acl" {
   description = "The S3 acl"
 }
-variable "fortigate_ami_string" {
-  description = "Fortigate AMI Search String for booting Fortigate Instance"
-}
 variable "fgt_byol_license" {
   description = "Fortigate license file"
 }
@@ -75,4 +83,14 @@ variable "fgt_password_parameter_name" {
   description = "SSM Parameter Name for Fortigate Password"
 }
 
+variable "fortigate_sg_name" {
+  description = "Fortigate Security Group Name"
+}
 
+variable "fortigate_hostname" {
+  description = "Fortigate Hostname"
+}
+
+variable "fgt_admin_password" {
+  description = "Fortigate Admin Password"
+}
