@@ -32,3 +32,11 @@ output "passive_fgt_username" {
 output "passive_fgt_password" {
   value = var.password
 }
+
+output "active_fgt" {
+  value = google_compute_instance.active_instance
+}
+
+output "passive_fgt" {
+  value = google_compute_instance.passive_instance
+}
