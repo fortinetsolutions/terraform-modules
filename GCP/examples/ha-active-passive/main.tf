@@ -23,11 +23,11 @@ module "subnet" {
   source = "../../modules/subnet"
 
   # Pass Variables
-  name         = var.name
-  region       = var.region
-  subnets      = var.subnets
-  subnet_cidrs = var.subnet_cidrs
-  private_ip_google_access = var.subnet_private_ip_google_access  
+  name                     = var.name
+  region                   = var.region
+  subnets                  = var.subnets
+  subnet_cidrs             = var.subnet_cidrs
+  private_ip_google_access = var.subnet_private_ip_google_access
   # Values fetched from the Modules
   random_string = module.random.random_string
   vpcs          = module.vpc.vpc_networks
@@ -58,7 +58,8 @@ module "static-ip" {
   source = "../../modules/static-ip"
 
   # Pass Variables
-  name = var.name
+  name   = "${var.name}-cluster-ip-${module.random.random_string}"
+  region = var.region
   # Values fetched from the Modules
   random_string = module.random.random_string
 }
