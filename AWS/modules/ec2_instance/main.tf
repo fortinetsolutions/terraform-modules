@@ -21,22 +21,6 @@ resource "aws_eip" "HA_EIP" {
   }
 }
 
-resource "aws_network_interface" "private_eni" {
-  count                       = var.enable_private_interface ? 1 : 0
-  depends_on                  = [aws_instance.ec2]
-  subnet_id                   = var.private_subnet_id
-  private_ips                 = [ var.private_ip_address ]
-  security_groups             = [ var.security_group_private_id ]
-  source_dest_check           = false
-  attachment {
-    instance                  = aws_instance.ec2.id
-    device_index              = 1
-  }
-  tags = {
-    Name = "${var.customer_prefix}-${var.environment}-${var.instance_name}-ENI_Private"
-  }
-}
-
 resource "aws_network_interface" "sync_eni" {
   count                       = var.enable_sync_interface ? 1 : 0
   depends_on                  = [aws_instance.ec2]
@@ -67,6 +51,22 @@ resource "aws_network_interface" "ha_eni" {
   }
   tags = {
     Name = "${var.customer_prefix}-${var.environment}-${var.instance_name}-ENI_hamgmt"
+  }
+}
+
+resource "aws_network_interface" "private_eni" {
+  count                       = var.enable_private_interface ? 1 : 0
+  depends_on                  = [aws_instance.ec2]
+  subnet_id                   = var.private_subnet_id
+  private_ips                 = [ var.private_ip_address ]
+  security_groups             = [ var.security_group_private_id ]
+  source_dest_check           = false
+  attachment {
+    instance                  = aws_instance.ec2.id
+    device_index              = 1
+  }
+  tags = {
+    Name = "${var.customer_prefix}-${var.environment}-${var.instance_name}-ENI_Private"
   }
 }
 
