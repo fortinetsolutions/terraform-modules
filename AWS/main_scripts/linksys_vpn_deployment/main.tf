@@ -272,8 +272,8 @@ data "template_file" "swan_userdata" {
 module "swan_allow_private_subnets" {
   source = "../../modules/security_group"
   aws_region              = var.aws_region
-  vpc_id                  = module.base-fortigate-vpc.vpc_id
-  name                    = "${var.fortigate_sg_name} Allow Private Subnets"
+  vpc_id                  = module.base-swan-vpc.vpc_id
+  name                    = "${var.swan_sg_name} Allow Private Subnets"
   ingress_to_port         = 0
   ingress_from_port       = 0
   ingress_protocol        = "-1"
@@ -292,7 +292,7 @@ module "swan_allow_private_subnets" {
 module "swan_allow_public_subnets" {
   source = "../../modules/security_group"
   aws_region              = var.aws_region
-  vpc_id                  = module.base-fortigate-vpc.vpc_id
+  vpc_id                  = module.base-swan-vpc.vpc_id
   name                    = "${var.swan_sg_name} Allow Public Subnets"
   ingress_to_port         = 0
   ingress_from_port       = 0
@@ -338,6 +338,21 @@ module "private_route_table_association" {
   environment                = var.environment
   subnet_ids                 = module.base-swan-vpc.private_subnet_id
   route_table_id             = module.base-swan-vpc.private_route_table_id
+}
+
+resource "aws_network_interface" "private_eni" {
+  depends_on                  = [module.swan_instance]
+  subnet_id                   = module.base-swan-vpc.private_subnet_id
+  private_ips                 = [ var.swan_private_ip_address ]
+  security_groups             = [ module.swan_allow_private_subnets.id ]
+  source_dest_check           = false
+  attachment {
+    instance                  = module.swan_instance.instance_id
+    device_index              = 1
+  }
+  tags = {
+    Name = "${var.swan_customer_prefix}-${var.environment}-${var.swan_instance_name}-ENI_Private"
+  }
 }
 
 #
