@@ -340,7 +340,7 @@ module "private_route_table_association" {
   route_table_id             = module.base-swan-vpc.private_route_table_id
 }
 
-resource "aws_network_interface" "private_eni" {
+resource "aws_network_interface" swan_private_eni {
   depends_on                  = [module.swan_instance]
   subnet_id                   = module.base-swan-vpc.private_subnet_id
   private_ips                 = [ var.swan_private_ip_address ]
