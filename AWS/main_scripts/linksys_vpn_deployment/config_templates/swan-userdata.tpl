@@ -58,3 +58,5 @@ sudo iptables -t nat -A POSTROUTING -s ${swan_protected_cidr} -d ${fortigate_pro
 #
 systemctl enable strongswan
 systemctl restart ipsec
+systemctl restart strongswan
+
