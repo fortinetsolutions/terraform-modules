@@ -127,3 +127,4 @@ variable "swan_instance_name" {
 # VPN configuration
 #
 variable swan_vpn_psk {}
+variable fortigate_vpn_tunnel_name {}

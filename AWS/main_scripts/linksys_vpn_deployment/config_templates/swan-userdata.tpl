@@ -31,26 +31,21 @@ cat > /etc/ipsec.conf <<VPN-CONFIG
 # basic configuration
 config setup
         charondebug="all"
-        uniqueids=yes
-        strictcrlpolicy=no
 
-# connection to amsterdam datacenter
-conn fortigate-to-swan
-	authby=secret
-	left=%defaultroute
+conn %default
+	rekeymargin=1m
+	keyingtries=3
+	type=tunnel
+	keyexchange=ikev2
+
+conn swan-to-fortigate
+	auto=add
 	leftid=${swan_vpn_public_ip}
 	leftsubnet=${swan_protected_cidr}
+	leftauth=psk
 	right=${fgt_vpn_public_ip}
 	rightsubnet=${fortigate_protected_cidr}
-	ike=aes256-sha2_256-modp1024!
-	esp=aes256-sha2_256!
-	keyingtries=0
-	ikelifetime=1h
-	lifetime=8h
-	dpddelay=30
-	dpdtimeout=120
-	dpdaction=restart
-	auto=start
+	rightauth=psk
 VPN-CONFIG
 
 #
@@ -62,3 +57,4 @@ sudo iptables -t nat -A POSTROUTING -s ${swan_protected_cidr} -d ${fortigate_pro
 # set the strongswan service to start on boot
 #
 systemctl enable strongswan
+systemctl restart ipsec

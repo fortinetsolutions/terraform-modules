@@ -34,18 +34,22 @@ data "template_file" "fgt_userdata_byol" {
   depends_on              = [ aws_eip.fgt_eip, aws_eip.swan_eip ]
 
   vars = {
-    fgt_id                = var.fortigate_hostname
-    Port1IP               = var.fortigate_public_ip_address
-    Port2IP               = var.fortigate_private_ip_address
-    PrivateSubnet         = var.fortigate_private_subnet_cidr
-    fgt_byol_license      = file("${path.module}/${var.fgt_byol_license}")
-    PublicSubnetRouterIP  = cidrhost(var.fortigate_public_subnet_cidr, 1)
-    public_subnet_mask    = cidrnetmask(var.fortigate_public_subnet_cidr)
-    private_subnet_mask   = cidrnetmask(var.fortigate_private_subnet_cidr)
-    PrivateSubnetRouterIP = cidrhost(var.fortigate_private_subnet_cidr, 1)
-    fgt_admin_password    = var.fgt_admin_password
-    swan_vpn_public_ip    = aws_eip.swan_eip.public_ip
-    fgt_vpn_public_ip     = aws_eip.fgt_eip.public_ip
+    fgt_id                     = var.fortigate_hostname
+    Port1IP                    = var.fortigate_public_ip_address
+    Port2IP                    = var.fortigate_private_ip_address
+    PrivateSubnet              = var.fortigate_private_subnet_cidr
+    PublicSubnetRouterIP       = cidrhost(var.fortigate_public_subnet_cidr, 1)
+    public_subnet_mask         = cidrnetmask(var.fortigate_public_subnet_cidr)
+    private_subnet_mask        = cidrnetmask(var.fortigate_private_subnet_cidr)
+    PrivateSubnetRouterIP      = cidrhost(var.fortigate_private_subnet_cidr, 1)
+    fgt_admin_password         = var.fgt_admin_password
+    swan_protected_cidr        = var.swan_private_subnet_cidr
+    fortigate_protected_cidr   = var.fortigate_private_subnet_cidr
+    swan_vpn_psk               = var.swan_vpn_psk
+    swan_vpn_public_ip         = aws_eip.swan_eip.public_ip
+    fgt_vpn_public_ip          = aws_eip.fgt_eip.public_ip
+    fortigate_vpn_tunnel_name  = var.fortigate_vpn_tunnel_name
+    fgt_byol_license           = var.fgt_byol_license
   }
 }
 
@@ -53,17 +57,21 @@ data "template_file" "fgt_userdata_paygo" {
   template = file("./config_templates/fgt-userdata-paygo.tpl")
 
   vars = {
-    fgt_id                = var.fortigate_hostname
-    Port1IP               = var.fortigate_public_ip_address
-    Port2IP               = var.fortigate_private_ip_address
-    PrivateSubnet         = var.fortigate_private_subnet_cidr
-    PublicSubnetRouterIP  = cidrhost(var.fortigate_public_subnet_cidr, 1)
-    public_subnet_mask    = cidrnetmask(var.fortigate_public_subnet_cidr)
-    private_subnet_mask   = cidrnetmask(var.fortigate_private_subnet_cidr)
-    PrivateSubnetRouterIP = cidrhost(var.fortigate_private_subnet_cidr, 1)
-    fgt_admin_password    = var.fgt_admin_password
-    swan_vpn_public_ip    = aws_eip.swan_eip.public_ip
-    fgt_vpn_public_ip     = aws_eip.fgt_eip.public_ip
+    fgt_id                     = var.fortigate_hostname
+    Port1IP                    = var.fortigate_public_ip_address
+    Port2IP                    = var.fortigate_private_ip_address
+    PrivateSubnet              = var.fortigate_private_subnet_cidr
+    PublicSubnetRouterIP       = cidrhost(var.fortigate_public_subnet_cidr, 1)
+    public_subnet_mask         = cidrnetmask(var.fortigate_public_subnet_cidr)
+    private_subnet_mask        = cidrnetmask(var.fortigate_private_subnet_cidr)
+    PrivateSubnetRouterIP      = cidrhost(var.fortigate_private_subnet_cidr, 1)
+    fgt_admin_password         = var.fgt_admin_password
+    swan_protected_cidr        = var.swan_private_subnet_cidr
+    fortigate_protected_cidr   = var.fortigate_private_subnet_cidr
+    swan_vpn_psk               = var.swan_vpn_psk
+    swan_vpn_public_ip         = aws_eip.swan_eip.public_ip
+    fgt_vpn_public_ip          = aws_eip.fgt_eip.public_ip
+    fortigate_vpn_tunnel_name  = var.fortigate_vpn_tunnel_name
   }
 }
 

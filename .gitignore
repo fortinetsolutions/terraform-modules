@@ -16,5 +16,6 @@
 debug.log
 .repo_conf/*.retry
 **/.idea
+**/.terraform.lock.hcl
 **/__pycache__
 ncc-service-account.json

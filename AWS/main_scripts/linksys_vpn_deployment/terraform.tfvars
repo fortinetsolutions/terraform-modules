@@ -80,4 +80,5 @@ swan_instance_name              = "linksys-vpn-swan"
 #
 # VPN configuration
 #
+fortigate_vpn_tunnel_name       = "ipsec-to-swan"
 swan_vpn_psk                    = "VDtwPkLwJwq8/k+G12CkOJdB/GoGtbEDmR4jQXdg7t+gCMh/wGvIkgfNutYHVG5hiioPf2vY7+yi9YeavMRMuA=="
