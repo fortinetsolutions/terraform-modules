@@ -1,0 +1,9 @@
+
+config system global
+    set usg enable
+end
+config system admin user
+    edit "admin"
+       set password ${faz_password}
+    next
+end
