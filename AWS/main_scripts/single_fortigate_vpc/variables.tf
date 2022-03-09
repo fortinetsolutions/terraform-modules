@@ -30,11 +30,6 @@ variable "use_fortigate_byol" {
 variable "fortios_version" {
   description = "FortiOS Version for the AMI Search String"
 }
-
-variable "fortigate_instance_name_1" {
-  description = "Instance Name for fortigate"
-}
-
 variable "public_ip_address" {
   description = "IP Address for Public Subnet Fortigate ENI"
 }
@@ -67,9 +62,6 @@ variable "fortigate_instance_type" {
 variable "fortigate_instance_name" {
   description = "Instance Name for fortigate"
 }
-variable "public_ip" {
-  description = "Boolean to determine if endpoints should associate a public ip"
-}
 variable "s3_license_bucket" {
   description = "S3 Bucket that contains BYOL License Files"
 }
@@ -79,10 +71,6 @@ variable "acl" {
 variable "fgt_byol_license" {
   description = "Fortigate license file"
 }
-variable "fgt_password_parameter_name" {
-  description = "SSM Parameter Name for Fortigate Password"
-}
-
 variable "fortigate_sg_name" {
   description = "Fortigate Security Group Name"
 }

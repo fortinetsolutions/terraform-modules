@@ -11,10 +11,6 @@ output "private_subnet_id" {
   value = module.base-vpc.private_subnet_id
 }
 
-output "fortigate_parameter_store_name" {
-  value = "/${var.customer_prefix}/${var.environment}/${var.fgt_password_parameter_name}"
-}
-
 output "network_public_eni_id" {
   value = module.fortigate.network_public_interface_id
 }

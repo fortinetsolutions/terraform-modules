@@ -172,7 +172,7 @@ module "fortigate" {
   aws_ami                     = var.use_fortigate_byol ? data.aws_ami.fortigate_byol.id : data.aws_ami.fortigate_paygo.id
   keypair                     = var.keypair
   instance_type               = var.fortigate_instance_type
-  instance_name               = var.fortigate_instance_name_1
+  instance_name               = var.fortigate_instance_name
   security_group_private_id   = module.allow_private_subnets.id
   security_group_public_id    = module.allow_public_subnets.id
   acl                         = var.acl
