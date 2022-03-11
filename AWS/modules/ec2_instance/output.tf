@@ -12,5 +12,5 @@ output "network_private_interface_id" {
 }
 
 output "public_eip" {
-  value = aws_instance.ec2.public_ip
+  value = aws_eip.EIP.0.public_ip
 }

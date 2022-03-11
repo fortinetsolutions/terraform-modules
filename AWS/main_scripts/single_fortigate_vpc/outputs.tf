@@ -18,6 +18,11 @@ output "network_public_eni_id" {
 output "network_private_eni_id" {
   value = module.fortigate.network_private_interface_id
 }
+
 output "fortigate_instance_id" {
   value = module.fortigate.instance_id
+}
+
+output "public_ip" {
+  value = module.fortigate.public_eip
 }

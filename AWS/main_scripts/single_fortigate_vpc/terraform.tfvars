@@ -1,26 +1,21 @@
 
 aws_region                  = "us-west-2"
+availability_zone           = "a"
+
 customer_prefix             = "mdw"
 environment                 = "dev"
-availability_zone_1         = "us-west-2a"
 
-use_fortigate_byol          = true
+use_fortigate_byol          = false
 
-vpc_cidr                    = "10.0.0.0/16"
-public_subnet_cidr          = "10.0.0.0/24"
-public_description          = "public"
-public_ip_address           = "10.0.0.10"
-private_subnet_cidr         = "10.0.1.0/24"
-private_description         = "private"
-private_ip_address          = "10.0.1.10"
+cidr_block                  = "10.0.0.0/16"
+subnet_count                = 2
+subnet_bits                 = 8
+fortigate_host_ip           = 10
+
+
 keypair                     = "mdw-key-oregon"
-cidr_for_access             = "0.0.0.0/0"
-fortigate_instance_type     = "c5n.2xlarge"
-fortigate_instance_name     = "Example Fortigate"
-s3_license_bucket           = "mdw-license-bucket"
-acl                         = "private"
+fortigate_instance_type     = "t3.small"
+fortigate_instance_name     = "fortigate-single"
 fgt_byol_license            = "fgt1-license.lic"
-fortigate_hostname          = "fgt-test"
-fortigate_sg_name           = "fgt-sg"
 fortios_version             = "7.0.5"
 fgt_admin_password          = "Texas4me!"

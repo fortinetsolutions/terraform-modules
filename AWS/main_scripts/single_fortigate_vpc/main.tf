@@ -4,6 +4,34 @@ provider "aws" {
 }
 
 #
+# Local variables for splitting up the subnets and assigning host IP's from within the cidr block
+#
+locals {
+  availability_zone = "${var.aws_region}${var.availability_zone}"
+}
+locals {
+  fortigate_sg_name = "${var.customer_prefix}-${var.environment}-fgt-sg"
+}
+locals {
+  public_subnet_index = 1
+}
+locals {
+  private_subnet_index = 2
+}
+locals {
+  public_subnet_cidr = cidrsubnet(var.cidr_block, 8, local.public_subnet_index)
+}
+locals {
+  private_subnet_cidr = cidrsubnet(var.cidr_block, 8, local.private_subnet_index)
+}
+locals {
+  fortigate_public_ip = cidrhost(local.public_subnet_cidr, var.fortigate_host_ip)
+}
+locals {
+  fortigate_private_ip = cidrhost(local.private_subnet_cidr, var.fortigate_host_ip)
+}
+
+#
 # AMI to be used by the BYOL instance of Fortigate]
 # Change the foritos_version and the use_fortigate_byol variables in terraform.tfvars to change it
 #
@@ -48,15 +76,15 @@ data "template_file" "fgt_userdata_byol" {
   template = file("./config_templates/fgt-userdata-byol.tpl")
 
   vars = {
-    fgt_id                = var.fortigate_hostname
-    Port1IP               = var.public_ip_address
-    Port2IP               = var.private_ip_address
-    PrivateSubnet         = var.private_subnet_cidr
-    security_cidr         = var.vpc_cidr
-    PublicSubnetRouterIP  = cidrhost(var.public_subnet_cidr, 1)
-    public_subnet_mask    = cidrnetmask(var.public_subnet_cidr)
-    private_subnet_mask   = cidrnetmask(var.private_subnet_cidr)
-    PrivateSubnetRouterIP = cidrhost(var.private_subnet_cidr, 1)
+    fgt_id                = var.fortigate_instance_name
+    Port1IP               = local.fortigate_public_ip
+    Port2IP               = local.fortigate_private_ip
+    PrivateSubnet         = local.private_subnet_cidr
+    security_cidr         = var.cidr_block
+    PublicSubnetRouterIP  = cidrhost(local.public_subnet_cidr, 1)
+    public_subnet_mask    = cidrnetmask(local.public_subnet_cidr)
+    private_subnet_mask   = cidrnetmask(local.private_subnet_cidr)
+    PrivateSubnetRouterIP = cidrhost(local.private_subnet_cidr, 1)
     fgt_admin_password    = var.fgt_admin_password
     fgt_byol_license      = var.fgt_byol_license
   }
@@ -66,13 +94,13 @@ data "template_file" "fgt_userdata_paygo" {
   template = file("./config_templates/fgt-userdata-paygo.tpl")
 
   vars = {
-    fgt_id                = var.fortigate_hostname
-    Port1IP               = var.public_ip_address
-    Port2IP               = var.private_ip_address
-    PrivateSubnet         = var.private_subnet_cidr
-    security_cidr         = var.vpc_cidr
-    public_subnet_mask    = cidrnetmask(var.public_subnet_cidr)
-    private_subnet_mask   = cidrnetmask(var.private_subnet_cidr)
+    fgt_id                = var.fortigate_instance_name
+    Port1IP               = local.fortigate_public_ip
+    Port2IP               = local.fortigate_private_ip
+    PrivateSubnet         = local.private_subnet_cidr
+    security_cidr         = var.cidr_block
+    public_subnet_mask    = cidrnetmask(local.public_subnet_cidr)
+    private_subnet_mask   = cidrnetmask(local.private_subnet_cidr)
     fgt_admin_password    = var.fgt_admin_password
   }
 }
@@ -96,7 +124,7 @@ module "allow_private_subnets" {
   source = "../../modules/security_group"
   aws_region              = var.aws_region
   vpc_id                  = module.base-vpc.vpc_id
-  name                    = "${var.fortigate_sg_name} Allow Private Subnets"
+  name                    = "${local.fortigate_sg_name} Allow Private Subnets"
   ingress_to_port         = 0
   ingress_from_port       = 0
   ingress_protocol        = "-1"
@@ -116,7 +144,7 @@ module "allow_public_subnets" {
   source = "../../modules/security_group"
   aws_region              = var.aws_region
   vpc_id                  = module.base-vpc.vpc_id
-  name                    = "${var.fortigate_sg_name} Allow Public Subnets"
+  name                    = "${local.fortigate_sg_name} Allow Public Subnets"
   ingress_to_port         = 0
   ingress_from_port       = 0
   ingress_protocol        = "-1"
@@ -135,13 +163,13 @@ module "base-vpc" {
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
-  availability_zone          = var.availability_zone_1
-  public_subnet_cidr         = var.public_subnet_cidr
-  public_description         = var.public_description
-  private_subnet_cidr        = var.private_subnet_cidr
-  private_description        = var.private_description
+  availability_zone          = local.availability_zone
+  public_subnet_cidr         = local.public_subnet_cidr
+  public_description         = "public"
+  private_subnet_cidr        = local.private_subnet_cidr
+  private_description        = "private"
   vpc_name                   = "base"
-  vpc_cidr                   = var.vpc_cidr
+  vpc_cidr                   = var.cidr_block
 
 }
 
@@ -157,7 +185,7 @@ module "fortigate" {
   source                      = "../../modules/ec2_instance"
 
   aws_region                  = var.aws_region
-  availability_zone           = var.availability_zone_1
+  availability_zone           = local.availability_zone
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
   enable_private_interface    = true
@@ -166,9 +194,9 @@ module "fortigate" {
   enable_public_ips           = true
   enable_mgmt_public_ips      = false
   public_subnet_id            = module.base-vpc.public_subnet_id
-  public_ip_address           = var.public_ip_address
+  public_ip_address           = local.fortigate_public_ip
   private_subnet_id           = module.base-vpc.private_subnet_id
-  private_ip_address          = var.private_ip_address
+  private_ip_address          = local.fortigate_private_ip
   aws_ami                     = var.use_fortigate_byol ? data.aws_ami.fortigate_byol.id : data.aws_ami.fortigate_paygo.id
   keypair                     = var.keypair
   instance_type               = var.fortigate_instance_type

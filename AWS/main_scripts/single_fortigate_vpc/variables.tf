@@ -10,16 +10,8 @@ variable "customer_prefix" {
 variable "environment" {
   description = "The Tag Environment to differentiate prod/test/dev"
 }
-variable "availability_zone_1" {
-  description = "Availability Zone 1 for VPC"
-}
-
-variable "vpc_cidr" {
-    description = "CIDR for the whole VPC"
-}
-
-variable "public_subnet_cidr" {
-    description = "CIDR for the Public Subnet"
+variable "availability_zone" {
+  description = "Availability Zone for VPC"
 }
 
 variable "use_fortigate_byol" {
@@ -27,27 +19,18 @@ variable "use_fortigate_byol" {
   type = bool
 }
 
-variable "fortios_version" {
-  description = "FortiOS Version for the AMI Search String"
-}
-variable "public_ip_address" {
-  description = "IP Address for Public Subnet Fortigate ENI"
+variable "cidr_block" {
+    description = "CIDR for the whole VPC"
 }
 
-variable "public_description" {
-    description = "Description Public Subnet TAG"
+variable "subnet_bits" {
+    description = "subnet bits used by each subnet within vpc_cidr range"
 }
-
-variable "private_subnet_cidr" {
-    description = "CIDR for the Private Subnet"
+variable "subnet_count" {
+    description = "subnets within the VPC e.g. public/private = 2"
 }
-
-variable "private_ip_address" {
-  description = "IP Address for Private Subnet Fortigate ENI"
-}
-
-variable "private_description" {
-    description = "Description Private Subnet TAG"
+variable "fortigate_host_ip" {
+    description = "Host IP used by each Fortigate in the subnet"
 }
 
 variable "keypair" {
@@ -55,6 +38,7 @@ variable "keypair" {
 }
 variable "cidr_for_access" {
   description = "CIDR to use for security group access"
+  default = "0.0.0.0/0"
 }
 variable "fortigate_instance_type" {
   description = "Instance type for fortigates"
@@ -62,23 +46,16 @@ variable "fortigate_instance_type" {
 variable "fortigate_instance_name" {
   description = "Instance Name for fortigate"
 }
-variable "s3_license_bucket" {
-  description = "S3 Bucket that contains BYOL License Files"
-}
 variable "acl" {
   description = "The S3 acl"
+  default     = "private"
 }
 variable "fgt_byol_license" {
   description = "Fortigate license file"
 }
-variable "fortigate_sg_name" {
-  description = "Fortigate Security Group Name"
+variable "fortios_version" {
+  description = "FortiOS Version for the AMI Search String"
 }
-
-variable "fortigate_hostname" {
-  description = "Fortigate Hostname"
-}
-
 variable "fgt_admin_password" {
   description = "Fortigate Admin Password"
 }
