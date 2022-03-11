@@ -13,10 +13,10 @@ locals {
   fortigate_sg_name = "${var.customer_prefix}-${var.environment}-fgt-sg"
 }
 locals {
-  public_subnet_index = 1
+  public_subnet_index = 0
 }
 locals {
-  private_subnet_index = 2
+  private_subnet_index = 1
 }
 locals {
   public_subnet_cidr = cidrsubnet(var.cidr_block, 8, local.public_subnet_index)
