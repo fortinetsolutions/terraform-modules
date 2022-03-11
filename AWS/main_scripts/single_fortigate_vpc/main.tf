@@ -214,7 +214,7 @@ module "fortigate" {
 resource "aws_route" "private" {
   route_table_id         = module.base-vpc.private_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  network_interface_id   = module.fortigate.network_private_interface_id
+  network_interface_id   = module.fortigate.network_private_interface_id[0]
 }
 
 
