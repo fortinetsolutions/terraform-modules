@@ -50,6 +50,11 @@ data "template_file" "fgt_userdata_byol" {
     fgt_vpn_public_ip          = aws_eip.fgt_eip.public_ip
     fortigate_vpn_tunnel_name  = var.fortigate_vpn_tunnel_name
     fgt_byol_license           = var.fgt_byol_license
+    vpnuser1                   = var.vpnuser1
+    vpnuser2                   = var.vpnuser2
+    vpngroup                   = var.vpngroup
+    vpnpasswd1                 = var.vpnpasswd1
+    vpnpasswd2                 = var.vpnpasswd2
   }
 }
 
@@ -72,6 +77,11 @@ data "template_file" "fgt_userdata_paygo" {
     swan_vpn_public_ip         = aws_eip.swan_eip.public_ip
     fgt_vpn_public_ip          = aws_eip.fgt_eip.public_ip
     fortigate_vpn_tunnel_name  = var.fortigate_vpn_tunnel_name
+    vpnuser1                   = var.vpnuser1
+    vpnuser2                   = var.vpnuser2
+    vpngroup                   = var.vpngroup
+    vpnpasswd1                 = var.vpnpasswd1
+    vpnpasswd2                 = var.vpnpasswd2
   }
 }
 
@@ -217,6 +227,39 @@ module "fortigate" {
   userdata_rendered           = var.use_fortigate_byol ? data.template_file.fgt_userdata_byol.rendered : data.template_file.fgt_userdata_paygo.rendered
 }
 
+
+#
+# Create Ubuntu instance on private subnet of the Fortigate VPC. Using this generate traffic through the tunnel.
+#
+module "fortigate_test" {
+  source                      = "../../modules/ec2_instance"
+  depends_on                  = [ aws_eip.fgt_eip, aws_eip.swan_eip ]
+
+  aws_region                  = var.aws_region
+  availability_zone           = var.fortigate_availability_zone
+  customer_prefix             = var.fortigate_customer_prefix
+  environment                 = var.environment
+  enable_private_interface    = false
+  enable_public_ips           = false
+  enable_sync_interface       = false
+  enable_hamgmt_interface     = false
+  enable_mgmt_public_ips      = false
+  public_subnet_id            = module.base-fortigate-vpc.private_subnet_id
+  public_ip_address           = var.fortigate_test_public_ip_address
+  sync_subnet_id              = ""
+  sync_ip_address             = ""
+  ha_subnet_id                = ""
+  ha_ip_address               = ""
+  aws_ami                     = data.aws_ami.ubuntu.id
+  keypair                     = var.keypair
+  instance_type               = var.swan_instance_type
+  instance_name               = var.fortigate_instance_name
+  security_group_public_id    = module.fortigate_allow_public_subnets.id
+  acl                         = var.acl
+  iam_instance_profile_id     = module.iam_profile.id
+  userdata_rendered           = data.template_file.swan_test_userdata.rendered
+}
+
 #
 # SWAN Side
 #
@@ -274,6 +317,14 @@ data "template_file" "swan_userdata" {
     swan_vpn_psk               = var.swan_vpn_psk
     swan_vpn_public_ip         = aws_eip.swan_eip.public_ip
     fgt_vpn_public_ip          = aws_eip.fgt_eip.public_ip
+  }
+}
+
+data "template_file" "swan_test_userdata" {
+  template = file("./config_templates/swan-test-userdata.tpl")
+
+  vars = {
+
   }
 }
 
@@ -364,7 +415,7 @@ resource "aws_network_interface" swan_private_eni {
 }
 
 #
-# East Linux Instance for Generating East->West Traffic
+# SWAN instance to terminate the vpn tunnel
 #
 module "swan_instance" {
   source                      = "../../modules/ec2_instance"
@@ -391,4 +442,31 @@ module "swan_instance" {
   acl                         = var.acl
   iam_instance_profile_id     = module.linux_iam_profile.id
   userdata_rendered           = data.template_file.swan_userdata.rendered
+}
+
+#
+# Create Ubuntu instance in the private subnet of the SWAN VPC
+#
+module "swan_test_instance" {
+  source                      = "../../modules/ec2_instance"
+
+  aws_region                  = var.aws_region
+  availability_zone           = var.swan_availability_zone
+  customer_prefix             = var.swan_customer_prefix
+  environment                 = var.environment
+  enable_private_interface    = false
+  enable_public_ips           = false
+  enable_sync_interface       = false
+  enable_hamgmt_interface     = false
+  enable_mgmt_public_ips      = false
+  public_subnet_id            = module.base-swan-vpc.private_subnet_id
+  public_ip_address           = var.swan_test_public_ip_address
+  aws_ami                     = data.aws_ami.ubuntu.id
+  keypair                     = var.keypair
+  instance_type               = var.swan_instance_type
+  instance_name               = var.swan_test_instance_name
+  security_group_public_id    = module.ec2-sg.id
+  acl                         = var.acl
+  iam_instance_profile_id     = module.linux_iam_profile.id
+  userdata_rendered           = data.template_file.swan_test_userdata.rendered
 }

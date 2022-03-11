@@ -126,5 +126,14 @@ variable "swan_instance_name" {
 #
 # VPN configuration
 #
-variable swan_vpn_psk {}
-variable fortigate_vpn_tunnel_name {}
+variable swan_vpn_psk                       {}
+variable fortigate_vpn_tunnel_name          {}
+variable "swan_test_instance_name"          {}
+variable "fortigate_test_instance_name"     {}
+variable "swan_test_public_ip_address"      {}
+variable "fortigate_test_public_ip_address" {}
+variable "vpnuser1"                         {}
+variable "vpnuser2"                         {}
+variable "vpngroup"                         {}
+variable "vpnpasswd1"                       {}
+variable "vpnpasswd2"                       {}

@@ -78,7 +78,19 @@ swan_instance_type              = "t3.medium"
 swan_instance_name              = "linksys-vpn-swan"
 
 #
+# variables for test instance in the SWAN private subnet (just used for test traffic)
+#
+swan_test_instance_name          = "linksys-test-swan-side"
+fortigate_test_instance_name     = "linksys-test-fortigate-side"
+swan_test_public_ip_address      = "10.1.2.21"
+fortigate_test_public_ip_address = "10.0.2.21"
+#
 # VPN configuration
 #
 fortigate_vpn_tunnel_name       = "ipsec-to-swan"
 swan_vpn_psk                    = "VDtwPkLwJwq8/k+G12CkOJdB/GoGtbEDmR4jQXdg7t+gCMh/wGvIkgfNutYHVG5hiioPf2vY7+yi9YeavMRMuA=="
+vpnuser1                        = "lsvpnuser1"
+vpnuser2                        = "lsvpnuser2"
+vpngroup                        = "lsvpngroup"
+vpnpasswd1                      = "Texas4me1!"
+vpnpasswd2                      = "Texas4me2!"

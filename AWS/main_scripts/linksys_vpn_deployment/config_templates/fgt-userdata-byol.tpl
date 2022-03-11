@@ -43,6 +43,21 @@ set snmp-index 7
 set interface "port1"
 next
 end
+config user local
+edit ${vpnuser1}
+set type password
+set passwd ${vpnpasswd1}
+next
+edit ${vpnuser2}
+set type password
+set passwd ${vpnpasswd2}
+next
+end
+config user group
+edit ${vpngroup}
+set member ${vpnuser1} ${vpnuser2}
+next
+end
 config firewall address
 edit "${fortigate_vpn_tunnel_name}_local"
 set member "${fortigate_vpn_tunnel_name}_local_subnet_1"

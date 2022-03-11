@@ -42,6 +42,21 @@ set snmp-index 7
 set interface "port1"
 next
 end
+config user local
+edit ${vpnuser1}
+set type password
+set passwd ${vpnpasswd1}
+next
+edit ${vpnuser2}
+set type password
+set passwd ${vpnpasswd2}
+next
+end
+config user group
+edit ${vpngroup}
+set member ${vpnuser1} ${vpnuser2}
+next
+end
 config firewall address
 edit "${fortigate_vpn_tunnel_name}_local"
 set member "${fortigate_vpn_tunnel_name}_local_subnet_1"
@@ -70,7 +85,6 @@ config vpn ipsec phase1-interface
 edit ${fortigate_vpn_tunnel_name}
 set interface "port1"
 set ike-version 2
-set peertype any
 set net-device disable
 set proposal aes128-sha256 aes256-sha256 aes128-sha1 aes256-sha1
 set comments "VPN: ${fortigate_vpn_tunnel_name}"

@@ -4,7 +4,7 @@
 #
 apt update && apt-upgrade -y
 apt install -y lsb-release net-tools
-apt install -y strongswan
+apt install -y strongswan strongswan-swanctl
 
 #
 # set required sysctl options
