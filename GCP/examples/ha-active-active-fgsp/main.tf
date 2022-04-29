@@ -35,6 +35,7 @@ module "subnet" {
   region       = var.region
   subnets      = var.subnets
   subnet_cidrs = var.subnet_cidrs
+  private_ip_google_access = null
   # Values fetched from the Modules
   random_string = module.random.random_string
   vpcs          = module.vpc.vpc_networks
