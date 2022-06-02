@@ -35,6 +35,7 @@ variable "vpcs" {}
 # subnet module
 variable "subnets" {}
 variable "subnet_cidrs" {}
+variable "subnet_private_ip_google_access" {}
 # Web Server
 variable "webserver_machine" {}
 variable "ubuntu_image" {}

@@ -56,7 +56,7 @@ resource "google_compute_instance" "active_instance" {
   # Metadata which will deploy the license and configure the HA
   metadata = {
     user-data = data.template_file.setup-active-instance.rendered
-    license   = file(var.license_file) # Placeholder for the license file for BYOL image, Need to fetch the License File
+    license   = var.license_file != null ? file(var.license_file) : null
   }
 
   # Service Account scope for the GCP SDN Connector
@@ -123,7 +123,7 @@ resource "google_compute_instance" "passive_instance" {
   # Metadata which will deploy the license and configure the HA
   metadata = {
     user-data = data.template_file.setup-passive-instance.rendered
-    license   = file(var.license_file_2) # Placeholder for the license file for BYOL image, Need to fetch the License File
+    license   = var.license_file_2 != null ? file(var.license_file_2) : null
   }
 
   # Service Account scope for the GCP SDN Connector

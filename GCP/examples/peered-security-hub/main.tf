@@ -23,11 +23,11 @@ module "subnet" {
   source = "../../modules/subnet"
 
   # Pass Variables
-  name         = var.name
-  region       = var.region
-  subnets      = var.subnets
-  subnet_cidrs = var.subnet_cidrs
-  private_ip_google_access = null
+  name                     = var.name
+  region                   = var.region
+  subnets                  = var.subnets
+  subnet_cidrs             = var.subnet_cidrs
+  private_ip_google_access = var.subnet_private_ip_google_access
   # Values fetched from the Modules
   random_string = module.random.random_string
   vpcs          = module.vpc.vpc_networks
