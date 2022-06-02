@@ -1,0 +1,10 @@
+
+config system global
+    set hostname fortiweb
+    set admintimeout 60
+end
+config system admin user
+    edit "admin"
+       set password ${fweb_password}
+    next
+end
