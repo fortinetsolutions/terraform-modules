@@ -1,0 +1,10 @@
+
+config system global
+    set hostname fortiadc
+    set admintimeout 60
+end
+config system admin user
+    edit "admin"
+       set password ${fadc_password}
+    next
+end
