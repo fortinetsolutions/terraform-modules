@@ -170,6 +170,18 @@ variable "fortigate_instance_name_1" {
 variable "fortigate_instance_name_2" {
   description = "Instance Name for fortigate"
 }
+variable "create_transit_gateway" {
+  description = "Boolean Create the transit gateway in this deployment. If TGW isn't created, neither will connected objects"
+  type = bool
+}
+variable "create_management_elastic_ips" {
+  description = "Boolean Create the elastic ips in the management subnet."
+  type = bool
+}
+variable "create_public_elastic_ip" {
+  description = "Boolean Create the failover elastic ip in the public subnet."
+  type = bool
+}
 variable "use_fortigate_byol" {
   description = "Boolean Use the Fortigate BYOL AMI"
   type = bool

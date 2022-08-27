@@ -226,6 +226,7 @@ module "base-vpc" {
 }
 
 module "vpc-transit-gateway" {
+  count                           = var.create_transit_gateway ? 1 : 0
   source                          = "../../modules/tgw"
   aws_region                      = var.aws_region
   customer_prefix                 = var.customer_prefix
@@ -234,141 +235,159 @@ module "vpc-transit-gateway" {
   default_route_table_propagation = "disable"
   description                     = "tgw for east-west inspection"
   dns_support                     = "disable"
-  default_route_attachment_id     = module.vpc-transit-gateway-attachment-security.tgw_attachment_id
+  default_route_attachment_id     = module.vpc-transit-gateway-attachment-security[0].tgw_attachment_id
 }
 
 #
 # Point the private route table default route to the TGW
 #
 resource "aws_route" "tgw1" {
+  count                  = var.create_transit_gateway ? 1 : 0
   route_table_id         = module.base-vpc.private1_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id     = module.vpc-transit-gateway.tgw_id
+  transit_gateway_id     = module.vpc-transit-gateway[0].tgw_id
 }
 
 
 resource "aws_route" "tgw2" {
+  count                  = var.create_transit_gateway ? 1 : 0
   route_table_id         = module.base-vpc.private2_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id     = module.vpc-transit-gateway.tgw_id
+  transit_gateway_id     = module.vpc-transit-gateway[0].tgw_id
 }
 
 #
 # Security VPC Transit Gateway Attachment, Route Table and Routes
 #
 module "vpc-transit-gateway-attachment-security" {
+  count                                           = var.create_transit_gateway ? 1 : 0
   source                                          = "../../modules/tgw-attachment"
   aws_region                                      = var.aws_region
   customer_prefix                                 = var.customer_prefix
   environment                                     = var.environment
   vpc_name                                        = var.vpc_name_security
-  transit_gateway_id                              = module.vpc-transit-gateway.tgw_id
+  transit_gateway_id                              = module.vpc-transit-gateway[0].tgw_id
   subnet_ids                                      = [ module.private1-subnet-tgw.id, module.private2-subnet-tgw.id ]
   transit_gateway_default_route_table_propogation = "false"
   vpc_id                                          = module.base-vpc.vpc_id
 }
 
 resource "aws_ec2_transit_gateway_route_table" "security" {
-  transit_gateway_id = module.vpc-transit-gateway.tgw_id
+  count                  = var.create_transit_gateway ? 1 : 0
+  transit_gateway_id = module.vpc-transit-gateway[0].tgw_id
   tags = {
     Name = "${var.customer_prefix}-${var.environment}-Security VPC TGW Route Table"
   }
 }
 
 resource "aws_ec2_transit_gateway_route_table_association" "security" {
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-security.tgw_attachment_id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.security.id
+  count                          = var.create_transit_gateway ? 1 : 0
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-security[0].tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.security[0].id
 }
 
 resource "aws_ec2_transit_gateway_route" "tgw_route_security_default" {
+  count                          = var.create_transit_gateway ? 1 : 0
   destination_cidr_block         = var.vpc_cidr_west
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.security.id
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-west.tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.security[0].id
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-west[0].tgw_attachment_id
 }
 
 resource "aws_ec2_transit_gateway_route" "tgw_route_security_cidr" {
+  count                          = var.create_transit_gateway ? 1 : 0
   destination_cidr_block         = var.vpc_cidr_east
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.security.id
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-east.tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.security[0].id
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-east[0].tgw_attachment_id
 }
 
 #
 # East VPC Transit Gateway Attachment, Route Table and Routes
 #
 module "vpc-transit-gateway-attachment-east" {
+  count                                           = var.create_transit_gateway ? 1 : 0
   source                                          = "../../modules/tgw-attachment"
   aws_region                                      = var.aws_region
   customer_prefix                                 = var.customer_prefix
   environment                                     = var.environment
   vpc_name                                        = var.vpc_name_east
-  transit_gateway_id                              = module.vpc-transit-gateway.tgw_id
-  subnet_ids                                      = [ module.subnet-east.id ]
+  transit_gateway_id                              = module.vpc-transit-gateway[0].tgw_id
+  subnet_ids                                      = [ module.subnet-east[0].id ]
   transit_gateway_default_route_table_propogation = "false"
-  vpc_id                                          = module.vpc-east.vpc_id
+  vpc_id                                          = module.vpc-east[0].vpc_id
 }
 
 resource "aws_ec2_transit_gateway_route_table" "east" {
-  transit_gateway_id = module.vpc-transit-gateway.tgw_id
+  count                          = var.create_transit_gateway ? 1 : 0
+  transit_gateway_id = module.vpc-transit-gateway[0].tgw_id
     tags = {
       Name = "${var.customer_prefix}-${var.environment}-East VPC TGW Route Table"
   }
 }
 resource "aws_ec2_transit_gateway_route_table_association" "east" {
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-east.tgw_attachment_id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.east.id
+  count                          = var.create_transit_gateway ? 1 : 0
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-east[0].tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.east[0].id
 }
 resource "aws_ec2_transit_gateway_route" "tgw_route_east_default" {
+  count                          = var.create_transit_gateway ? 1 : 0
   destination_cidr_block         = "0.0.0.0/0"
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.east.id
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-security.tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.east[0].id
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-security[0].tgw_attachment_id
 }
 resource "aws_ec2_transit_gateway_route" "tgw_route_east_cidr" {
+  count                          = var.create_transit_gateway ? 1 : 0
   destination_cidr_block         = var.vpc_cidr_east
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.east.id
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-east.tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.east[0].id
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-east[0].tgw_attachment_id
 }
 
 #
 # West VPC Transit Gateway Attachment, Route Table and Routes
 #
 module "vpc-transit-gateway-attachment-west" {
+  count                           = var.create_transit_gateway ? 1 : 0
   source                          = "../../modules/tgw-attachment"
   aws_region                      = var.aws_region
   customer_prefix                 = var.customer_prefix
   environment                     = var.environment
   vpc_name                        = var.vpc_name_west
-  transit_gateway_id              = module.vpc-transit-gateway.tgw_id
-  subnet_ids                      = [ module.subnet-west.id ]
+  transit_gateway_id              = module.vpc-transit-gateway[0].tgw_id
+  subnet_ids                      = [ module.subnet-west[0].id ]
   transit_gateway_default_route_table_propogation = "false"
-  vpc_id                          = module.vpc-west.vpc_id
+  vpc_id                          = module.vpc-west[0].vpc_id
 }
 
 resource "aws_ec2_transit_gateway_route_table" "west" {
-  transit_gateway_id = module.vpc-transit-gateway.tgw_id
+  count                          = var.create_transit_gateway ? 1 : 0
+  transit_gateway_id = module.vpc-transit-gateway[0].tgw_id
   tags = {
     Name = "${var.customer_prefix}-${var.environment}-West VPC TGW Route Table"
   }
 }
 
 resource "aws_ec2_transit_gateway_route_table_association" "west" {
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-west.tgw_attachment_id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.west.id
+  count                          = var.create_transit_gateway ? 1 : 0
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-west[0].tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.west[0].id
 }
 
 resource "aws_ec2_transit_gateway_route" "tgw_route_west" {
+  count                          = var.create_transit_gateway ? 1 : 0
   destination_cidr_block         = var.vpc_cidr_west
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.west.id
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-west.tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.west[0].id
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-west[0].tgw_attachment_id
 }
 
 resource "aws_ec2_transit_gateway_route" "tgw_route_west_default" {
+  count                          = var.create_transit_gateway ? 1 : 0
   destination_cidr_block         = "0.0.0.0/0"
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.west.id
-  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-security.tgw_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.west[0].id
+  transit_gateway_attachment_id  = module.vpc-transit-gateway-attachment-security[0].tgw_attachment_id
 }
 
 
 resource "aws_default_route_table" "route_security" {
+  count                          = var.create_transit_gateway ? 1 : 0
   default_route_table_id = module.base-vpc.vpc_main_route_table_id
   tags = {
     Name = "default table for security vpc (unused)"
@@ -517,7 +536,7 @@ module "vpc_s3_endpoint" {
 #
 module "vpc-east" {
   source = "../../modules/vpc"
-
+  count                      = var.create_transit_gateway ? 1 : 0
   aws_region                 = var.aws_region
   environment                = var.environment
   vpc_name                   = var.vpc_name_east
@@ -527,11 +546,11 @@ module "vpc-east" {
 
 module "subnet-east" {
   source = "../../modules/subnet"
-
+  count                      = var.create_transit_gateway ? 1 : 0
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
-  vpc_id                     = module.vpc-east.vpc_id
+  vpc_id                     = module.vpc-east[0].vpc_id
   availability_zone          = var.availability_zone_1
   subnet_cidr                = var.vpc_cidr_east
   subnet_description         = "east"
@@ -542,11 +561,12 @@ module "subnet-east" {
 # that points to the TGW Attachment
 #
 resource "aws_default_route_table" "route_east" {
-  default_route_table_id = module.vpc-east.vpc_main_route_table_id
+  count                      = var.create_transit_gateway ? 1 : 0
+  default_route_table_id = module.vpc-east[0].vpc_main_route_table_id
 
   route {
     cidr_block = "0.0.0.0/0"
-    transit_gateway_id = module.vpc-transit-gateway.tgw_id
+    transit_gateway_id = module.vpc-transit-gateway[0].tgw_id
   }
   tags = {
     Name = "default table for vpc east"
@@ -555,12 +575,12 @@ resource "aws_default_route_table" "route_east" {
 
 module "rta-east" {
   source = "../../modules/route_table_association"
-
+  count                      = var.create_transit_gateway ? 1 : 0
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = "${var.customer_prefix}-east"
-  subnet_ids                 = module.subnet-east.id
-  route_table_id             = module.vpc-east.vpc_main_route_table_id
+  subnet_ids                 = module.subnet-east[0].id
+  route_table_id             = module.vpc-east[0].vpc_main_route_table_id
 
 }
 
@@ -569,7 +589,7 @@ module "rta-east" {
 #
 module "vpc-west" {
   source = "../../modules/vpc"
-
+  count                      = var.create_transit_gateway ? 1 : 0
   aws_region                 = var.aws_region
   environment                = var.environment
   vpc_name                   = var.vpc_name_west
@@ -580,11 +600,11 @@ module "vpc-west" {
 
 module "subnet-west" {
   source = "../../modules/subnet"
-
+  count                      = var.create_transit_gateway ? 1 : 0
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = var.customer_prefix
-  vpc_id                     = module.vpc-west.vpc_id
+  vpc_id                     = module.vpc-west[0].vpc_id
   availability_zone          = var.availability_zone_1
   subnet_cidr                = var.vpc_cidr_west
   subnet_description         = "west"
@@ -594,11 +614,11 @@ module "subnet-west" {
 # that points to the TGW Attachment
 #
 resource "aws_default_route_table" "route_west" {
-  default_route_table_id = module.vpc-west.vpc_main_route_table_id
-
+  default_route_table_id = module.vpc-west[0].vpc_main_route_table_id
+  count                      = var.create_transit_gateway ? 1 : 0
   route {
     cidr_block = "0.0.0.0/0"
-    transit_gateway_id = module.vpc-transit-gateway.tgw_id
+    transit_gateway_id = module.vpc-transit-gateway[0].tgw_id
   }
   tags = {
     Name = "default table for vpc west"
@@ -607,12 +627,12 @@ resource "aws_default_route_table" "route_west" {
 
 module "rta-west" {
   source = "../../modules/route_table_association"
-
+  count                      = var.create_transit_gateway ? 1 : 0
   aws_region                 = var.aws_region
   environment                = var.environment
   customer_prefix            = "${var.customer_prefix}-west"
-  subnet_ids                 = module.subnet-west.id
-  route_table_id             = module.vpc-west.vpc_main_route_table_id
+  subnet_ids                 = module.subnet-west[0].id
+  route_table_id             = module.vpc-west[0].vpc_main_route_table_id
 }
 
 #
@@ -636,8 +656,8 @@ module "fortigate_1" {
   enable_private_interface    = true
   enable_sync_interface       = true
   enable_hamgmt_interface     = true
-  enable_public_ips           = true
-  enable_mgmt_public_ips      = true
+  enable_public_ips           = var.create_public_elastic_ip
+  enable_mgmt_public_ips      = var.create_management_elastic_ips
   public_subnet_id            = module.base-vpc.public1_subnet_id
   public_ip_address           = var.public1_ip_address
   private_subnet_id           = module.base-vpc.private1_subnet_id
@@ -668,7 +688,7 @@ module "fortigate_2" {
   enable_sync_interface       = true
   enable_hamgmt_interface     = true
   enable_public_ips           = false
-  enable_mgmt_public_ips      = true
+  enable_mgmt_public_ips      = var.create_management_elastic_ips
   public_subnet_id            = module.base-vpc.public2_subnet_id
   public_ip_address           = var.public2_ip_address
   private_subnet_id           = module.base-vpc.private2_subnet_id
@@ -706,7 +726,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200729"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20220609"]
   }
 
   filter {
@@ -725,10 +745,10 @@ data "aws_ami" "ubuntu" {
 #
 module "ec2-east-sg" {
   source = "../../modules/security_group"
-
-  aws_region           = var.aws_region
-  vpc_id               = module.vpc-east.vpc_id
-  name                 = var.ec2_sg_name
+  count                   = var.create_transit_gateway ? 1 : 0
+  aws_region              = var.aws_region
+  vpc_id                  = module.vpc-east[0].vpc_id
+  name                    = var.ec2_sg_name
   ingress_to_port         = 0
   ingress_from_port       = 0
   ingress_protocol        = "-1"
@@ -744,10 +764,10 @@ module "ec2-east-sg" {
 
 module "ec2-west-sg" {
   source = "../../modules/security_group"
-
-  aws_region           = var.aws_region
-  vpc_id               = module.vpc-west.vpc_id
-  name                 = var.ec2_sg_name
+  count                 = var.create_transit_gateway ? 1 : 0
+  aws_region              = var.aws_region
+  vpc_id                  = module.vpc-west[0].vpc_id
+  name                    = var.ec2_sg_name
   ingress_to_port         = 0
   ingress_from_port       = 0
   ingress_protocol        = "-1"
@@ -765,7 +785,7 @@ module "ec2-west-sg" {
 #
 module "linux_iam_profile" {
   source = "../../modules/ec2_instance_iam_role"
-
+  count                       = var.create_transit_gateway && var.enable_linux_instances ? 1 : 0
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
@@ -776,20 +796,20 @@ module "linux_iam_profile" {
 #
 module "east_instance" {
   source                      = "../../modules/ec2_instance"
-  count                       = var.enable_linux_instances ? 1 : 0
+  count                       = var.create_transit_gateway && var.enable_linux_instances ? 1 : 0
 
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
   enable_public_ips           = false
   availability_zone           = var.availability_zone_1
-  public_subnet_id            = module.subnet-east.id
+  public_subnet_id            = module.subnet-east[0].id
   public_ip_address           = "192.168.0.11"
   aws_ami                     = data.aws_ami.ubuntu.id
   keypair                     = var.keypair
   instance_type               = var.linux_instance_type
   instance_name               = var.linux_instance_name_east
-  security_group_public_id    = module.ec2-east-sg.id
+  security_group_public_id    = module.ec2-east-sg[0].id
   acl                         = var.acl
   iam_instance_profile_id     = module.iam_profile.id
   userdata_rendered           = data.template_file.web_userdata.rendered
@@ -800,20 +820,20 @@ module "east_instance" {
 #
 module "west_instance" {
   source                      = "../../modules/ec2_instance"
-  count                       = var.enable_linux_instances ? 1 : 0
+  count                       = var.create_transit_gateway && var.enable_linux_instances ? 1 : 0
 
   aws_region                  = var.aws_region
   customer_prefix             = var.customer_prefix
   environment                 = var.environment
   enable_public_ips           = false
   availability_zone           = var.availability_zone_1
-  public_subnet_id            = module.subnet-west.id
+  public_subnet_id            = module.subnet-west[0].id
   public_ip_address           = "192.168.1.11"
   aws_ami                     = data.aws_ami.ubuntu.id
   keypair                     = var.keypair
   instance_type               = var.linux_instance_type
   instance_name               = var.linux_instance_name_west
-  security_group_public_id    = module.ec2-west-sg.id
+  security_group_public_id    = module.ec2-west-sg[0].id
   acl                         = var.acl
   iam_instance_profile_id     = module.iam_profile.id
   userdata_rendered           = data.template_file.web_userdata.rendered

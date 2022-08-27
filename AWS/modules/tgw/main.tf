@@ -1,8 +1,4 @@
 
-provider "aws" {
-  region = var.aws_region
-}
-
 resource "aws_ec2_transit_gateway" "tgw" {
   description = "${var.customer_prefix}-${var.environment}-tgw for east-west inspection"
   tags = {

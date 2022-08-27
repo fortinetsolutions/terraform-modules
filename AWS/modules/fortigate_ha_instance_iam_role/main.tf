@@ -3,11 +3,11 @@ provider "aws" {
 }
 
 resource "random_string" "random" {
-  length = 6
+  length  = 6
   special = false
-  lower = true
-  upper = false
-  number = false
+  lower   = true
+  upper   = false
+  numeric = false
 }
 
 resource "aws_iam_role" "fortigate_role" {

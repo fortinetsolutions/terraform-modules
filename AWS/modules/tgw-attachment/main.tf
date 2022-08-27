@@ -1,8 +1,4 @@
 
-provider "aws" {
-  region = var.aws_region
-}
-
 resource "aws_ec2_transit_gateway_vpc_attachment" "tgw-attach" {
   tags = {
     Name        = "${var.customer_prefix}-${var.environment}-${var.vpc_name}-tgw-attach"

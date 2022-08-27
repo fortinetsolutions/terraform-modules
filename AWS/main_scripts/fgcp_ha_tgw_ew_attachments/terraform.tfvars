@@ -3,16 +3,58 @@ aws_region                  = "us-west-2"
 #
 # Booleans to enable certain features
 #
+
+#
+# Section of booleans to conditionally create a set of resources
+#
+
+#
 # Allow creation of Linux instances in east/west VPCs
 #
 enable_linux_instances                = false
 
 #
-# If Fortimanager is enabled, fill in the fortimanager variables at the bottom
+# Conditional for configuring the elastic IPs. Set management IPs to false if managing through direct connect
+# Set public elastic ip to false if the HA Failover IP is not needed (e.g. behind a secondary NAT device).
+# Changing the UDR will be sufficient for failover
+#
+create_public_elastic_ip              = true
+create_management_elastic_ips         = true
+
+#
+# Fortimanager Section
+#
+
+#
+# If Fortimanager is enabled, fill in the fortimanager variables at the next
 #
 enable_fortimanager                   = false
 
+#
+# How to license fortimanager
+#
 use_fortimanager_byol                 = true
+#
+# Fortimanager Variables
+#
+fortimanager_enable_public_ips     = false
+fortimanager_use_byol              = true
+fortimanager_sg_name               = "fortimanager security group"
+fortimanager_instance_type         = "c5.xlarge"
+
+fortimanager_instance_name         = "fortimanager"
+fortimanager_os_version            = "6.4.5"
+fortimanager_ip_address            = "10.0.6.50"
+fortimanager_byol_license          = "./licenses/fmgr-license.lic"
+
+#
+# create a transit gateway for test traffic. set to false if the transit gateway already exists
+#
+create_transit_gateway                = true
+
+#
+# How to license the fortigate
+#
 use_fortigate_byol                    = true
 
 #
@@ -90,7 +132,7 @@ fortigate_instance_type     = "c5n.xlarge"
 fortigate_instance_name_1   = "Fortigate One HA Pair"
 fortigate_instance_name_2   = "Fortigate Two HA Pair"
 acl                         = "private"
-fortios_version             = "6.4.5"
+fortios_version             = "7.2.1"
 fgt_byol_1_license          = "./licenses/fgt1-license.lic"
 fgt_byol_2_license          = "./licenses/fgt2-license.lic"
 fgt_ha_password             = "pocpassword727"
@@ -105,16 +147,3 @@ ec2_sg_name                 = "ec2"
 linux_instance_name_east    = "East Linux Instance"
 linux_instance_name_west    = "West Linux Instance"
 linux_instance_type         = "t2.micro"
-
-#
-# Fortimanager Variables
-#
-fortimanager_enable_public_ips     = false
-fortimanager_use_byol              = true
-fortimanager_sg_name               = "fortimanager security group"
-fortimanager_instance_type         = "c5.xlarge"
-
-fortimanager_instance_name         = "fortimanager"
-fortimanager_os_version            = "6.4.5"
-fortimanager_ip_address            = "10.0.6.50"
-fortimanager_byol_license          = "./licenses/fmgr-license.lic"
