@@ -105,4 +105,6 @@ module "instances" {
   mgmt_subnet           = module.subnet.subnets[3]
   static_ip             = module.static-ip.static_ip
   public_subnet_gateway = module.subnet.public_subnet_gateway_address
+  subnet_cidr_port1     = var.subnet_cidrs[0]
+  subnet_cidr_port2     = var.subnet_cidrs[1]
 }

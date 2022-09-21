@@ -12,6 +12,16 @@ config router static
        set device port1
        set gateway ${public_gateway}
     next
+    edit 2
+        set dst ${subnet_cidr_port1}
+        set gateway ${cidrhost(subnet_cidr_port1, 1)}
+        set device "port1"
+    next
+    edit 3
+        set dst ${subnet_cidr_port2}
+        set gateway ${cidrhost(subnet_cidr_port2, 1)}
+        set device "port2"
+    next
 end
 config system interface
     edit port1

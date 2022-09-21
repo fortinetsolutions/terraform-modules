@@ -145,6 +145,16 @@ variable "public_subnet_gateway" {
   description = "Active Instance Port1 Gateway"
 }
 
+variable "subnet_cidr_port1" {
+  type        = string
+  description = "subnet_cidr_port1"
+}
+
+variable "subnet_cidr_port2" {
+  type        = string
+  description = "subnet_cidr_port1"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # Generally, these values won't need to be changed.
