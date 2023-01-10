@@ -1,4 +1,4 @@
-# Single Instance of FortiGate (BYOL)
+# Deploy Web Server
 
 This example creates a Instance with Ubuntu and NGINX (Web Server) installed.
 
