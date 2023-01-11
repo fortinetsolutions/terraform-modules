@@ -133,9 +133,11 @@ Once everything is deployed you can see the sample page of the Web Server when y
 In this step you will configure VPC Peering between the "Internal/Private/Trust VPC Network" with the "Web Server VPC Network" which is used for deploying the Web Server
 
 1. Open VPC network peering page from the Console under the "VPC Network" menu
-![VPC network peering page](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/VPC_network_peering.png)
+
+![VPC network peering page](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_network_peering.png)
 
 2. Click on "Create Peering Connection"
+
 ![VPC network peering create](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/create_peering_connection.png)
 
 3. Click Continue
@@ -145,6 +147,7 @@ In this step you will configure VPC Peering between the "Internal/Private/Trust 
 7. Choose "Export custom routes" as the "Internal/Private/Trust VPC Network" (HUB VPC Network) will export the routes while the Spokes .i.e. the "Web Server VPC Network" will import.
 8. Ignore the defaults which are selected.
 9. Click Create.
+
 ![VPC network peering details](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_1.png)
 
 Routes are only exchanged when the peering is done from both the sides .i.e. from the "Internal/Private/Trust VPC Network" and "Web Server VPC Network" and vice versa.
@@ -154,9 +157,11 @@ You will notice the Status of the VPC Peering as "inactive" until you create the
 10. Repeat the above steps 4-9 but choose "Web Server VPC Network" in Step-5, and "Internal/Private/Trust VPC Network" on Step-6.
 11. Choose "Import custom routes" as "Web Server VPC Network" will import routes acting as a Spoke.
 12. Click Create.
+
 ![VPC network peering details](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
 
 Within couple of seconds you will notice Status change to "Active" with Green Tick Icon, and routes being exchanged.
+
 ![VPC network peering status](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_active.png)
 
 ## Task 5: Add the Static route in FGT
@@ -166,6 +171,7 @@ Login into the Primary FortiGate of the cluster and create a static route under 
 2. Gateway Address will be the "Internal/Private/Trust VPC Network" Gateway
 3. Interface will be "port2"
 4. Click "OK"
+
 ![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_static_route.png)
 
 Once the Task 5 is completed, one can validate the static route in routing-table of FortiGate from the CLI console of FortiGate, by executing the below command
@@ -173,7 +179,8 @@ Once the Task 5 is completed, one can validate the static route in routing-table
 ```
 get router info routing-table all
 ```
-![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_routing_table)
+
+![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_routing_table.png)
 
 ## Task 6: See the communication
 From the FortiGate CLI console, if you ping the Internal IP address of the WebServer, you will notice the response from the Web Server
@@ -181,6 +188,7 @@ From the FortiGate CLI console, if you ping the Internal IP address of the WebSe
 ```
 exec ping <INTERNAL_IP_ADDRESS>
 ```
+
 ![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_ping.png)
 
 
