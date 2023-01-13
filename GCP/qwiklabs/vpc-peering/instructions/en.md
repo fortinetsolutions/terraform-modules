@@ -97,6 +97,7 @@ Before deploying the **vpc-peering** module you have an opportunity to customize
 As this lab is restricted to use us-central1 region, provide name the region in the **vpc-peering/terraform.tfvars** file:
 `region = "us-central1"`
 
+You also have to indicate the GCP project to deploy to by setting `project` variable in **vpc-peering/terraform.tfvars** to the name of your qwiklabs project indicated as **GCP Project ID** in the **Lab Details** panel. 
 
 ### Web Server deployment
 Web Server deployment consists of 3 steps. Execute them now as described below:
@@ -131,6 +132,18 @@ Once everything is deployed you can see the sample page of the Web Server when y
 
 ## Task 4: VPC Peering
 In this step you will configure VPC Peering between the "Internal/Private/Trust VPC Network" with the "Web Server VPC Network" which is used for deploying the Web Server
+
+Before creating peerings go back and review the routing. Any new VPC Network is created with a default route via default internet gateway. As you will be creating a peering between the web server VPC and the FortiGate VPC, the desired routing is via FortiGate. To avoid routing conflict you must delete the automatically created default route.
+
+1. Open the VPC network details page for "qwiklabs-webserver-public-vpc"
+2. Click the "ROUTES" tab
+3. Select the "Default route to Internet" and click "Delete" button
+
+![VPC route list](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_delete_default_route.png)
+
+4. The route list should now contain only the "Default local route to the subnetwork 172.29.1.0/24" 
+
+Now it's time to create the VPC peerings:
 
 1. Open VPC network peering page from the Console under the "VPC Network" menu
 
