@@ -1,7 +1,20 @@
+terraform {
+  required_version = ">= 0.13.1"
+
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+    }
+    google-beta = {
+      source = "hashicorp/google-beta"
+    }
+  }
+}
+
 provider "google" {
-  project     = var.project
-  region      = var.region
-  zone        = var.zone
+  project = var.project
+  region  = var.region
+  zone    = var.zone
 }
 
 module "random" {
@@ -21,10 +34,10 @@ module "subnet" {
   source = "../../modules/subnet"
 
   # Pass Variables
-  name         = var.name
-  region       = var.region
-  subnets      = var.subnets
-  subnet_cidrs = var.subnet_cidrs
+  name                     = var.name
+  region                   = var.region
+  subnets                  = var.subnets
+  subnet_cidrs             = var.subnet_cidrs
   private_ip_google_access = null
   # Values fetched from the Modules
   random_string = module.random.random_string

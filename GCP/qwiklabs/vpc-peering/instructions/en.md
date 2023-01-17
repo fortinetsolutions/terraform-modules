@@ -156,7 +156,7 @@ Now it's time to create the VPC peerings:
 3. Click Continue
 4. Give a name to the Peering Connection
 5. Select the Internal/Private/Trust VPC Network of the FortiGate's Cluster
-6. Select the Peering Network, .i.e the VPC Network used for deployong the Web Server
+6. Select the Peering Network, .i.e the VPC Network used for deploying the Web Server
 7. Choose "Export custom routes" as the "Internal/Private/Trust VPC Network" (HUB VPC Network) will export the routes while the Spokes .i.e. the "Web Server VPC Network" will import.
 8. Ignore the defaults which are selected.
 9. Click Create.
