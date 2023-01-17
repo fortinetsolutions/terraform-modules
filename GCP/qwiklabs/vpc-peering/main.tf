@@ -1,6 +1,4 @@
 provider "google" {
-  version     = "3.20.0"
-  credentials = file(var.credentials_file_path)
   project     = var.project
   region      = var.region
   zone        = var.zone

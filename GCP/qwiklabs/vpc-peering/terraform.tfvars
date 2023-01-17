@@ -1,6 +1,4 @@
-credentials_file_path   = "<CREDENTIALS>"
 project                 = "<GCP_PROJECT>"
-service_account         = "<SERVICE_ACCOUNT_EMAIL>"
 name                    = "qwiklabs-webserver"
 region                  = "us-central1"
 zone                    = "us-central1-c"
