@@ -381,10 +381,10 @@ To complete this lab, you need:
 
 ***Important:*** *make sure you are logged in using the temporary student username and you use the temporary qwiklabs project in both web console and cloud shell. Using your own project and username WILL incur charges.*
 
-## Task 1: Make sure to complete the "FortiGate: Automating deployment and configuration using Terraform" Lab
+## LAB 3 - Task 1: Make sure to complete the "FortiGate: Automating deployment and configuration using Terraform" Lab
 Make sure "FortiGate: Automating deployment and configuration using Terraform" Lab is done as we will be utilising the resources .i.e. FortiGates, VPCs which were deployed.
 
-## Task 2: Cloning repository which creates a new Virtual Private Cloud (VPC) network and deploys a web server
+## LAB 3 - Task 2: Cloning repository which creates a new Virtual Private Cloud (VPC) network and deploys a web server
 This lab is fully automated using [Terraform by Hashicorp](https://www.terraform.io/). Terraform is one of the most popular tools for managing cloud infrastructure as code (IaC). While each cloud platform offers its own native tools for IaC, Terraform uses a broad open ecosystem of providers allowing creating and managing resources in any platform equipped with a proper API. In this lab you will use [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs) (by Google) to manage resources in Google Cloud.
 
 All code for this lab is hosted in a public git repository. To use it start by creating a local copy of its contents.
@@ -404,7 +404,7 @@ All code for this lab is hosted in a public git repository. To use it start by c
 For the Terraform, each directory containing **.tf** files is a module. A directory in which you run terraform command is the *root module* and can contain *submodules*. In this lab you will deploy a root module: **vpc-peering** containing submodules.
 
 
-## Task 3: Deploying Web Server
+## LAB 3 - Task 3: Deploying Web Server
 Using **vpc-peering** module you will deploy a nginx web server in a VPC .
 
 ### Customizing deployment through variables
@@ -446,7 +446,7 @@ After `terraform apply` command completes you will see several output values whi
 Once everything is deployed you can see the sample page of the Web Server when you enter the External IP of the Compute Engine Instance.
 > *Note: It is recommended not to have an External IP for this Web Server. 
 
-## Task 4: VPC Peering
+## LAB 3 - Task 4: VPC Peering
 In this step you will configure VPC Peering between the "Internal/Private/Trust VPC Network" with the "Web Server VPC Network" which is used for deploying the Web Server
 
 Before creating peerings go back and review the routing. Any new VPC Network is created with a default route via default internet gateway. As you will be creating a peering between the web server VPC and the FortiGate VPC, the desired routing is via FortiGate. To avoid routing conflict you must delete the automatically created default route.
@@ -455,7 +455,7 @@ Before creating peerings go back and review the routing. Any new VPC Network is 
 2. Click the "ROUTES" tab
 3. Select the "Default route to Internet" and click "Delete" button
 
-![VPC route list](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/vpc_delete_default_route.png)
+![VPC route list](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_delete_default_route.png)
 
 4. The route list should now contain only the "Default local route to the subnetwork 172.29.1.0/24" 
 
@@ -463,11 +463,11 @@ Now it's time to create the VPC peerings:
 
 1. Open VPC network peering page from the Console under the "VPC Network" menu
 
-![VPC network peering page](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/vpc_network_peering.png)
+![VPC network peering page](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_network_peering.png)
 
 2. Click on "Create Peering Connection"
 
-![VPC network peering create](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/create_peering_connection.png)
+![VPC network peering create](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/create_peering_connection.png)
 
 3. Click Continue
 4. Give a name to the Peering Connection
@@ -477,7 +477,7 @@ Now it's time to create the VPC peerings:
 8. Ignore the defaults which are selected.
 9. Click Create.
 
-![VPC network peering details](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_1.png)
+![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_1.png)
 
 Routes are only exchanged when the peering is done from both the sides .i.e. from the "Internal/Private/Trust VPC Network" and "Web Server VPC Network" and vice versa.
 
@@ -487,13 +487,13 @@ You will notice the Status of the VPC Peering as "inactive" until you create the
 11. Choose "Import custom routes" as "Web Server VPC Network" will import routes acting as a Spoke.
 12. Click Create.
 
-![VPC network peering details](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
+![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
 
 Within couple of seconds you will notice Status change to "Active" with Green Tick Icon, and routes being exchanged.
 
-![VPC network peering status](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/vpc_peering_active.png)
+![VPC network peering status](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_active.png)
 
-## Task 5: Add the Static route in FGT
+## LAB 3 - Task 5: Add the Static route in FGT
 Login into the Primary FortiGate of the cluster and create a static route under "Network" menu
 
 1. Destination will be the CIDR range of the Subnet of the "Web Server VPC Network"
@@ -501,7 +501,7 @@ Login into the Primary FortiGate of the cluster and create a static route under 
 3. Interface will be "port2"
 4. Click "OK"
 
-![FGT Static Route](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/fgt_static_route.png)
+![FGT Static Route](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_static_route.png)
 
 Once the Task 5 is completed, one can validate the static route in routing-table of FortiGate from the CLI console of FortiGate, by executing the below command
 
@@ -509,16 +509,16 @@ Once the Task 5 is completed, one can validate the static route in routing-table
 get router info routing-table all
 ```
 
-![FGT Static Route](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/fgt_routing_table.png)
+![FGT Static Route](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_routing_table.png)
 
-## Task 6: See the communication
+## LAB 3 - Task 6: See the communication
 From the FortiGate CLI console, if you ping the Internal IP address of the WebServer, you will notice the response from the Web Server
 
 ```
 exec ping <INTERNAL_IP_ADDRESS>
 ```
 
-![FGT Static Route](https://github.com/skchi/GCP/blob/master/qwiklabs/vpc-peering/instructions/img/fgt_ping.png)
+![FGT Static Route](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_ping.png)
 
 
 ### Congratulations!

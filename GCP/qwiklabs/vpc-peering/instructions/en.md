@@ -139,7 +139,7 @@ Before creating peerings go back and review the routing. Any new VPC Network is 
 2. Click the "ROUTES" tab
 3. Select the "Default route to Internet" and click "Delete" button
 
-![VPC route list](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_delete_default_route.png)
+![VPC route list](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_delete_default_route.png)
 
 4. The route list should now contain only the "Default local route to the subnetwork 172.29.1.0/24" 
 
@@ -147,11 +147,11 @@ Now it's time to create the VPC peerings:
 
 1. Open VPC network peering page from the Console under the "VPC Network" menu
 
-![VPC network peering page](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_network_peering.png)
+![VPC network peering page](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_network_peering.png)
 
 2. Click on "Create Peering Connection"
 
-![VPC network peering create](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/create_peering_connection.png)
+![VPC network peering create](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/create_peering_connection.png)
 
 3. Click Continue
 4. Give a name to the Peering Connection
@@ -161,7 +161,7 @@ Now it's time to create the VPC peerings:
 8. Ignore the defaults which are selected.
 9. Click Create.
 
-![VPC network peering details](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_1.png)
+![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_1.png)
 
 Routes are only exchanged when the peering is done from both the sides .i.e. from the "Internal/Private/Trust VPC Network" and "Web Server VPC Network" and vice versa.
 
@@ -171,11 +171,11 @@ You will notice the Status of the VPC Peering as "inactive" until you create the
 11. Choose "Import custom routes" as "Web Server VPC Network" will import routes acting as a Spoke.
 12. Click Create.
 
-![VPC network peering details](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
+![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
 
 Within couple of seconds you will notice Status change to "Active" with Green Tick Icon, and routes being exchanged.
 
-![VPC network peering status](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_active.png)
+![VPC network peering status](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_active.png)
 
 ## Task 5: Add the Static route in FGT
 Login into the Primary FortiGate of the cluster and create a static route under "Network" menu
@@ -185,7 +185,7 @@ Login into the Primary FortiGate of the cluster and create a static route under 
 3. Interface will be "port2"
 4. Click "OK"
 
-![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_static_route.png)
+![FGT Static Route](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_static_route.png)
 
 Once the Task 5 is completed, one can validate the static route in routing-table of FortiGate from the CLI console of FortiGate, by executing the below command
 
@@ -193,7 +193,7 @@ Once the Task 5 is completed, one can validate the static route in routing-table
 get router info routing-table all
 ```
 
-![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_routing_table.png)
+![FGT Static Route](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_routing_table.png)
 
 ## Task 6: See the communication
 From the FortiGate CLI console, if you ping the Internal IP address of the WebServer, you will notice the response from the Web Server
@@ -202,7 +202,7 @@ From the FortiGate CLI console, if you ping the Internal IP address of the WebSe
 exec ping <INTERNAL_IP_ADDRESS>
 ```
 
-![FGT Static Route](https://github.com/fortinetsolutions/terraform-modules/blob/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_ping.png)
+![FGT Static Route](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/fgt_ping.png)
 
 
 ### Congratulations!
