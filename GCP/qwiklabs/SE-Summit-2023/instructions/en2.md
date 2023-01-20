@@ -12,8 +12,6 @@
 
 ***[Deployment exercise - estimated duration 45min]***
 
-
-
 In this step we will create the required VPC Networks and security rules needed.  We will also create the FortiGate and Ubuntu server.
 
 ### Task 1 - Log into your GCP Console
