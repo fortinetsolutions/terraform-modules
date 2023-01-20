@@ -109,7 +109,6 @@ In this step we will create the required VPC Networks and security rules needed.
     ![console17](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-nic.jpg)
 1. Click the down arrow to expand **Management**
 1. Under **Automation** paste the below text into the "Startup script" box.
-1. Click on **CREATE** at the bottom of the page
 
 ```sh
 #!/bin/bash
@@ -128,6 +127,8 @@ usermod -aG sudo student1
 sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
 service sshd restart
 ```
+
+1. Click on **CREATE** at the bottom of the page
 
 ***
 
