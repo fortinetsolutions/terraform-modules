@@ -52,7 +52,7 @@
 1. For "Subnet Creation Mode", **Custom** is selected.
 1. Under **New Subnet** name the subnet "untrust-1" and select **us-central1** region from Dropdown
 1. Under **New Subnet** type "192.168.128.0/25" and select **Done**.
-    ![console6](https://github.com/fortidg/markdown-test/blob/main/images/untrust-1 subnet.png)
+    ![console6](https://github.com/fortidg/markdown-test/blob/main/images/untrust-1-subnet.png)
 1. Under **Firewall Rules** select **untrust-allow-custom** and click on **EDIT** to the right of the rule.
 1. This will cause a pop up.  
 1. Un-check **Use subnets' IPv4 ranges** and type "0.0.0.0/0" under other IPv4 Ranges.
