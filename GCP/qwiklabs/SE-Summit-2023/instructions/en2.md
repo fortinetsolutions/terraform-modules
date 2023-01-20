@@ -4,7 +4,7 @@
     
 * Network Diagram
 
-    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.jpeg)
+    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.png)
 
 ***
 
@@ -18,19 +18,19 @@ In this step we will create the required VPC Networks and security rules needed.
 
 * Login by scrolling down to the Google Console Details section.  Make note of the Password and click **Fleet Console**
 
-    ![console1](https://github.com/fortidg/markdown-test/blob/main/images/qwiklabs-info-page1.jpg)
+    ![console1](https://github.com/fortidg/markdown-test/blob/main/images/qwiklabs-info-page1.png)
 
 * This will take you to your sign in page and pre-populate the User Account information.  Click **Next**
 
-    ![console2](https://github.com/fortidg/markdown-test/blob/main/images/console-login-1.jpg)
+    ![console2](https://github.com/fortidg/markdown-test/blob/main/images/console-login-1.png)
 
 * Input the previously noted password
 
-    ![console3](https://github.com/fortidg/markdown-test/blob/main/images/console-login-2.jpg)
+    ![console3](https://github.com/fortidg/markdown-test/blob/main/images/console-login-2.png)
 
 * Accept all popups and warnings.  You are now at your Console Home screen.  Not the Pinned products down the left side of the screen.
 
-    ![console4](https://github.com/fortidg/markdown-test/blob/main/images/console-home.jpg)
+    ![console4](https://github.com/fortidg/markdown-test/blob/main/images/console-home.png)
 
 ### Task 2 - Create VPC Networks
 
@@ -38,7 +38,7 @@ In this step we will create the required VPC Networks and security rules needed.
 
 * On the left pane, click on **VPC network**
 
-    ![console5](https://github.com/fortidg/markdown-test/blob/main/images/VPC-Network-left-pane.jpg)
+    ![console5](https://github.com/fortidg/markdown-test/blob/main/images/VPC-Network-left-pane.png)
 
 * At the top of the screen, click on **CREATE "untrust" VPC NETWORK**
 
@@ -50,11 +50,11 @@ In this step we will create the required VPC Networks and security rules needed.
 1. For "Subnet Creation Mode", **Custom** is selected.
 1. Under **New Subnet** name the subnet "untrust-1" and select **us-central1** region from Dropdown
 1. Under **New Subnet** type "192.168.128.0/25" and select **Done**.
-    ![console6](https://github.com/fortidg/markdown-test/blob/main/images/untrust-1 subnet.jpg)
+    ![console6](https://github.com/fortidg/markdown-test/blob/main/images/untrust-1 subnet.png)
 1. Under **Firewall Rules** select **untrust-allow-custom** and click on **EDIT** to the right of the rule.
 1. This will cause a pop up.  
 1. Un-check **Use subnets' IPv4 ranges** and type "0.0.0.0/0" under other IPv4 Ranges.
-    ![console7](https://github.com/fortidg/markdown-test/blob/main/images/untrust-allow.jpg)
+    ![console7](https://github.com/fortidg/markdown-test/blob/main/images/untrust-allow.png)
 1. Click **CONFIRM**
 1. Click **CREATE**
 
@@ -65,7 +65,7 @@ In this step we will create the required VPC Networks and security rules needed.
 ### Task 3 - Create FortiGate VM
 
 * At the top left of the screen click the Hamburger menu then Select **Compute Engine** > **VM instances**.
-    ![console8](https://github.com/fortidg/markdown-test/blob/main/images/compute-engine.jpg)
+    ![console8](https://github.com/fortidg/markdown-test/blob/main/images/compute-engine.png)
 
 * Click **CREATE INSTANCE**
 
@@ -73,21 +73,21 @@ In this step we will create the required VPC Networks and security rules needed.
 
 1. On the left side of the screen, click **Marketplace**
 1. In the pop up, type FortiGate in the search bar and select the **FortiGate Next-Generation Firewall (PAYG)** option.
-    ![console9](https://github.com/fortidg/markdown-test/blob/main/images/marketplace.jpg)
+    ![console9](https://github.com/fortidg/markdown-test/blob/main/images/marketplace.png)
 1. In the next pop up, choose **Launch**
-    ![console10](https://github.com/fortidg/markdown-test/blob/main/images/launch-fgt.jpg)
+    ![console10](https://github.com/fortidg/markdown-test/blob/main/images/launch-fgt.png)
 1. Under **Networking** > **Network interfaces** click on the down arrow next to default.
-    ![console11](https://github.com/fortidg/markdown-test/blob/main/images/default-fgt-int.jpg)
+    ![console11](https://github.com/fortidg/markdown-test/blob/main/images/default-fgt-int.png)
 1. Configure the Network as follows and Click **Done**.
 
-    ![console12](https://github.com/fortidg/markdown-test/blob/main/images/untrust-nic.jpg)
+    ![console12](https://github.com/fortidg/markdown-test/blob/main/images/untrust-nic.png)
 1. Under **Networking** > **Network interfaces** click on **ADD NETWORK INTERFACE** and configure as follows.
-    ![console13](https://github.com/fortidg/markdown-test/blob/main/images/trust-nic-det.jpg)
+    ![console13](https://github.com/fortidg/markdown-test/blob/main/images/trust-nic-det.png)
 1. At the bottom, check box to accept terms and then click **DEPLOY**.
-    ![console14](https://github.com/fortidg/markdown-test/blob/main/images/accept-deploy.jpg)
+    ![console14](https://github.com/fortidg/markdown-test/blob/main/images/accept-deploy.png)
 1. The **Deployment Manager** screen pops up next.  Make note of the Admin URL and Temporary Admin password.
 
-    ![console15](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-temp-pw.jpg)
+    ![console15](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-temp-pw.png)
 
 #### Tidbit - We used ephemeral for the Public IP of the FortiGate on the untrust NIC.  This means that the IP address could change when the FortiGate is rebooted.  To avoid this, you can go to **VPC network** > **IP addresses** and **RESERVER EXTERNAL STATIC ADDRESS**
 
@@ -101,12 +101,12 @@ In this step we will create the required VPC Networks and security rules needed.
 1. Under **Boot disk** select **CHANGE**
 1. In the pop up select options as pictured below
 
-    ![console16](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-image.jpg)
+    ![console16](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-image.png)
 1. Click the down arrow to expand **Advanced options**.
 1. Click the down arrow to expand **Networking**
 1. Under **Network interface**, click the down arrow to expand **default** and change the network settings as follows.  Note that  we are **NOT** assigning an External IP address for this instance.
 
-    ![console17](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-nic.jpg)
+    ![console17](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-nic.png)
 1. Click the down arrow to expand **Management**
 1. Under **Automation** paste the below text into the "Startup script" box.
 
@@ -145,13 +145,13 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
 * From the Hamburger Menu go to **Compute Engine** > **VM instances** and click on the previously created FortiGate.  Under the Details screen, copy the Primary internal IP address for nic1 (trust network).
 
-    ![console18](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-interfaces.jpg)
+    ![console18](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-interfaces.png)
 
 * From the Hamburger Menu go to **VPC Networks** and click on **trust** in the network list.
 
 * In the center of the screen, click  on **ROUTES** and then click **ADD ROUTE**.
 
-    ![console19](https://github.com/fortidg/markdown-test/blob/main/images/trust-route-add.jpg)
+    ![console19](https://github.com/fortidg/markdown-test/blob/main/images/trust-route-add.png)
 
 * Create the default Route to the Fortigate interface
 
@@ -163,7 +163,7 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 1. Input the fortigate nic1 IP address as "Next hop IP address"
 1. Click **CREATE**
 
-    ![console20](https://github.com/fortidg/markdown-test/blob/main/images/default-to-fgt.jpg)
+    ![console20](https://github.com/fortidg/markdown-test/blob/main/images/default-to-fgt.png)
 
 ### Task 2 - Create Policy in FortiGate to allow traffic from trust to untrust
 
@@ -171,7 +171,7 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
 * Create a firewall policy allowing all traffic from trust-to-untrust.  If you wait for a few minutes, you should start seeing traffic hitting this policy.  This is the Ubuntu instance updating it's packages and installing apache2.
 
-    ![console21](https://github.com/fortidg/markdown-test/blob/main/images/trust-to-untrust.jpg)
+    ![console21](https://github.com/fortidg/markdown-test/blob/main/images/trust-to-untrust.png)
 
 ### Task 3 - Create VIP in FortiGate to allow access to ubuntu server
 
@@ -190,15 +190,15 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 1. **Map to IPv4 port** should be set to 80
 1. Click **OK** to continue
 
-    ![console22](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-vip-http.jpg)
+    ![console22](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-vip-http.png)
 
 * Navigate to **Policy & Objects** > **Fierwall Policy** and create a policy allowing HTTP traffic in to Ubuntu.
 
-    ![console23](https://github.com/fortidg/markdown-test/blob/main/images/vip-in-pol.jpg)
+    ![console23](https://github.com/fortidg/markdown-test/blob/main/images/vip-in-pol.png)
 
 * In your preferred browser, input **http://<fortigate public ip>:8080** (example http://34.72.196.194:8080).  You should get the default Apache2 landing page.
 
-    ![console24](https://github.com/fortidg/markdown-test/blob/main/images/apache2.jpg)
+    ![console24](https://github.com/fortidg/markdown-test/blob/main/images/apache2.png)
 
 #### Tidbit - In this example, we are allowing all IPs inbound and we did not add any security features to our policy.  In a live environment, we would very likely lock this down to specific Source IP addresses as well as add IPS to our policy.  For even better security web servers should be protected by FortiWeb
 
@@ -777,7 +777,7 @@ In previous labs, we built a Cloud on-ramp using two FortiGates deployed as a Hi
 
 * Network Diagram
 
-    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.jpeg)
+    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.png)
 
 ***
 
@@ -801,23 +801,23 @@ gcloud compute forwarding-rules create udp-ipsec --backend-service=projects/<pro
 
 * From the GCP console dashboard, select click on the cursor **>_** at the top of the screen.  This will open a **CLOUD SHELL Terminal** at the bottom of the screen.
 
-    ![overlay1](https://github.com/fortidg/markdown-test/blob/main/images/open-shell.jpg)
+    ![overlay1](https://github.com/fortidg/markdown-test/blob/main/images/open-shell.png)
 
 * Get the project-id by copying it from the cloud shell prompt.  We do not need the open and close parentheses.
 
-    ![overlay2](https://github.com/fortidg/markdown-test/blob/main/images/get-project.jpg)
+    ![overlay2](https://github.com/fortidg/markdown-test/blob/main/images/get-project.png)
 
 * Get the lb-ip.  Under hamburger menu  select MORE PRODUCTS > Network services > **Load balancing**.  In the center of the screen, Click on LOAD BALANCERS > **fgt-qlabs-bes-elb-us-central1**.
 
-    ![overlay3](https://github.com/fortidg/markdown-test/blob/main/images/load-balancing.jpg)
+    ![overlay3](https://github.com/fortidg/markdown-test/blob/main/images/load-balancing.png)
 
 * In the center of the screen, under **Frontend** copy the IP address
 
-    ![overlay4](https://github.com/fortidg/markdown-test/blob/main/images/frontend-ip.jpg)
+    ![overlay4](https://github.com/fortidg/markdown-test/blob/main/images/frontend-ip.png)
 
 * Once you have the project-id and lb-ip, update the sdk command from earlier and input it into the cloud shell.  Below is an example of what that command should look like.
 
-    ![overlay5](https://github.com/fortidg/markdown-test/blob/main/images/sdk-sample.jpg)
+    ![overlay5](https://github.com/fortidg/markdown-test/blob/main/images/sdk-sample.png)
 
 * You should now see the new rule under **Frontend**
 
@@ -827,7 +827,7 @@ gcloud compute forwarding-rules create udp-ipsec --backend-service=projects/<pro
 
 * Log into the active FortiGate of the cloud on-ramp HA pair.  On the left pane, select **Network** > **Inerfaces**.  Click on port1 and select **Edit**  Under Address, toggle the **Secondary IP address** button and input the lb-ip from earlier.
 
-    ![overlay6](https://github.com/fortidg/markdown-test/blob/main/images/secondary-ip.jpg)
+    ![overlay6](https://github.com/fortidg/markdown-test/blob/main/images/secondary-ip.png)
 
 * Open a CLI console in the active FortiGate by clicking on the cursor **>_** icon or using SSH to the public management IP.  Copy the below configurations into your favorite text editor and "set local-gw" to the lb-ip. Once completed, copy and paste thes configurations into the cli console.
 
@@ -1035,9 +1035,9 @@ get router info routing-table bgp
 
 * Below are the expected outputs
 
-    ![overlay7](https://github.com/fortidg/markdown-test/blob/main/images/hub-bgp-sum.jpg)
+    ![overlay7](https://github.com/fortidg/markdown-test/blob/main/images/hub-bgp-sum.png)
 
-    ![overlay8](https://github.com/fortidg/markdown-test/blob/main/images/spoke-bgp-sum.jpg)    
+    ![overlay8](https://github.com/fortidg/markdown-test/blob/main/images/spoke-bgp-sum.png)    
 
 * Ensure continuity from Hub by pinging the remote site Ubuntu server.
 
@@ -1080,11 +1080,11 @@ end
 
 * Navigate to **Network > SD-WAN** and click on **Create New > SD-WAN Member** From the **Interface** drop down, choose **port1**.  Leave all other values as default.
 
-    ![overlay9](https://github.com/fortidg/markdown-test/blob/main/images/new-sdwan-member.jpg)
+    ![overlay9](https://github.com/fortidg/markdown-test/blob/main/images/new-sdwan-member.png)
 
 * Navigate to **Network > SD-WAN** and click on **Create New > SD-WAN Member** From the **Interface** drop down, choose **HUB1**.  In the **SD-WAN Zone** drop down, click **Create** and name the new zone "overlay".  Leave all other values as default and click **OK** 
 
-    ![overlay10](https://github.com/fortidg/markdown-test/blob/main/images/hub1-sdwan.jpg)
+    ![overlay10](https://github.com/fortidg/markdown-test/blob/main/images/hub1-sdwan.png)
 
 * Open a Console connection and add the below firewall policies.
 
@@ -1145,15 +1145,15 @@ end
 
 * Navigate to **Network > SD-WAN > Performance SLAs** and select the test named **Default_Google_Search"**.  Click **Edit**. Under **Participants** select **All SD-WAN Members**.  Leave all other values as default and click **OK**.  
 
-    ![overlay11](https://github.com/fortidg/markdown-test/blob/main/images/google-sla.jpg)
+    ![overlay11](https://github.com/fortidg/markdown-test/blob/main/images/google-sla.png)
 
 * You may need to refresh the browser in order to see the SLA measurements.  Click on **Default_Google Search**.  You should now see performance data updating in real time for both the **HUB1** and **port1** interfaces.
 
-    ![overlay12](https://github.com/fortidg/markdown-test/blob/main/images/google-mon.jpg)
+    ![overlay12](https://github.com/fortidg/markdown-test/blob/main/images/google-mon.png)
 
 * In the fires two steps, we used the default Googel performance SLA monitor.  While it's not unheard of to monitor a Public internet site over an IPSec tunnel to the cloud, a more realistic scenario would be to monitor a resource in our own cloud "Data Center"  Below is an example of a custom performance SLA monitoring hour Hub Ubunt Server (created in lab 3).
 
-    ![overlay13](https://github.com/fortidg/markdown-test/blob/main/images/ubu-hub-mon.jpg)
+    ![overlay13](https://github.com/fortidg/markdown-test/blob/main/images/ubu-hub-mon.png)
 
 #### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/584396/performance-sla
 
@@ -1161,7 +1161,7 @@ end
 
 * Navigate to **Network > SD-WAN > SD-WAN Rules**.  Click **Create new**  Feel free to play around with the Values here.  At a minimum you will need to provide **Name**, **Destination Address or Internet Service**, **Interface selection strategy** and **Interface and/or Zone preference**.  **Note: The minimum required information will change, depending on which selection strategy you choose.  Our example below uses Best Quality, which additionally, requires us to choos a Measured SLA and Quality Criteria**
 
-    ![overlay14](https://github.com/fortidg/markdown-test/blob/main/images/oci-rule.jpg)
+    ![overlay14](https://github.com/fortidg/markdown-test/blob/main/images/oci-rule.png)
 
 #### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/716691/sd-wan-rules 
 
