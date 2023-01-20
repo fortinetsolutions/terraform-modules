@@ -784,7 +784,7 @@ In previous labs, we built a Cloud on-ramp using two FortiGates deployed as a Hi
 
 * Network Diagram
 
-    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.png)
+    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/full-network-diagram.png)
 
 ***
 
