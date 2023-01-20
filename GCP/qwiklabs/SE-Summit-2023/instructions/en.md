@@ -1,8 +1,250 @@
-# LAB 1 -
+# LAB 1 - Create FortiGate test environment manually in GCP Console
+
+<details>
+    
+* Network Diagram
+
+    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.jpeg)
+
+***
+
+## Chapter 1 - Setting up the environment
+
+***[Deployment exercise - estimated duration 45min]***
+
+<details>
+
+<summary>In this step we will create the required VPC Networks and security rules needed.  We will also create the FortiGate and Ubuntu server.</summary>
+
+### Task 1 - Log into your GCP Console
+
+* Login by scrolling down to the Google Console Details section.  Make note of the Password and click **Fleet Console**
+
+    ![console1](https://github.com/fortidg/markdown-test/blob/main/images/qwiklabs-info-page1.jpg)
+
+* This will take you to your sign in page and pre-populate the User Account information.  Click **Next**
+
+    ![console2](https://github.com/fortidg/markdown-test/blob/main/images/console-login-1.jpg)
+
+* Input the previously noted password
+
+    ![console3](https://github.com/fortidg/markdown-test/blob/main/images/console-login-2.jpg)
+
+* Accept all popups and warnings.  You are now at your Console Home screen.  Not the Pinned products down the left side of the screen.
+
+    ![console4](https://github.com/fortidg/markdown-test/blob/main/images/console-home.jpg)
+
+### Task 2 - Create VPC Networks
+
+#### Tidbit - The GCP approach to VPC Networks is a bit different than other Vendors.  For example: In AWS, a VPC is a collection of Subnets.  VM instances completely reside within a VPC and have NICs in multiple subnets.  By Contrast, in GCP an instance can only have one vNIC within a VPC Network.  These VPC Networks can be divided into Subnets, but a Virtual Machine can only have a vNIC in one of them.  This means that in order to create a standard Untrust/Trust architecture in GCP, you need two separate VPC Networks.
+
+* On the left pane, click on **VPC network**
+
+    ![console5](https://github.com/fortidg/markdown-test/blob/main/images/VPC-Network-left-pane.jpg)
+
+* At the top of the screen, click on **CREATE "untrust" VPC NETWORK**
+
+* Input all fields as directed below.
+  
+  **Any Value not listed below will be left as default.**
+
+1. For "Name" use "untrust"
+1. For "Subnet Creation Mode", **Custom** is selected.
+1. Under **New Subnet** name the subnet "untrust-1" and select **us-central1** region from Dropdown
+1. Under **New Subnet** type "192.168.128.0/25" and select **Done**.
+    ![console6](https://github.com/fortidg/markdown-test/blob/main/images/untrust-1 subnet.jpg)
+1. Under **Firewall Rules** select **untrust-allow-custom** and click on **EDIT** to the right of the rule.
+1. This will cause a pop up.  
+1. Un-check **Use subnets' IPv4 ranges** and type "0.0.0.0/0" under other IPv4 Ranges.
+    ![console7](https://github.com/fortidg/markdown-test/blob/main/images/untrust-allow.jpg)
+1. Click **CONFIRM**
+1. Click **CREATE**
+
+* Repeat the process to create a second VPC Network named "trust" and with a subnet CIDR of "192.168.129.0/25".
+
+#### Tidbit - Normally we would recommend for Customers to lock down their ingress Firewall rules to only allow the Sources and Ports necessary.  In our lab excercise, we left everything open here, just to make things easier.
+
+### Task 3 - Create FortiGate VM
+
+* At the top left of the screen click the Hamburger menu then Select **Compute Engine** > **VM instances**.
+    ![console8](https://github.com/fortidg/markdown-test/blob/main/images/compute-engine.jpg)
+
+* Click **CREATE INSTANCE**
+
+  **Any Value not listed below will be left as default.**
+
+1. On the left side of the screen, click **Marketplace**
+1. In the pop up, type FortiGate in the search bar and select the **FortiGate Next-Generation Firewall (PAYG)** option.
+    ![console9](https://github.com/fortidg/markdown-test/blob/main/images/marketplace.jpg)
+1. In the next pop up, choose **Launch**
+    ![console10](https://github.com/fortidg/markdown-test/blob/main/images/launch-fgt.jpg)
+1. Under **Networking** > **Network interfaces** click on the down arrow next to default.
+    ![console11](https://github.com/fortidg/markdown-test/blob/main/images/default-fgt-int.jpg)
+1. Configure the Network as follows and Click **Done**.
+
+    ![console12](https://github.com/fortidg/markdown-test/blob/main/images/untrust-nic.jpg)
+1. Under **Networking** > **Network interfaces** click on **ADD NETWORK INTERFACE** and configure as follows.
+    ![console13](https://github.com/fortidg/markdown-test/blob/main/images/trust-nic-det.jpg)
+1. At the bottom, check box to accept terms and then click **DEPLOY**.
+    ![console14](https://github.com/fortidg/markdown-test/blob/main/images/accept-deploy.jpg)
+1. The **Deployment Manager** screen pops up next.  Make note of the Admin URL and Temporary Admin password.
+
+    ![console15](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-temp-pw.jpg)
+
+#### Tidbit - We used ephemeral for the Public IP of the FortiGate on the untrust NIC.  This means that the IP address could change when the FortiGate is rebooted.  To avoid this, you can go to **VPC network** > **IP addresses** and **RESERVER EXTERNAL STATIC ADDRESS**
+
+### Task 4 - Create Ubuntu VM
+
+* Go to **Compute Engine** > **VM instances** and click **CREATE INSTANCE**
+
+  **Any Value not listed below will be left as default.**
+
+1. Choose an appropriate name for the VM.
+1. Under **Boot disk** select **CHANGE**
+1. In the pop up select options as pictured below
+
+    ![console16](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-image.jpg)
+1. Click the down arrow to expand **Advanced options**.
+1. Click the down arrow to expand **Networking**
+1. Under **Network interface**, click the down arrow to expand **default** and change the network settings as follows.  Note that  we are **NOT** assigning an External IP address for this instance.
+
+    ![console17](https://github.com/fortidg/markdown-test/blob/main/images/ubuntu-nic.jpg)
+1. Click the down arrow to expand **Management**
+1. Under **Automation** paste the below text into the "Startup script" box.
+1. Click on **CREATE** at the bottom of the page
+
+```sh
+#!/bin/bash
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+echo "Wait for Internet access through the FGTs"
+while ! curl --connect-timeout 3 "http://www.google.com" &> /dev/null
+    do continue
+done
+apt-get update -y
+#install apache2
+apt-get install -y apache2
+service apache2 restart
+/usr/sbin/useradd student1
+echo student1:Fortinet1! | chpasswd
+usermod -aG sudo student1
+sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
+service sshd restart
+```
+
+***
+</details>
+
+## Chapter 2 - Configure Routing and Firewall
+
+***[Make it work - estimated duration 15min]***
+
+<details>
+
+<summary>In this step we will add routing, and policies to allow traffic from the Ubuntu server to reach the internet through FortiGate, and allow users to access the Apache2 web page on the server from the internet</summary>
+
+### Task 1 - Route Traffic from trust network to the internet through FortiGate
+
+* From the Hamburger Menu go to **Compute Engine** > **VM instances** and click on the previously created FortiGate.  Under the Details screen, copy the Primary internal IP address for nic1 (trust network).
+
+    ![console18](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-interfaces.jpg)
+
+* From the Hamburger Menu go to **VPC Networks** and click on **trust** in the network list.
+
+* In the center of the screen, click  on **ROUTES** and then click **ADD ROUTE**.
+
+    ![console19](https://github.com/fortidg/markdown-test/blob/main/images/trust-route-add.jpg)
+
+* Create the default Route to the Fortigate interface
+
+  **Any Value not listed below will be left as default.**
+
+1. Choose an appropriate name.
+1. For "Destination IP range" input "0.0.0.0/0".
+1. Under "Next hop" select **Specify IP address**
+1. Input the fortigate nic1 IP address as "Next hop IP address"
+1. Click **CREATE**
+
+    ![console20](https://github.com/fortidg/markdown-test/blob/main/images/default-to-fgt.jpg)
+
+### Task 2 - Create Policy in FortiGate to allow traffic from trust to untrust
+
+* Log into the FortiGate using the  Admin URL and Temporary Admin password which you noted earlier.  You will be prompted to change the password upon initial login.
+
+* Create a firewall policy allowing all traffic from trust-to-untrust.  If you wait for a few minutes, you should start seeing traffic hitting this policy.  This is the Ubuntu instance updating it's packages and installing apache2.
+
+    ![console21](https://github.com/fortidg/markdown-test/blob/main/images/trust-to-untrust.jpg)
+
+### Task 3 - Create VIP in FortiGate to allow access to ubuntu server
+
+  **Any Value not listed below will be left as default.**
+
+* Log into the FortiGate and navigate to **Policy & Objects** > ** Virtual IP's
+
+1. Click **Create New** > **Virtual IP**.
+1. Choose an appropriate name.
+1. Choose **port1** from the dropdown next to **Interface**
+1. for **Map to IPv4 address/range** input the IP address of the Ubuntu server you created earlier.  **HINT** - go to **Compute Engine** > **VM instances** to find the ip.
+1. Click to toggle **Port Forwarding**
+1. For **Protocol** select **TCP**
+1. For **Port Mapping Type** select **One to one**
+1. For **External service port** use **8080**
+1. **Map to IPv4 port** should be set to 80
+1. Click **OK** to continue
+
+    ![console22](https://github.com/fortidg/markdown-test/blob/main/images/fortigate-vip-http.jpg)
+
+* Navigate to **Policy & Objects** > **Fierwall Policy** and create a policy allowing HTTP traffic in to Ubuntu.
+
+    ![console23](https://github.com/fortidg/markdown-test/blob/main/images/vip-in-pol.jpg)
+
+* In your preferred browser, input **http://<fortigate public ip>:8080** (example http://34.72.196.194:8080).  You should get the default Apache2 landing page.
+
+    ![console24](https://github.com/fortidg/markdown-test/blob/main/images/apache2.jpg)
+
+#### Tidbit - In this example, we are allowing all IPs inbound and we did not add any security features to our policy.  In a live environment, we would very likely lock this down to specific Source IP addresses as well as add IPS to our policy.  For even better security web servers should be protected by FortiWeb
+
+* **Congratulations!** You have completed the GCP-Basic portion of this training.
+
+***
+  </details>
+
+***
+
+## Quiz
 
 
+### Question 1
+
+* A VM Instance in GCP can have multiple interfaces in the same VPC Network.  (True or False)
+
+<details> 
+
+<summary>Answer</summary>
+
+* **False** - VMs can only have a single interface per VPC Network.
+
+</details>
+
+## Question 2
+
+* By default, External IP Addresses associated with vNICs in GCP are preserved across reboot (True or False)
+
+<details> 
+
+<summary>Answer</summary>
+
+* **False** - By default.  Ephemeral External IP Addresses are assigned to vNICs in GCP.
+
+</details>
+    
+</details>    
+    
+***
 
 # LAB 2 - FortiGate: Automating deployment and configuration using Terraform
+
+<details>
+
 ## Overview
 This lab is intended for network administrators looking to integrate firewall management with DevOps practices and workflow. First part of the lab focuses on deploying a pair of FortiGate virtual appliances using Terraform and bootstrapping their configuration to automatically build a multi-zone HA cluster. Second part deploys a simple web application and leverages fortios terraform provider to include FortiGate configuration changes necessary to protect that application.
 
@@ -314,8 +556,15 @@ In many organizations mixing manual and managed configuration is not desired. It
 ### Congratulations!
 Congratulations, you have successfully deployed and configured FortiGates in Google Cloud using terraform. The skills and concepts you have learned can help you build secure environments leveraging network security experience of FortiGuard Labs combined with cloud-native workflows, eliminating the requirement to interactively log into the firewall management console.
 
+</details>
+
+***
+
 # LAB 3 - VPC Peering: Create/Configure VPC Peering between two Virtual Private Cloud (VPC) networks
-Google Cloud VPC Network Peering connects two Virtual Private Cloud (VPC) networks so that resources in each network can communicate with each other
+
+<details>
+    
+## Google Cloud VPC Network Peering connects two Virtual Private Cloud (VPC) networks so that resources in each network can communicate with each other
 
 ## Benefits of VPC Network Peering
 
@@ -524,9 +773,456 @@ exec ping <INTERNAL_IP_ADDRESS>
 ### Congratulations!
 Congratulations, you have successfully configured the VPC Peering. The skills and concepts you have learned can help you build secure environments leveraging network security experience of FortiGuard Labs combined with cloud-native workflows, eliminating the requirement to interactively log into the firewall management console.
 
+</details>
 
-# LAB 4 - 
+***
+# LAB 4 -  Create Network Overlay and Configure SD-WAN Components
 
+ <details>
+     
+In previous labs, we built a Cloud on-ramp using two FortiGates deployed as a High Availability pair sandwiched between two Load Balancers.  We also built a remote site using a single FortiGate and Ubuntu server.  The next step is to securely connect the remote location with the cloud on-ramp.  In the following excercises, we will configure the IPsec overlay.  BGP will be used to share routes between locations.  Once the overlay is in place, we will configure SD-WAN to monitor SLA
+
+* Network Diagram
+
+    ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.jpeg)
+
+***
+
+## Chapter 1 - Build Network Overlay
+
+***[Deployment exercise - estimated duration 45min]***
+
+<details>
+
+<summary>In this chapter, we will create the dialup IPsec VPN hub on the on-ramp FortiGate and configure the remote site to connect to it.   </summary>
+
+### Task 1 - Add Forwarding Rule to the Load Balancer
+
+#### Tidbit - There is no way to add forwarding rules to the Load Balancer using the GUI Console.  For this step, we will need to open a cloud shell and use the Google SDK.  As you will see in the following steps, we need to create forwarding rules to allow the load balancer to forward UDP ports 500 and 4500 to the FortiGate
+
+* We will be using the below Google sdk command to create the forwarding rule.  Copy and paste the below command into your favorite text editor.  The next few steps will help us get the require environment variables (project-id, lb-ip)
+
+```sh
+gcloud compute forwarding-rules create udp-ipsec --backend-service=projects/<project-id>/regions/us-central1/backendServices/fgt-qlabs-bes-elb-us-central1 --address=<lb-ip> --ports=500,4500 --region=us-central1 --ip-protocol=UDP
+```
+
+* From the GCP console dashboard, select click on the cursor **>_** at the top of the screen.  This will open a **CLOUD SHELL Terminal** at the bottom of the screen.
+
+    ![overlay1](https://github.com/fortidg/markdown-test/blob/main/images/open-shell.jpg)
+
+* Get the project-id by copying it from the cloud shell prompt.  We do not need the open and close parentheses.
+
+    ![overlay2](https://github.com/fortidg/markdown-test/blob/main/images/get-project.jpg)
+
+* Get the lb-ip.  Under hamburger menu  select MORE PRODUCTS > Network services > **Load balancing**.  In the center of the screen, Click on LOAD BALANCERS > **fgt-qlabs-bes-elb-us-central1**.
+
+    ![overlay3](https://github.com/fortidg/markdown-test/blob/main/images/load-balancing.jpg)
+
+* In the center of the screen, under **Frontend** copy the IP address
+
+    ![overlay4](https://github.com/fortidg/markdown-test/blob/main/images/frontend-ip.jpg)
+
+* Once you have the project-id and lb-ip, update the sdk command from earlier and input it into the cloud shell.  Below is an example of what that command should look like.
+
+    ![overlay5](https://github.com/fortidg/markdown-test/blob/main/images/sdk-sample.jpg)
+
+* You should now see the new rule under **Frontend**
+
+### Task 2 - Configure IPsec VPN Hub on cloud on-ramp FortiGate
+
+#### Tidbit - The GCP Load Balancer does not perform Destination NAT on inbound traffic to the FortiGate, meaning that the Destination IP address in the UDP port 500 IPsec packets are set to the Load Balancer's external IP address.  We will need to add this IP as secondary to the "WAN" interface (port1) on FortiGate
+
+* Log into the active FortiGate of the cloud on-ramp HA pair.  On the left pane, select **Network** > **Inerfaces**.  Click on port1 and select **Edit**  Under Address, toggle the **Secondary IP address** button and input the lb-ip from earlier.
+
+    ![overlay6](https://github.com/fortidg/markdown-test/blob/main/images/secondary-ip.jpg)
+
+* Open a CLI console in the active FortiGate by clicking on the cursor **>_** icon or using SSH to the public management IP.  Copy the below configurations into your favorite text editor and "set local-gw" to the lb-ip. Once completed, copy and paste thes configurations into the cli console.
+
+```sh
+config vpn ipsec phase1-interface
+    edit HUB1
+        set type dynamic
+        set interface port1
+        set ike-version 2
+        set local-gw <lb-ip>
+        set peertype any
+        set net-device disable
+        set mode-cfg enable
+        set proposal aes256-sha256
+        set add-route disable
+        set dpd on-idle
+        set ipv4-start-ip 10.10.1.2
+        set ipv4-end-ip 10.10.1.25
+        set ipv4-netmask 255.255.255.0
+        set psksecret Fortinet1!
+        set dpd-retryinterval 60
+    next
+end
+
+
+config vpn ipsec phase2-interface
+    edit HUB1
+        set phase1name HUB1
+        set proposal aes256-sha256
+    next
+end
+config system interface
+   edit HUB1
+        set vdom root
+        set ip 10.10.1.254 255.255.255.255
+        set allowaccess ping
+        set type tunnel
+        set remote-ip 10.10.1.1 255.255.255.0
+        set snmp-index 18
+        set interface port1
+    next
+end
+
+config firewall policy
+    edit 0
+        set name ipsec-in
+        set srcintf HUB1
+        set dstintf port2
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat enable
+    next
+    edit 0
+        set name ipsec-internet
+        set srcintf HUB1
+        set dstintf port1
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat enable
+    next
+end
+
+```
+
+#### Tidbit - Notice that we are using mode config here.  This will result in IP addresses being dynamically assigned to the IPsec interface on the remote sites.  Make a mental note of the "ip4v-start-ip" and "ipv4-stop-ip".  This range will be used later to configure BGP
+
+### Task 3 - Configure IPsec VPN on remote site
+
+* Open a CLI console in the FortiGate by clicking on the cursor **>_** icon or using SSH to the public management IP.  Copy the below configurations into your favorite text editor and "set remote-gw" to the lb-ip. Once completed, copy and paste thes configurations into the cli console.
+
+```sh
+config vpn ipsec phase1-interface
+    edit HUB1
+        set interface port1
+        set ike-version 2
+        set peertype any
+        set net-device disable
+        set mode-cfg enable
+        set proposal aes256-sha256
+        set add-route disable
+        set dpd on-idle
+        set remote-gw <lb-ip>
+        set psksecret Fortinet1!
+    next
+end
+
+
+config vpn ipsec phase2-interface
+    edit HUB1
+        set phase1name HUB1
+        set proposal aes256-sha256
+        set auto-negotiate enable
+
+    next
+end
+
+config firewall policy
+    edit 0
+        set name ipsec-out
+        set srcintf port2
+        set dstintf HUB1
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat disable
+    next
+    edit 0
+        set name ipsec-in
+        set srcintf HUB1
+        set dstintf port2
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat enable
+    next
+end
+```
+
+* Run the below commands to ensure that the tunnels are up and functioning proplerly.
+
+```sh
+get vpn ipsec tunnel summary
+diagnose vpn ike gateway list name HUB1
+```
+
+#### Useful Link - https://community.fortinet.com/t5/FortiGate/Troubleshooting-Tip-IPsec-VPNs-tunnels/ta-p/195955
+
+### Task 4 - Configure BGP on cloud on-ramp FortiGate
+
+* Copy the below BGP configurations and paste them into the active FortiGate's CLI console.
+
+```sh
+config router bgp
+    set as 65400
+    set ibgp-multipath enable
+    set additional-path enable 
+    set additional-path-select 4
+    config neighbor-group
+        edit HUB1
+            set remote-as 65400
+            set additional-path both
+            set adv-additional-path 4
+            set route-reflector-client enable
+        next
+    end
+    config neighbor-range
+        edit 1
+            set prefix 10.10.1.0 255.255.255.0
+            set max-neighbor-num 20
+            set neighbor-group HUB1
+        next
+end
+
+    config network
+        edit 1
+            set prefix 172.20.1.0 255.255.255.0
+        next
+    end
+end
+```
+
+#### Tidbit - note the prefix setting under "config neighbor-range".  The dynamic IP addresses assigned to the remote site IPsec VPN interfaces fall within that range, meaning that this router will accept any bgp peer request from those remote sites.
+
+### Task 4 - Configure BGP on remote FortiGate
+
+* Copy the below BGP configurations and paste them into the FortiGate's CLI console.
+
+```sh
+config router bgp
+    set as 65400
+    set ibgp-multipath enable
+    set additional-path enable
+    set additional-path-select 4
+    config neighbor
+        edit 10.10.1.254
+            set remote-as 65400
+            set additional-path receive
+        next
+    end
+    config network
+        edit 1
+            set prefix 192.168.129.0 255.255.255.128
+        next
+    end
+end
+
+```
+
+* Ensure that BGP peers are established and that routes are being shared on both the hub and remote site.
+
+```sh
+get router info bgp summary
+get router info routing-table bgp
+```
+
+* Below are the expected outputs
+
+    ![overlay7](https://github.com/fortidg/markdown-test/blob/main/images/hub-bgp-sum.jpg)
+
+    ![overlay8](https://github.com/fortidg/markdown-test/blob/main/images/spoke-bgp-sum.jpg)    
+
+* Ensure continuity from Hub by pinging the remote site Ubuntu server.
+
+```sh
+execute ping 192.168.129.3
+```
+
+* Ensure continuity from remote site by pinging the Hub Ubuntu server.
+
+```sh
+execute ping 172.20.1.5
+```
+
+***
+
+</details>
+
+## Chapter 2 - Configure SD-WAN
+
+***[Make it work - estimated duration 15min]***
+
+<details>
+
+<summary>Now that we have configured the overlay, we will add the "WAN" interface (port1) and the IPsec HUB1 interface to SD-WAN.  We will then create SLA monitoring in the remote site.</summary>
+
+### Task 1 - Add interfaces to SD-WAN
+
+#### Tidbit - In FortiOS, interfaces which already have policies attached to them are precluded from being added to SD-WAN.
+
+* On the remote FortiGate, delete the existing firewall policies by opening a console connection and inputting the below configuration.  **Note: This will cause the IPsec tunnel to go down**
+
+```sh
+config firewall policy
+delete 1
+delete 2
+delete 3
+delete 4
+end
+```
+
+* Navigate to **Network > SD-WAN** and click on **Create New > SD-WAN Member** From the **Interface** drop down, choose **port1**.  Leave all other values as default.
+
+    ![overlay9](https://github.com/fortidg/markdown-test/blob/main/images/new-sdwan-member.jpg)
+
+* Navigate to **Network > SD-WAN** and click on **Create New > SD-WAN Member** From the **Interface** drop down, choose **HUB1**.  In the **SD-WAN Zone** drop down, click **Create** and name the new zone "overlay".  Leave all other values as default and click **OK** 
+
+    ![overlay10](https://github.com/fortidg/markdown-test/blob/main/images/hub1-sdwan.jpg)
+
+* Open a Console connection and add the below firewall policies.
+
+```sh
+config firewall policy
+    edit 0
+        set name overlay-out
+        set srcintf port2
+        set dstintf overlay
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service SMTP
+        set nat enable
+    next
+    edit 0
+        set name vip-in
+        set srcintf virtual-wan-link
+        set dstintf port2
+        set action accept
+        set srcaddr all
+        set dstaddr ubu-serv
+        set schedule always
+        set service HTTP
+        set nat enable
+    next
+    edit 0
+        set name overlay-in
+        set srcintf overlay
+        set dstintf port2
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat enable
+    next
+    edit 0
+        set name port2-out
+        set srcintf port2
+        set dstintf virtual-wan-link
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat enable
+    next
+end
+```
+
+#### Tidbit - After interfaces have been added to SD-WAN, Policies are configured using the SD-WAN zone.  This simplifies policy configuration once multiple interfaces are added to the zones
+
+#### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/942095/sd-wan-members-and-zones
+
+### Task 2 - Create SLA monitoring
+
+* Navigate to **Network > SD-WAN > Performance SLAs** and select the test named **Default_Google_Search"**.  Click **Edit**. Under **Participants** select **All SD-WAN Members**.  Leave all other values as default and click **OK**.  
+
+    ![overlay11](https://github.com/fortidg/markdown-test/blob/main/images/google-sla.jpg)
+
+* You may need to refresh the browser in order to see the SLA measurements.  Click on **Default_Google Search**.  You should now see performance data updating in real time for both the **HUB1** and **port1** interfaces.
+
+    ![overlay12](https://github.com/fortidg/markdown-test/blob/main/images/google-mon.jpg)
+
+* In the fires two steps, we used the default Googel performance SLA monitor.  While it's not unheard of to monitor a Public internet site over an IPSec tunnel to the cloud, a more realistic scenario would be to monitor a resource in our own cloud "Data Center"  Below is an example of a custom performance SLA monitoring hour Hub Ubunt Server (created in lab 3).
+
+    ![overlay13](https://github.com/fortidg/markdown-test/blob/main/images/ubu-hub-mon.jpg)
+
+#### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/584396/performance-sla
+
+### Task 3 - Create SD-WAN Rules
+
+* Navigate to **Network > SD-WAN > SD-WAN Rules**.  Click **Create new**  Feel free to play around with the Values here.  At a minimum you will need to provide **Name**, **Destination Address or Internet Service**, **Interface selection strategy** and **Interface and/or Zone preference**.  **Note: The minimum required information will change, depending on which selection strategy you choose.  Our example below uses Best Quality, which additionally, requires us to choos a Measured SLA and Quality Criteria**
+
+    ![overlay14](https://github.com/fortidg/markdown-test/blob/main/images/oci-rule.jpg)
+
+#### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/716691/sd-wan-rules 
+
+* **Congratulations!** You have completed this course!  Please answer the questions below.
+
+***
+  </details>
+
+***
+
+## Quiz
+
+
+### Question 1
+
+* All GCP features can be configured from the GUI Console  (True or False)
+
+<details> 
+
+<summary>Answer</summary>
+
+* **False** - As we saw with load balancer forwarding rules, some configurations are only available using the gcloud cli.
+
+</details>
+
+## Question 2
+
+* Which hub ipsec phase1-interface setting enables dynamic assignment of IP address to remote peers?
+    a) set type dynamic
+    b) set add-route disable
+    c) set mode-cfg enable
+    d) set peertype any
+
+<details> 
+
+<summary>Answer</summary>
+
+* **C** - set mode-cfg enable along with  set ipv4-start-ip, set ipv4-end-ip and set ipv4-netmask are required on the hub to enable this feature.
+
+</details>
+
+## Question 3
+
+* You must use the Zone ID in security policy for any interface which is added to SD-WAN (TRUE or False)
+
+<details> 
+
+<summary>Answer</summary>
+
+* **True** - once an interface is part of SD-WAN, you can no longer assign policy direcly to that interface.
+
+</details>
+    
+</details>
 
 ##  Clean-up
 To revert changes and remove resources you created in this lab do the following:
