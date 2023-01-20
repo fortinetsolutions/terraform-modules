@@ -1,11 +1,7 @@
 # LAB 1 - Create FortiGate test environment manually in GCP Console
 
 
-<<<<<<< HEAD
     
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 * Network Diagram
 
     ![diagram1](https://github.com/fortidg/markdown-test/blob/main/images/network-diagram.jpeg)
@@ -16,11 +12,6 @@
 
 ***[Deployment exercise - estimated duration 45min]***
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 In this step we will create the required VPC Networks and security rules needed.  We will also create the FortiGate and Ubuntu server.
 
 ### Task 1 - Log into your GCP Console
@@ -52,11 +43,7 @@ In this step we will create the required VPC Networks and security rules needed.
 * At the top of the screen, click on **CREATE "untrust" VPC NETWORK**
 
 * Input all fields as directed below.
-<<<<<<< HEAD
   
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
   **Any Value not listed below will be left as default.**
 
 1. For "Name" use "untrust"
@@ -65,11 +52,7 @@ In this step we will create the required VPC Networks and security rules needed.
 1. Under **New Subnet** type "192.168.128.0/25" and select **Done**.
     ![console6](https://github.com/fortidg/markdown-test/blob/main/images/untrust-1 subnet.jpg)
 1. Under **Firewall Rules** select **untrust-allow-custom** and click on **EDIT** to the right of the rule.
-<<<<<<< HEAD
 1. This will cause a pop up.  
-=======
-1. This will cause a pop up.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 1. Un-check **Use subnets' IPv4 ranges** and type "0.0.0.0/0" under other IPv4 Ranges.
     ![console7](https://github.com/fortidg/markdown-test/blob/main/images/untrust-allow.jpg)
 1. Click **CONFIRM**
@@ -221,11 +204,6 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 * **Congratulations!** You have completed the GCP-Basic portion of this training.
 
 ***
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 ***
 
@@ -236,11 +214,7 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
 * A VM Instance in GCP can have multiple interfaces in the same VPC Network.  (True or False)
 
-<<<<<<< HEAD
  
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 Answer
 
@@ -252,26 +226,11 @@ Answer
 
 * By default, External IP Addresses associated with vNICs in GCP are preserved across reboot (True or False)
 
-<<<<<<< HEAD
  
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
-
 Answer
 
 * **False** - By default.  Ephemeral External IP Addresses are assigned to vNICs in GCP.
-
-
-<<<<<<< HEAD
-    
-    
-    
-=======
-
-
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
+   
 ***
 
 # LAB 2 - FortiGate: Automating deployment and configuration using Terraform
@@ -295,11 +254,7 @@ In this lab you will:
 - Delete the application and associated firewall configuration
 
 ### Architecture
-<<<<<<< HEAD
 The final architecture and test connection flow is depicted on the diagram below:  
-=======
-The final architecture and test connection flow is depicted on the diagram below:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 ![Architecture overview](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/diag-overview.png)
 
 It is a simplified standard architecture described in [Cloud Architecture Center](https://cloud.google.com/architecture/partners/use-terraform-to-deploy-a-fortigate-ngfw?hl=en) with demo web server deployed directly into the firewall's internal subnet.
@@ -312,17 +267,10 @@ This hands-on lab lets you do the lab activities yourself in a real cloud enviro
 
 To complete this lab, you need:
 
-<<<<<<< HEAD
 * Access to a standard internet browser (Chrome browser recommended).  
     >*Note: Use an Incognito or private browser window to run this lab. This prevents any conflicts between your personal account and the Student account, which may cause extra charges incurred to your personal account.*
 
 * Time to complete the lab---remember, once you start, you cannot pause a lab.  
-=======
-* Access to a standard internet browser (Chrome browser recommended).
-    >*Note: Use an Incognito or private browser window to run this lab. This prevents any conflicts between your personal account and the Student account, which may cause extra charges incurred to your personal account.*
-
-* Time to complete the lab---remember, once you start, you cannot pause a lab.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 > *Note: If you already have your own personal Google Cloud account or project, do not use it for this lab to avoid extra charges to your account.*
 
 ### How to start your lab and sign in to the Google Cloud Console
@@ -363,20 +311,12 @@ This lab is fully automated using [Terraform by Hashicorp](https://www.terraform
 
 All code for this lab is hosted in a public git repository. To use it start by creating a local copy of its contents.
 
-<<<<<<< HEAD
 1.	Run the following command in your Cloud Shell to clone the git repository contents:
-=======
-1.      Run the following command in your Cloud Shell to clone the git repository contents:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     git clone https://github.com/40net-cloud/qwiklabs-fgt-terraform.git
     ```
-<<<<<<< HEAD
 2.	Change current working directory to **labs/day0** inside the cloned repository:
-=======
-2.      Change current working directory to **labs/day0** inside the cloned repository:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     cd qwiklabs-fgt-terraform/labs/day0
@@ -413,35 +353,21 @@ As this lab is restricted to use us-central1 region, provide name the region in 
 ### FortiGate cluster deployment
 Terraform deployment consists of 3 steps. Execute them now as described below:
 
-<<<<<<< HEAD
 1.	In **day0** directory initialize terraform using command
 
     ```  
-=======
-1.      In **day0** directory initialize terraform using command
-
-    ```
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
     terraform init
     ```
 
     This will make terraform parse your **.tf** files for submodules and providers, and download necessary additional files. Re-run `terraform init` every time you add or remove providers and submodules
-<<<<<<< HEAD
 2.	Build a terraform plan and save it to **tf.plan** file by issuing command  
-=======
-2.      Build a terraform plan and save it to **tf.plan** file by issuing command
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform plan -out tf.plan
     ```
 
     Terraform plan file describes every resource to be created and dependencies between them. Planning phase also connects to every provider and checks the state file to verify if any of the resources described in the code already exist or have changed. You should always verify the output of `terraform plan` to understand what resources will be created, changed or destroyed.
-<<<<<<< HEAD
 3.	Create the resources according to the plan by issuing command  
-=======
-3.      Create the resources according to the plan by issuing command
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform apply tf.plan
@@ -456,7 +382,6 @@ After `terraform apply` command completes you will see several output values whi
 ### Reviewing the deployment
 Once everything is deployed you can connect to the FortiGates to verify they are running and formed the cluster properly. In an FGCP (FortiGate Clustering Protocol) high-availability cluster all configuration changes are managed by the primary instance and automatically copied to the secondary. You can manage the primary instance using your web browser – the web console is available on standard HTTPS port – or via SSH. You will find the public IP address of your newly deployed FortiGate as well as the initial password in the terraform outputs.
 
-<<<<<<< HEAD
 1.	Select the value of `default_password` terraform output to copy it to clipboard
 2.	Click the `primary_fgt_mgmt` URL in the outputs to open it in a new browser tab
 3.	Log in as user `admin` with password from your clipboard
@@ -465,16 +390,6 @@ Once everything is deployed you can connect to the FortiGates to verify they are
 6.	Skip through dashboard configuration, possible firmware upgrade offer and the welcome video
 7.	Ignore the red FortiCare Support warning in the dashboard. It informs you that your support contract was not registered. Support contract is not available for this lab.
 8.	In the menu on the left select **System > HA**  
-=======
-1.      Select the value of `default_password` terraform output to copy it to clipboard
-2.      Click the `primary_fgt_mgmt` URL in the outputs to open it in a new browser tab
-3.      Log in as user `admin` with password from your clipboard
-4.      Change the initial password to your own
-5.      Login with your new password
-6.      Skip through dashboard configuration, possible firmware upgrade offer and the welcome video
-7.      Ignore the red FortiCare Support warning in the dashboard. It informs you that your support contract was not registered. Support contract is not available for this lab.
-8.      In the menu on the left select **System > HA**
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
     In the table you should see two FortiGate instances with different serial numbers and roles marked as “Primary” and “Secondary”. Initially, the secondary instance might be marked as “Out of sync”, but you can continue without waiting for the cluster to synchronize the configuration.
 
 The **day0** module created a cluster and necessary load balancers, but did not create external load balancer frontend. External IP address and its related load balancer frontend will be created in the following step as part of the application deployment. You can verify that the load balancer **fgt-qlabs-bes-elb-us-central1** has no frontend attached in the GCP web console in **Network services** section available under the menu in top-left corner of the console. Use **Search** in the top bar if you cannot find **Network services** in the menu.
@@ -566,11 +481,7 @@ resource "google_secret_manager_secret_version" "api_key" {
 }
 ```
 
-<<<<<<< HEAD
 and later retrieved in **dayN/providers.tf**:  
-=======
-and later retrieved in **dayN/providers.tf**:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 ```
 data "google_secret_manager_secret_version" "fgt-apikey" {
@@ -599,21 +510,12 @@ provider "fortios" {
 ### Verifying the complete setup
 Terraform **dayN** module deployed the web application and configured FortiGate to allow secure access to it. The steps below will help you verify and understand the elements of this infrastructure:
 
-<<<<<<< HEAD
 1.	Verify that the website is available by clicking the application URL from terraform outputs. A sample webpage should open in a new browser tab. If it’s not available immediately retry after a moment. It takes about a minute for the webserver to start. You should see a simple web page similar to this one:
 ![Sample "It works!" webpage screenshot](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/itworked.png)
 2.	You can now go back to FortiGate web console and use the menu on the left to navigate to Log & Report > Forward Traffic. You will find connections originating from your computer's public IP with destination set to the IP address of the application (which is the address of the external network load balancer). You can click Add Filter and set Destination Port: 80 to filter out the noise.
 ![FortiGate forwarding log](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/fwlog.png)
 3.	In the next step you will verify that FortiGate threat inspection is enabled by attempting to download Eicar - a non-malicious malware test file. Click “Try getting EICAR” button in the middle of the demo web page. Your attempt will be blocked.
 4.	In the FortiGate web console refresh the Forward Traffic log to show new entries. One of them will be marked as “Deny: UTM blocked”. Double-click the entry and select “Security” tab in the Log Details frame to show details about the detected threat.
-=======
-1.      Verify that the website is available by clicking the application URL from terraform outputs. A sample webpage should open in a new browser tab. If it’s not available immediately retry after a moment. It takes about a minute for the webserver to start. You should see a simple web page similar to this one:
-![Sample "It works!" webpage screenshot](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/itworked.png)
-2.      You can now go back to FortiGate web console and use the menu on the left to navigate to Log & Report > Forward Traffic. You will find connections originating from your computer's public IP with destination set to the IP address of the application (which is the address of the external network load balancer). You can click Add Filter and set Destination Port: 80 to filter out the noise.
-![FortiGate forwarding log](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/fwlog.png)
-3.      In the next step you will verify that FortiGate threat inspection is enabled by attempting to download Eicar - a non-malicious malware test file. Click “Try getting EICAR” button in the middle of the demo web page. Your attempt will be blocked.
-4.      In the FortiGate web console refresh the Forward Traffic log to show new entries. One of them will be marked as “Deny: UTM blocked”. Double-click the entry and select “Security” tab in the Log Details frame to show details about the detected threat.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 ![FortiGate blocked connection log details](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/fwlog-details.png)
 
 > In this section you performed tests to verify the newly deployed application is properly deployed and protected against threats by FortiGate next-gen firewall.
@@ -621,40 +523,24 @@ Terraform **dayN** module deployed the web application and configured FortiGate 
 ## Task 4: Configuration drift
 It can happen that the resources managed by the terraform code are changed manually. After such a change the code, state file and the real configuration are not aligned. It certainly is not a desired situation and is called a “drift”. In this section you will introduce a FortiGate configuration drift and use terraform to fix it.
 
-<<<<<<< HEAD
 1.	Connect to FortiGate web console and use menu on the left to navigate to **Policy & Objects > Firewall Policy**. Double-click the **demoapp1-allow** rule in **port1-port2** section, disable all security profiles and save the policy by clicking **OK** button at the bottom.
 2.	In the **dayN** directory in Cloud Shell run the following command:  
-=======
-1.      Connect to FortiGate web console and use menu on the left to navigate to **Policy & Objects > Firewall Policy**. Double-click the **demoapp1-allow** rule in **port1-port2** section, disable all security profiles and save the policy by clicking **OK** button at the bottom.
-2.      In the **dayN** directory in Cloud Shell run the following command:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform plan -refresh-only
     ```
 
-<<<<<<< HEAD
     The `-refresh-only` parameter instructs terraform to only indicate the changes but not plan them or update the state.  
     ![Screenshot after "terraform plan -refresh-only"](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tfrefreshonly.png)
 3.	To remediate this drift and revert to the configuration described in the terraform file run the   
-=======
-    The `-refresh-only` parameter instructs terraform to only indicate the changes but not plan them or update the state.
-    ![Screenshot after "terraform plan -refresh-only"](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tfrefreshonly.png)
-3.      To remediate this drift and revert to the configuration described in the terraform file run the
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform apply
     ```
 
     command. You can refresh the firewall policy list in FortiGate web console to verify the security profiles were re-enabled.
-<<<<<<< HEAD
 4.	Mind that not all configuration changes will be detected. To check it, while in FortiGate Firewall Policy list delete the **allow-all-outbound** policy in **port2-port1** section and run again the terraform plan `-refresh-only` command. This time there was no drift detected.  
     ![Terraform detects no drift - screenshot](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tf-nodrift.png)  
-=======
-4.      Mind that not all configuration changes will be detected. To check it, while in FortiGate Firewall Policy list delete the **allow-all-outbound** policy in **port2-port1** section and run again the terraform plan `-refresh-only` command. This time there was no drift detected.
-    ![Terraform detects no drift - screenshot](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tf-nodrift.png)
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
     The reason for this behavior is that only part of FortiGate configuration is managed by terraform. The deleted policy was part of the bootstrap configuration applied during initial firewall deployment (you can find it in **day0/main.tf** file, module “fortigates” block, fgt_config variable).
 
 In many organizations mixing manual and managed configuration is not desired. It provides flexibility but requires extra care when these two types of configuration overlap. Remember that parts of configuration created manually will not be automatically visible to terraform.
@@ -669,11 +555,7 @@ Congratulations, you have successfully deployed and configured FortiGates in Goo
 # LAB 3 - VPC Peering: Create/Configure VPC Peering between two Virtual Private Cloud (VPC) networks
 
 
-<<<<<<< HEAD
     
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 ## Google Cloud VPC Network Peering connects two Virtual Private Cloud (VPC) networks so that resources in each network can communicate with each other
 
 ## Benefits of VPC Network Peering
@@ -691,11 +573,7 @@ This lab is intended to Create/Configure VPC Peering between two Virtual Private
 ### Objectives
 In this lab you will:
 
-<<<<<<< HEAD
 - Create/Configure VPC peering between "Internal/Private/Trust VPC Network of FortiGate's Cluster" and "Web Server VPC Network". 
-=======
-- Create/Configure VPC peering between "Internal/Private/Trust VPC Network of FortiGate's Cluster" and "Web Server VPC Network".
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 - Notice on how the routes are exchanged and the traffic flow between the instances which reside in different VPC's, once  VPC Peering is created/configured.
 
 ## Setup and requirements
@@ -706,17 +584,10 @@ This hands-on lab lets you do the lab activities yourself in a real cloud enviro
 
 To complete this lab, you need:
 
-<<<<<<< HEAD
 * Access to a standard internet browser (Chrome browser recommended).  
     >*Note: Use an Incognito or private browser window to run this lab. This prevents any conflicts between your personal account and the Student account, which may cause extra charges incurred to your personal account.*
 
 * Time to complete the lab---remember, once you start, you cannot pause a lab.  
-=======
-* Access to a standard internet browser (Chrome browser recommended).
-    >*Note: Use an Incognito or private browser window to run this lab. This prevents any conflicts between your personal account and the Student account, which may cause extra charges incurred to your personal account.*
-
-* Time to complete the lab---remember, once you start, you cannot pause a lab.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 > *Note: If you already have your own personal Google Cloud account or project, do not use it for this lab to avoid extra charges to your account.*
 
 ### How to start your lab and sign in to the Google Cloud Console
@@ -759,20 +630,12 @@ This lab is fully automated using [Terraform by Hashicorp](https://www.terraform
 
 All code for this lab is hosted in a public git repository. To use it start by creating a local copy of its contents.
 
-<<<<<<< HEAD
 1.	Run the following command in your Cloud Shell to clone the git repository contents:
-=======
-1.      Run the following command in your Cloud Shell to clone the git repository contents:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     git clone https://github.com/fortinetsolutions/terraform-modules.git
     ```
-<<<<<<< HEAD
 2.	Change current working directory to **GCP/qwiklabs/vpc-peering** inside the cloned repository:
-=======
-2.      Change current working directory to **GCP/qwiklabs/vpc-peering** inside the cloned repository:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     cd terraform-modules/GCP/qwiklabs/vpc-peering
@@ -791,44 +654,26 @@ Before deploying the **vpc-peering** module you have an opportunity to customize
 As this lab is restricted to use us-central1 region, provide name the region in the **vpc-peering/terraform.tfvars** file:
 `region = "us-central1"`
 
-<<<<<<< HEAD
 You also have to indicate the GCP project to deploy to by setting `project` variable in **vpc-peering/terraform.tfvars** to the name of your qwiklabs project indicated as **GCP Project ID** in the **Lab Details** panel. 
-=======
-You also have to indicate the GCP project to deploy to by setting `project` variable in **vpc-peering/terraform.tfvars** to the name of your qwiklabs project indicated as **GCP Project ID** in the **Lab Details** panel.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 ### Web Server deployment
 Web Server deployment consists of 3 steps. Execute them now as described below:
 
-<<<<<<< HEAD
 1.	In **vpc-peering** directory initialize terraform using command
 
     ```  
-=======
-1.      In **vpc-peering** directory initialize terraform using command
-
-    ```
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
     terraform init
     ```
 
     This will make terraform parse your **.tf** files for submodules and providers, and download necessary additional files. Re-run `terraform init` every time you add or remove providers and submodules
-<<<<<<< HEAD
 2.	Build a terraform plan and save it to **tf.plan** file by issuing command  
-=======
-2.      Build a terraform plan and save it to **tf.plan** file by issuing command
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform plan
     ```
 
     Terraform plan file describes every resource to be created and dependencies between them. Planning phase also connects to every provider and checks the state file to verify if any of the resources described in the code already exist or have changed. You should always verify the output of `terraform plan` to understand what resources will be created, changed or destroyed.
-<<<<<<< HEAD
 3.	Create the resources according to the plan by issuing command  
-=======
-3.      Create the resources according to the plan by issuing command
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform apply
@@ -840,11 +685,7 @@ After `terraform apply` command completes you will see several output values whi
 
 ### Reviewing the deployment
 Once everything is deployed you can see the sample page of the Web Server when you enter the External IP of the Compute Engine Instance.
-<<<<<<< HEAD
 > *Note: It is recommended not to have an External IP for this Web Server. 
-=======
-> *Note: It is recommended not to have an External IP for this Web Server.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 ## LAB 3 - Task 4: VPC Peering
 In this step you will configure VPC Peering between the "Internal/Private/Trust VPC Network" with the "Web Server VPC Network" which is used for deploying the Web Server
@@ -857,11 +698,7 @@ Before creating peerings go back and review the routing. Any new VPC Network is 
 
 ![VPC route list](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_delete_default_route.png)
 
-<<<<<<< HEAD
 4. The route list should now contain only the "Default local route to the subnetwork 172.29.1.0/24" 
-=======
-4. The route list should now contain only the "Default local route to the subnetwork 172.29.1.0/24"
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 Now it's time to create the VPC peerings:
 
@@ -933,13 +770,8 @@ Congratulations, you have successfully configured the VPC Peering. The skills an
 ***
 # LAB 4 -  Create Network Overlay and Configure SD-WAN Components
 
-<<<<<<< HEAD
  
      
-=======
-
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 In previous labs, we built a Cloud on-ramp using two FortiGates deployed as a High Availability pair sandwiched between two Load Balancers.  We also built a remote site using a single FortiGate and Ubuntu server.  The next step is to securely connect the remote location with the cloud on-ramp.  In the following excercises, we will configure the IPsec overlay.  BGP will be used to share routes between locations.  Once the overlay is in place, we will configure SD-WAN to monitor SLA
 
 * Network Diagram
@@ -954,11 +786,7 @@ In previous labs, we built a Cloud on-ramp using two FortiGates deployed as a Hi
 
 
 
-<<<<<<< HEAD
 In this chapter, we will create the dialup IPsec VPN hub on the on-ramp FortiGate and configure the remote site to connect to it.   
-=======
-In this chapter, we will create the dialup IPsec VPN hub on the on-ramp FortiGate and configure the remote site to connect to it.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 ### Task 1 - Add Forwarding Rule to the Load Balancer
 
@@ -1144,11 +972,7 @@ diagnose vpn ike gateway list name HUB1
 config router bgp
     set as 65400
     set ibgp-multipath enable
-<<<<<<< HEAD
     set additional-path enable 
-=======
-    set additional-path enable
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
     set additional-path-select 4
     config neighbor-group
         edit HUB1
@@ -1212,11 +1036,7 @@ get router info routing-table bgp
 
     ![overlay7](https://github.com/fortidg/markdown-test/blob/main/images/hub-bgp-sum.jpg)
 
-<<<<<<< HEAD
     ![overlay8](https://github.com/fortidg/markdown-test/blob/main/images/spoke-bgp-sum.jpg)    
-=======
-    ![overlay8](https://github.com/fortidg/markdown-test/blob/main/images/spoke-bgp-sum.jpg)
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 * Ensure continuity from Hub by pinging the remote site Ubuntu server.
 
@@ -1261,11 +1081,7 @@ end
 
     ![overlay9](https://github.com/fortidg/markdown-test/blob/main/images/new-sdwan-member.jpg)
 
-<<<<<<< HEAD
 * Navigate to **Network > SD-WAN** and click on **Create New > SD-WAN Member** From the **Interface** drop down, choose **HUB1**.  In the **SD-WAN Zone** drop down, click **Create** and name the new zone "overlay".  Leave all other values as default and click **OK** 
-=======
-* Navigate to **Network > SD-WAN** and click on **Create New > SD-WAN Member** From the **Interface** drop down, choose **HUB1**.  In the **SD-WAN Zone** drop down, click **Create** and name the new zone "overlay".  Leave all other values as default and click **OK**
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ![overlay10](https://github.com/fortidg/markdown-test/blob/main/images/hub1-sdwan.jpg)
 
@@ -1326,11 +1142,7 @@ end
 
 ### Task 2 - Create SLA monitoring
 
-<<<<<<< HEAD
 * Navigate to **Network > SD-WAN > Performance SLAs** and select the test named **Default_Google_Search"**.  Click **Edit**. Under **Participants** select **All SD-WAN Members**.  Leave all other values as default and click **OK**.  
-=======
-* Navigate to **Network > SD-WAN > Performance SLAs** and select the test named **Default_Google_Search"**.  Click **Edit**. Under **Participants** select **All SD-WAN Members**.  Leave all other values as default and click **OK**.
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ![overlay11](https://github.com/fortidg/markdown-test/blob/main/images/google-sla.jpg)
 
@@ -1350,20 +1162,12 @@ end
 
     ![overlay14](https://github.com/fortidg/markdown-test/blob/main/images/oci-rule.jpg)
 
-<<<<<<< HEAD
 #### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/716691/sd-wan-rules 
-=======
-#### useful link - https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/716691/sd-wan-rules
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 * **Congratulations!** You have completed this course!  Please answer the questions below.
 
 ***
-<<<<<<< HEAD
   
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 ***
 
@@ -1374,11 +1178,7 @@ end
 
 * All GCP features can be configured from the GUI Console  (True or False)
 
-<<<<<<< HEAD
  
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 Answer
 
@@ -1394,11 +1194,7 @@ Answer
     c) set mode-cfg enable
     d) set peertype any
 
-<<<<<<< HEAD
  
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 Answer
 
@@ -1410,32 +1206,20 @@ Answer
 
 * You must use the Zone ID in security policy for any interface which is added to SD-WAN (TRUE or False)
 
-<<<<<<< HEAD
  
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 Answer
 
 * **True** - once an interface is part of SD-WAN, you can no longer assign policy direcly to that interface.
 
 
-<<<<<<< HEAD
     
-=======
-
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
 
 ##  Clean-up
 To revert changes and remove resources you created in this lab do the following:
 
-<<<<<<< HEAD
 1.	To delete the demo application: in the Cloud Shell, issue the following command while in **GCP/qwiklabs/vpc-peering** directory:  
-=======
-1.      To delete the demo application: in the Cloud Shell, issue the following command while in **GCP/qwiklabs/vpc-peering** directory:
->>>>>>> bdefa20ca082abcf4113a9c38442ae53fa3ba195
 
     ```
     terraform destroy
