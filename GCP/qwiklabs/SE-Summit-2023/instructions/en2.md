@@ -128,7 +128,7 @@ sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes"
 service sshd restart
 ```
 
-1. Click on **CREATE** at the bottom of the page
+9. Click on **CREATE** at the bottom of the page
 
 ***
 
