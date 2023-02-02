@@ -1,5 +1,17 @@
+terraform {
+  required_version = ">= 0.13.1"
+
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+    }
+    google-beta = {
+      source = "hashicorp/google-beta"
+    }
+  }
+}
+
 provider "google" {
-  version     = "3.49.0"
   credentials = file(var.credentials_file_path)
   project     = var.project
   region      = var.region
@@ -66,23 +78,9 @@ module "instances" {
   random_string       = module.random.random_string
   public_vpc_network  = module.vpc.vpc_networks[0]
   private_vpc_network = module.vpc.vpc_networks[1]
+  mgmt_vpc_network    = module.vpc.vpc_networks[2]
   public_subnet       = module.subnet.subnets[0]
   private_subnet      = module.subnet.subnets[1]
+  mgmt_subnet         = module.subnet.subnets[2]
   static_ip           = module.static-ip.static_ip
 }
-
-
-
-# module "instances_nginx" {
-#   source = "../../modules/nginx_instance"
-
-#   # Pass Variables
-#   name    = var.name
-#   zone    = var.zone
-#   machine = var.machine
-#   image   = var.ubuntu_image
-#   # Values fetched from the Modules
-#   random_string      = module.random.random_string
-#   public_vpc_network = module.vpc.vpc_networks[1]
-#   public_subnet      = module.subnet.subnets[1]
-# }

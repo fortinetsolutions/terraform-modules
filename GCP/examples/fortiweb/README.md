@@ -1,6 +1,6 @@
 # Configuration for FortiWeb
 
-This example creates a deployment configruation for FortiWeb with BYOL.
+This example creates a deployment configruation for FortiWeb with BYOL/PAYG.
 
 ## Instances included in this Example
 
@@ -10,13 +10,13 @@ This example creates a deployment configruation for FortiWeb with BYOL.
 1. Subnets for each VPC Network
     - Public
     - Private
+    - Mgmt
 1. Firewalls
     - Creates 'INGRESS' and 'EGRESS' rules allowing all protocols.
 1. External/Static IP
 1. 1 Instances
     - BYOL
         - Deploys License
-        - Updates Password
 
 ## How do you run these examples?
 

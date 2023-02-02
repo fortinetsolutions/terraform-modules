@@ -7,11 +7,6 @@ variable "zone" {}
 variable "machine" {}
 variable "image" {}
 variable "license_file" {}
-variable "password" {
-  type        = string
-  default     = "fortinet"
-  description = "FortiWeb Password"
-}
 # vpc module
 variable "vpcs" {}
 # subnet module
