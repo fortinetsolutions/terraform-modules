@@ -122,11 +122,11 @@ Once everything is deployed you can see the sample page of the Web Server when y
 ## Task 3: Connect to FortiWeb & WebServer
 In this step you will connect to the FortiWeb
 
-![FortiWeb Login Page](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_login.png)
+![FortiWeb Login Page](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_login.png)
 
 1.  Once you login you will be at the FortiWeb Dashboard setup
 
-![FortiWeb Dashboard](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_dashboard.png)
+![FortiWeb Dashboard](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_dashboard.png)
 
 
 ## Task 4: Check Connectivity to WebServer
@@ -134,13 +134,13 @@ In this step you will connect to the FortiWeb
 
 1.  Click on CLI Console to check the connectivity to the web server
 
-![FortiWeb CLI console](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_cli_console.png)
+![FortiWeb CLI console](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_cli_console.png)
 
 
 2.  Check connectivity to the web server via CLI-Console.
     Ping Internal IP of the WebServer
 
-![FortiWeb Connectivity](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_connectivity_ws.png)
+![FortiWeb Connectivity](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_connectivity_ws.png)
 
     ```  
     execute ping 10.10.3.2
@@ -154,11 +154,11 @@ In this step you will connect to the FortiWeb
     Server Objects >> Server >> Server Pool >> Create new
     ```
 
-![FortiWeb Server Pool](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_new.png)
+![FortiWeb Server Pool](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_new.png)
 
 2.  Input information as shown below. Select the Server Balance option for Server Health check option to appear. Click OK.
 
-![FortiWeb Server Pool](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_server_pool_ok.png)
+![FortiWeb Server Pool](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_server_pool_ok.png)
 
 3.  Once click OK in the above step the greyed out Create new button should now appear to create the Server object.
 
@@ -166,7 +166,7 @@ In this step you will connect to the FortiWeb
     Create New 
     ```
 
-![FortiWeb Server Object](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_1.png)
+![FortiWeb Server Object](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_1.png)
 
 4. Now enter the IP address of your application server in this case it is the IP address of Apache Server, the port number the pool member/application server listens for connections. 
 
@@ -174,32 +174,32 @@ In this step you will connect to the FortiWeb
     Click OK once you enter the information. 
     ```
 
-![FortiWeb Server Pool](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_2.png)
+![FortiWeb Server Pool](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_2.png)
 
-![FortiWeb Server Object](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_3.png)
+![FortiWeb Server Object](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_server_object_3.png)
 
 
 ## Task 6:  Create Virtual Server and IP
 
 1. Now we will need to create the Virtual Server IP on which the Traffic destined for server pool member arrives. When FortiWeb receives traffic destined for a Virtual server it can then forward to its pool members. 
 
-![FortiWeb Virtual Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server.png)
+![FortiWeb Virtual Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server.png)
 
 2. Enter the name for the Virtual Server and click OK
 
-![FortiWeb Virtual Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server_ok.png)
+![FortiWeb Virtual Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server_ok.png)
 
 3. Click Create new as shown below to now create Virtual Server item.
 
-![FortiWeb Virtual Server Item](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server_item.png)
+![FortiWeb Virtual Server Item](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server_item.png)
 
 4. Virtual Server item can be an IP address of the interface or an IP other than the interface. In this case we will use the interface IP - Turn on the Radio button for “use interface IP”, a drop down with interfaces will appear. Select Port1 as the interface for this Virtual Server item and click OK.
 
-![FortiWeb Virtual Server Item Interface](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server_item_interface.png)
+![FortiWeb Virtual Server Item Interface](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_virtual_server_item_interface.png)
 
 5. The Virtual Server for the Apache Server is now using the IP address of the Port1 Interface. 
 
-![FortiWeb Virtual Server Item Interface IP](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fweb_virtual_server_item_interface_ip.png)
+![FortiWeb Virtual Server Item Interface IP](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fweb_virtual_server_item_interface_ip.png)
 
 
 ## Task 7:  Create Web Protection Profile  
@@ -210,21 +210,21 @@ In this step you will connect to the FortiWeb
     Navigate to Policy >> Web Protection Profile
     ```
 
-![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp.png)
+![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp.png)
 
 >*Note: You can create your custom Protection profile as well.*
 
 2. Now let’s create a Server policy. Input Name for the server policy, Select the Virtual Server, Server pool which we created in the earlier steps from the drop down and finally Select the HTTP service. In this step we are not attaching the Protection profile. Click OK.
 
-![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_2.png)
+![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_2.png)
 
-![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_3.png)
+![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_3.png)
 
 ## Task 8: Perform an attack
 
 1. Now let’s Navigate to the browser and type the Public IP assigned to your FortiWeb instance to get to the web browser. http://FortiWebIP
 
-![FortiWeb Policy Web Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_webserver.png)
+![FortiWeb Policy Web Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_webserver.png)
 
 2. Let’s perform a SQLi attack. To perform a SQLi attack append ?name=' OR 'x'='x to your URL. 
 
@@ -233,7 +233,7 @@ In this step you will connect to the FortiWeb
     ```
     >*Note: The attack will go through.*
 
-![FortiWeb Policy Web Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_webserver_success.png)
+![FortiWeb Policy Web Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_webserver_success.png)
 
 ## Task 9:  Protect WebServer from Attack
 
@@ -241,9 +241,9 @@ In this step you will connect to the FortiWeb
 
 Click the dropdown and attack inline standard protection. Click OK.
 
-![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_1.png)
+![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_1.png)
 
-![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_4.png)
+![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_4.png)
 
 2. Repeat the same step to perform SQLi attack in the browser. 
 
@@ -252,7 +252,7 @@ Click the dropdown and attack inline standard protection. Click OK.
     ```
     >*Note: You will see that FortiWeb now blocks the SQLi attack.*
 
-![FortiWeb Policy Web Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/blob/master/qwiklabs/fortiweb/instructions/img/fortiweb_webserver_blocked.png)
+![FortiWeb Policy Web Server](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_webserver_blocked.png)
 
 ### Congratulations!
 Congratulations, you have successfully configured the VPC Peering. The skills and concepts you have learned can help you build secure environments leveraging network security experience of FortiGuard Labs combined with cloud-native workflows, eliminating the requirement to interactively log into the firewall management console.
