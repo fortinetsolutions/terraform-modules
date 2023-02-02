@@ -1,6 +1,12 @@
 # Configuration for FortiWeb
 
-This example creates a deployment configruation for FortiWeb with BYOL/PAYG.
+This example creates a deployment configruation for FortiWeb.
+
+## Deploying FortiWeb on GCP
+https://docs.fortinet.com/document/fortiweb-public-cloud/6.4.0/deploying-fortiweb-from-google-cloud-compute-engine/400683/obtaining-the-deployment-image
+
+## Juice Shop
+https://github.com/juice-shop/juice-shop#google-compute-engine-instance
 
 ## Instances included in this Example
 
@@ -10,13 +16,15 @@ This example creates a deployment configruation for FortiWeb with BYOL/PAYG.
 1. Subnets for each VPC Network
     - Public
     - Private
-    - Mgmt
 1. Firewalls
     - Creates 'INGRESS' and 'EGRESS' rules allowing all protocols.
 1. External/Static IP
 1. 1 Instances
     - BYOL
         - Deploys License
+        - Updates Password
+
+
 
 ## How do you run these examples?
 
