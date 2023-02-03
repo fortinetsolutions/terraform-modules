@@ -272,7 +272,7 @@ Answer
 
 
 
-## Question 2
+### Question 2
 
 * By default, External IP Addresses associated with vNICs in GCP are preserved across reboot (True or False)
 
@@ -1191,7 +1191,7 @@ Answer
 
 
 
-## Question 2
+### Question 2
 
 * Which hub ipsec phase1-interface setting enables dynamic assignment of IP address to remote peers?
     a) set type dynamic
@@ -1207,7 +1207,7 @@ Answer
 
 
 
-## Question 3
+### Question 3
 
 * You must use the Zone ID in security policy for any interface which is added to SD-WAN (TRUE or False)
 
