@@ -307,7 +307,7 @@ In this lab you will:
 
 ### Architecture
 The final architecture and test connection flow is depicted on the diagram below:  
-![Architecture overview](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/diag-overview.png)
+![Architecture overview](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/diag-overview.png)
 
 It is a simplified standard architecture described in [Cloud Architecture Center](https://cloud.google.com/architecture/partners/use-terraform-to-deploy-a-fortigate-ngfw?hl=en) with demo web server deployed directly into the firewall's internal subnet.
 
@@ -344,7 +344,7 @@ For the Terraform, each directory containing **.tf** files is a module. A direct
 ## Task 2: Deploying FortiGate cluster
 Using **day0** module you will deploy a standard active-passive HA cluster of 2 FortiGate VM instances with a complete Internal Load Balancer used as next hop for the default custom route on the internal (protected) side and an external backend service (load balancer without any frontends) on the external side. **day0** will also create all the necessary VPC networks and subnets, cloud firewall rules, custom route and a cloud NAT used for outbound connections initiated from FortiGates.
 
-![day0 deployment architecture](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/diag-day0.png)
+![day0 deployment architecture](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/diag-day0.png)
 
 FortiGates are bootstrapped with an additional firewall policy allowing outbound traffic (defined in **fgt_config** variable for **fortigates** module in **day0/main.tf**). This policy will enable automated provisioning of web server in later steps.
 
@@ -382,7 +382,7 @@ Terraform deployment consists of 3 steps. Execute them now as described below:
 
 After `terraform apply` command completes you will see several output values which will be necessary in later steps. Terraform outputs can be used to provide additional information to the operator.
 
-![Terraform apply output](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tf-apply-day0.png)
+![Terraform apply output](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/tf-apply-day0.png)
 
 ### Reviewing the deployment
 Once everything is deployed you can connect to the FortiGates to verify they are running and formed the cluster properly. In an FGCP (FortiGate Clustering Protocol) high-availability cluster all configuration changes are managed by the primary instance and automatically copied to the secondary. You can manage the primary instance using your web browser – the web console is available on standard HTTPS port – or via SSH. You will find the public IP address of your newly deployed FortiGate as well as the initial password in the terraform outputs.
@@ -401,7 +401,7 @@ The **day0** module created a cluster and necessary load balancers, but did not 
 
 You can notice that the external load balancer has no healthy VMs in the backends list. As the health checks are triggered only after adding a frontend this does not indicate any issue with FortiGates or infrastructure configuration.
 
-![ELB with no frontend](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/elb-no-frontend.png)
+![ELB with no frontend](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/elb-no-frontend.png)
 
 > *Note: At this point you have a fully functional cluster of FortiGates ready to protect traffic sent through it. In the next section you will deploy a web application, create a new public address for it, and redirect the traffic through FortiGate firewalls.*
 
@@ -410,7 +410,7 @@ In this step you will create a new VM and configure it to host a sample web page
 
 To enable access to the web server VM, **dayN** module utilizes a sample submodule (**secure-inbound**) to create a new external IP address, assign it as a frontend to the external load balancer and configure FortiGates with a new firewall policy and a virtual IP address for destination NAT.
 
-![dayN deployment architecture](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/diag-dayn.png)
+![dayN deployment architecture](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/diag-dayn.png)
 
 Note how leveraging a reusable submodule can abstract creation of all necessary resources in Google Cloud and in FortiGate.
 
@@ -516,12 +516,12 @@ provider "fortios" {
 Terraform **dayN** module deployed the web application and configured FortiGate to allow secure access to it. The steps below will help you verify and understand the elements of this infrastructure:
 
 1.	Verify that the website is available by clicking the application URL from terraform outputs. A sample webpage should open in a new browser tab. If it’s not available immediately retry after a moment. It takes about a minute for the webserver to start. You should see a simple web page similar to this one:
-![Sample "It works!" webpage screenshot](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/itworked.png)
+![Sample "It works!" webpage screenshot](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/itworked.png)
 2.	You can now go back to FortiGate web console and use the menu on the left to navigate to Log & Report > Forward Traffic. You will find connections originating from your computer's public IP with destination set to the IP address of the application (which is the address of the external network load balancer). You can click Add Filter and set Destination Port: 80 to filter out the noise.
-![FortiGate forwarding log](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/fwlog.png)
+![FortiGate forwarding log](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/fwlog.png)
 3.	In the next step you will verify that FortiGate threat inspection is enabled by attempting to download Eicar - a non-malicious malware test file. Click “Try getting EICAR” button in the middle of the demo web page. Your attempt will be blocked.
 4.	In the FortiGate web console refresh the Forward Traffic log to show new entries. One of them will be marked as “Deny: UTM blocked”. Double-click the entry and select “Security” tab in the Log Details frame to show details about the detected threat.
-![FortiGate blocked connection log details](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/fwlog-details.png)
+![FortiGate blocked connection log details](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/fwlog-details.png)
 
 > In this section you performed tests to verify the newly deployed application is properly deployed and protected against threats by FortiGate next-gen firewall.
 
@@ -536,7 +536,7 @@ It can happen that the resources managed by the terraform code are changed manua
     ```
 
     The `-refresh-only` parameter instructs terraform to only indicate the changes but not plan them or update the state.  
-    ![Screenshot after "terraform plan -refresh-only"](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tfrefreshonly.png)
+    ![Screenshot after "terraform plan -refresh-only"](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/tfrefreshonly.png)
 3.	To remediate this drift and revert to the configuration described in the terraform file run the   
 
     ```
@@ -545,7 +545,7 @@ It can happen that the resources managed by the terraform code are changed manua
 
     command. You can refresh the firewall policy list in FortiGate web console to verify the security profiles were re-enabled.
 4.	Mind that not all configuration changes will be detected. To check it, while in FortiGate Firewall Policy list delete the **allow-all-outbound** policy in **port2-port1** section and run again the terraform plan `-refresh-only` command. This time there was no drift detected.  
-    ![Terraform detects no drift - screenshot](https://github.com/40net-cloud/qwiklabs-fgt-terraform/raw/main/instructions/img/tf-nodrift.png)  
+    ![Terraform detects no drift - screenshot](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/tf-nodrift.png)  
     The reason for this behavior is that only part of FortiGate configuration is managed by terraform. The deleted policy was part of the bootstrap configuration applied during initial firewall deployment (you can find it in **day0/main.tf** file, module “fortigates” block, fgt_config variable).
 
 In many organizations mixing manual and managed configuration is not desired. It provides flexibility but requires extra care when these two types of configuration overlap. Remember that parts of configuration created manually will not be automatically visible to terraform.
