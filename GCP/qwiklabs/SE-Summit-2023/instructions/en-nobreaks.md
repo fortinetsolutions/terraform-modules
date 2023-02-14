@@ -328,7 +328,7 @@ All code for this lab is hosted in a public git repository. To use it start by c
     ```
 3. In the **Cloud Shell Editor** part of your Cloud Shell tab choose **File > Open** from the top menu and open the **qwiklabs-fgt-terraform/labs** folder. Cloud Shell Editor will be useful to navigate, review and edit terraform code during this lab.
 
-![Cloud Editor open folder dialog](https://raw.githubusercontent.com/40net-cloud/qwiklabs-fgt-terraform/main/instructions/img/ide-open-folder.png)
+![Cloud Editor open folder dialog]((https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/ide-open-folder.png)
 
 For the Terraform, each directory containing **.tf** files is a module. A directory in which you run terraform command is the *root module* and can contain *submodules*. In this lab you will deploy two root modules: **day0** and **dayN** with each of them containing submodules. The module structure of **labs** in the cloned **qwiklabs-fgt-terraform** repository looks as follows:
 
