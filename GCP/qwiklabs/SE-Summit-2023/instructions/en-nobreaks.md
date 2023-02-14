@@ -46,7 +46,7 @@ To complete this lab, you need:
 
 ***Important:*** *make sure you are logged in using the temporary student username and you use the temporary qwiklabs project in both web console and cloud shell. Using your own project and username WILL incur charges.*
 
-# LAB 1 - Create FortiGate test environment manually in GCP Console
+## LAB 1 - Create FortiGate test environment manually in GCP Console
 
 * **Project 1** will be used for this Lab
     
@@ -283,7 +283,7 @@ Answer
    
 ***
 
-# LAB 2 - FortiGate: Automating deployment and configuration using Terraform
+## LAB 2 - FortiGate: Automating deployment and configuration using Terraform
 
 * **Project 2** will be used for this Lab
 
@@ -557,7 +557,7 @@ Congratulations, you have successfully deployed and configured FortiGates in Goo
 
 ***
 
-# LAB 3 - VPC Peering: Create/Configure VPC Peering between two Virtual Private Cloud (VPC) networks
+## LAB 3 - VPC Peering: Create/Configure VPC Peering between two Virtual Private Cloud (VPC) networks
 
 * All Terraform will be deployed in **Project 1**.  For the peering part of this Lab, we will need to create peering between the projects.
     
@@ -735,7 +735,7 @@ Congratulations, you have successfully configured the VPC Peering. The skills an
 
 
 ***
-# LAB 4 -  Create Network Overlay and Configure SD-WAN Components
+## LAB 4 -  Create Network Overlay and Configure SD-WAN Components
 
      
 In previous labs, we built a Cloud on-ramp using two FortiGates deployed as a High Availability pair sandwiched between two Load Balancers.  We also built a remote site using a single FortiGate and Ubuntu server.  The next step is to securely connect the remote location with the cloud on-ramp.  In the following excercises, we will configure the IPsec overlay.  BGP will be used to share routes between locations.  Once the overlay is in place, we will configure SD-WAN to monitor SLA
