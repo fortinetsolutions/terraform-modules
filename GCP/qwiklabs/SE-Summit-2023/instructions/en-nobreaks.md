@@ -319,7 +319,7 @@ All code for this lab is hosted in a public git repository. To use it start by c
 1.	Run the following command in your Cloud Shell to clone the git repository contents:
 
     ```
-    git clone https://github.com/40net-cloud/qwiklabs-fgt-terraform.git
+    git clone https://github.com/fortidg/se-summit-23.git
     ```
 2.	Change current working directory to **labs/day0** inside the cloned repository:
 
