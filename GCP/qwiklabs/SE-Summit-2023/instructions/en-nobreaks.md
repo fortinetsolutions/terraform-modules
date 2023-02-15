@@ -37,9 +37,9 @@ To complete this lab, you need:
 6. Open the Cloud Shell in new browser tab by clicking the **Google Cloud Shell** link in the **Student Resources** and log in again using **GCP Username** and **Password** from the **Lab Details** panel. Cloud Shell is a virtual machine that is loaded with development tools. It offers a persistent 5GB home directory and runs on the Google Cloud. Cloud Shell provides command-line access to your Google Cloud resources.
 7. Set active project for your Cloud Shell session by typing the command:
 
-    ```
+```
     gcloud config set project PROJECT_ID
-    ```
+```
     replacing PROJECT_ID with the **GCP Project ID** from the **Lab Details** panel.
 
 > *Note: For full documentation of gcloud, in Google Cloud, refer to* [*the gcloud CLI overview guide.*](https://cloud.google.com/sdk/gcloud)
@@ -129,7 +129,6 @@ In this step we will create the required VPC Networks and security rules needed.
     ![console11](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/default-fgt-int.png)
 1. Configure the Network as follows and Click **Done**.
     ![console12](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/untrust-nic.png)
-1. Under **Machine Type** change the series to **N2** and ensure that the machine type is **n2-standard-2**
 1. Under **Networking** > **Network interfaces** click on **ADD NETWORK INTERFACE** and configure as follows.
     ![console13](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/trust-nic-det.png)
 1. At the bottom, check box to accept terms and then click **DEPLOY**.
@@ -214,7 +213,11 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
     ![console20](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/default-to-fgt.png)
 
-### Task 2 - Create Policy in FortiGate to allow traffic from trust to untrust
+### Task 2 - add static route in fortigate for trust network
+
+* Under **Network** > **Static Routes** click on **Create New** and add a route with Destination 192.168.129.0/25, Gateway IP 192.168.129.1 for port2.
+
+### Task 3 - Create Policy in FortiGate to allow traffic from trust to untrust
 
 * Log into the FortiGate using the  Admin URL and Temporary Admin password which you noted earlier.  You will be prompted to change the password upon initial login.
 
@@ -222,7 +225,7 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
     ![console21](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/trust-to-untrust.png)
 
-### Task 3 - Create VIP in FortiGate to allow access to ubuntu server
+### Task 4 - Create VIP in FortiGate to allow access to ubuntu server
 
   **Any Value not listed below will be left as default.**
 
@@ -248,6 +251,8 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 * In your preferred browser, input **http://<fortigate public ip>:8080** (example http://34.72.196.194:8080).  You should get the default Apache2 landing page.
 
     ![console24](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/apache2.png)
+
+
 
 #### Tidbit - In this example, we are allowing all IPs inbound and we did not add any security features to our policy.  In a live environment, we would very likely lock this down to specific Source IP addresses as well as add IPS to our policy.  For even better security web servers should be protected by FortiWeb
 
@@ -318,14 +323,15 @@ All code for this lab is hosted in a public git repository. To use it start by c
 
 1.	Run the following command in your Cloud Shell to clone the git repository contents:
 
-    ```
+```sh
     git clone https://github.com/fortidg/se-summit-23.git
-    ```
+```
+
 2.	Change current working directory to **labs/day0** inside the cloned repository:
 
-    ```
-    cd qwiklabs-fgt-terraform/labs/day0
-    ```
+```sh
+    cd se-summit-23/qwiklabs-fgt-terraform/labs/day0
+```
 3. In the **Cloud Shell Editor** part of your Cloud Shell tab choose **File > Open** from the top menu and open the **qwiklabs-fgt-terraform/labs** folder. Cloud Shell Editor will be useful to navigate, review and edit terraform code during this lab.
 
 ![Cloud Editor open folder dialog](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/ide-open-folder.png)
@@ -360,23 +366,23 @@ Terraform deployment consists of 3 steps. Execute them now as described below:
 
 1.	In **day0** directory initialize terraform using command
 
-    ```  
+```  
     terraform init
-    ```
+```
 
     This will make terraform parse your **.tf** files for submodules and providers, and download necessary additional files. Re-run `terraform init` every time you add or remove providers and submodules
 2.	Build a terraform plan and save it to **tf.plan** file by issuing command  
 
-    ```
+```
     terraform plan -out tf.plan
-    ```
+```
 
     Terraform plan file describes every resource to be created and dependencies between them. Planning phase also connects to every provider and checks the state file to verify if any of the resources described in the code already exist or have changed. You should always verify the output of `terraform plan` to understand what resources will be created, changed or destroyed.
 3.	Create the resources according to the plan by issuing command  
 
-    ```
+```
     terraform apply tf.plan
-    ```
+```
 
     This command will attempt to create, delete or change the resources according to the plan. If run without providing a plan file `terraform apply` will create a new plan and immediately execute it after confirmation from operator. `terraform apply` should be executed every time after the code or variables change.
 
@@ -432,7 +438,7 @@ module "secure_inbound" {
 ### Deploy web server and FortiGate configuration changes to existing environment
 To deploy the sample web application go back to the cloud shell and issue the following commands:
 
-```
+```sh
 cd ../dayN
 terraform init
 terraform plan –out tf.plan
@@ -461,7 +467,7 @@ data "terraform_remote_state" "day0" {
 
 you can later reference the retrieved output values as shown in **dayN/main.tf**:
 
-```
+```sh
 module "app" {
 [...]
   subnet       = data.terraform_remote_state.day0.outputs.internal_subnet
@@ -476,7 +482,7 @@ Similar to pulling information about the resources from the state file, you can 
 
 Created and saved in **day0/fgcp-ha-ap-lb/main.tf**:
 
-```
+```sh
 resource "google_secret_manager_secret" "api-secret" {
   secret_id      = "${google_compute_instance.fgt-vm[0].name}-apikey"
 }
@@ -488,7 +494,7 @@ resource "google_secret_manager_secret_version" "api_key" {
 
 and later retrieved in **dayN/providers.tf**:  
 
-```
+```sh
 data "google_secret_manager_secret_version" "fgt-apikey" {
   secret         = "${data.google_compute_instance.fgt1.name}-apikey"
 }
@@ -498,7 +504,7 @@ data "google_secret_manager_secret_version" "fgt-apikey" {
 You should always make sure you really need to share any data between modules. Terraform offers a possibility to query the APIs for needed values using its data blocks. You should consider using data instead of sharing variables especially for data that might change over time. For example: if management IP addresses are ephemeral, they may easily drift away from the values known right after initial deployment. The code retrieving the information about primary FortiGate directly from Google Compute API can be found in **dayN/providers.tf**:
 
 
-```
+```sh
 data "google_compute_instance" "fgt1" {
   self_link = data.terraform_remote_state.day0.outputs.fgt_self_links[0]
 }
@@ -506,7 +512,7 @@ data "google_compute_instance" "fgt1" {
 
 And the current public IP of management interface (port4) used later in the same file:
 
-```
+```sh
 provider "fortios" {
   hostname = data.google_compute_instance.fgt1.network_interface[3].access_config.nat_ip
 }
@@ -531,17 +537,17 @@ It can happen that the resources managed by the terraform code are changed manua
 1.	Connect to FortiGate web console and use menu on the left to navigate to **Policy & Objects > Firewall Policy**. Double-click the **demoapp1-allow** rule in **port1-port2** section, disable all security profiles and save the policy by clicking **OK** button at the bottom.
 2.	In the **dayN** directory in Cloud Shell run the following command:  
 
-    ```
-    terraform plan -refresh-only
-    ```
+```sh
+terraform plan -refresh-only
+```
 
     The `-refresh-only` parameter instructs terraform to only indicate the changes but not plan them or update the state.  
     ![Screenshot after "terraform plan -refresh-only"](https://raw.githubusercontent.com/fortidg/se-summit-23/main/qwiklabs-fgt-terraform-lab/instructions/img/tfrefreshonly.png)
 3.	To remediate this drift and revert to the configuration described in the terraform file run the   
 
-    ```
-    terraform apply
-    ```
+```sh
+terraform apply
+```
 
     command. You can refresh the firewall policy list in FortiGate web console to verify the security profiles were re-enabled.
 4.	Mind that not all configuration changes will be detected. To check it, while in FortiGate Firewall Policy list delete the **allow-all-outbound** policy in **port2-port1** section and run again the terraform plan `-refresh-only` command. This time there was no drift detected.  
@@ -559,7 +565,7 @@ Congratulations, you have successfully deployed and configured FortiGates in Goo
 
 ## LAB 3 - VPC Peering: Create/Configure VPC Peering between two Virtual Private Cloud (VPC) networks
 
-* All Terraform will be deployed in **Project 1**.  For the peering part of this Lab, we will need to create peering between the projects.
+* All Terraform will be deployed in **Project 1**.  For the peering part of this Lab, we will need to create peering between the projects.  You will need to make note of both **Project IDs** as they will be used to create the peering.
     
 ## Google Cloud VPC Network Peering connects two Virtual Private Cloud (VPC) networks so that resources in each network can communicate with each other
 
@@ -597,14 +603,14 @@ All code for this lab is hosted in a public git repository. To use it start by c
 
 1.	Run the following command in your Cloud Shell to clone the git repository contents:
 
-    ```
+```
     git clone https://github.com/fortinetsolutions/terraform-modules.git
-    ```
+```
 2.	Change current working directory to **GCP/qwiklabs/vpc-peering** inside the cloned repository:
 
-    ```
+```
     cd terraform-modules/GCP/qwiklabs/vpc-peering
-    ```
+```
 3. In the **Cloud Shell Editor** part of your Cloud Shell tab choose **File > Open** from the top menu and open the **terraform-modules/qwiklabs/vpc-peering** folder. Cloud Shell Editor will be useful to navigate, review and edit terraform code during this lab.
 
 For the Terraform, each directory containing **.tf** files is a module. A directory in which you run terraform command is the *root module* and can contain *submodules*. In this lab you will deploy a root module: **vpc-peering** containing submodules.
@@ -629,23 +635,23 @@ Web Server deployment consists of 3 steps. Execute them now as described below:
 
 1.	In **vpc-peering** directory initialize terraform using command
 
-    ```  
+```  
     terraform init
-    ```
+```
 
     This will make terraform parse your **.tf** files for submodules and providers, and download necessary additional files. Re-run `terraform init` every time you add or remove providers and submodules
 2.	Build a terraform plan and save it to **tf.plan** file by issuing command  
 
-    ```
+```
     terraform plan
-    ```
+```
 
     Terraform plan file describes every resource to be created and dependencies between them. Planning phase also connects to every provider and checks the state file to verify if any of the resources described in the code already exist or have changed. You should always verify the output of `terraform plan` to understand what resources will be created, changed or destroyed.
 3.	Create the resources according to the plan by issuing command  
 
-    ```
+```
     terraform apply
-    ```
+```
 
     This command will attempt to create, delete or change the resources according to the plan. If run without providing a plan file `terraform apply` will create a new plan and immediately execute it after confirmation from operator. `terraform apply` should be executed every time after the code or variables change.
 
@@ -668,9 +674,9 @@ Before creating peerings go back and review the routing. Any new VPC Network is 
 
 4. The route list should now contain only the "Default local route to the subnetwork 172.29.1.0/24" 
 
-Now it's time to create the VPC peerings:
+**Now it's time to create the VPC peerings:**
 
-1. Open VPC network peering page from the Console under the "VPC Network" menu
+1. Still in **Project 1**, Open VPC network peering page from the Console under the "VPC Network" menu
 
 ![VPC network peering page](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_network_peering.png)
 
@@ -680,9 +686,9 @@ Now it's time to create the VPC peerings:
 
 3. Click Continue
 4. Give a name to the Peering Connection
-5. Select the Internal/Private/Trust VPC Network of the FortiGate's Cluster
-6. Select the Peering Network, .i.e the VPC Network used for deploying the Web Server
-7. Choose "Export custom routes" as the "Internal/Private/Trust VPC Network" (HUB VPC Network) will export the routes while the Spokes .i.e. the "Web Server VPC Network" will import.
+5. Select the vpc networked named **qwiklabs-webserver-public-vpc-"xxx"**
+6. Under **Peered VPC network** select **In another project** and enter the **Project 2** Project ID and fortigate internal vpc network name **fgt-qlabs-internal-vpc**
+7. Under **Eschange IPv4 custom routes**, select **Import Custom Routes**
 8. Ignore the defaults which are selected.
 9. Click Create.
 
@@ -692,9 +698,12 @@ Routes are only exchanged when the peering is done from both the sides .i.e. fro
 
 You will notice the Status of the VPC Peering as "inactive" until you create the VPC peering from both sides.
 
-10. Repeat the above steps 4-9 for **Project 2** but choose "Web Server VPC Network" in Step-5, and "Internal/Private/Trust VPC Network" on Step-6.
-11. Choose "Import custom routes" as "Web Server VPC Network" will import routes acting as a Spoke.
-12. Click Create.
+Move to **Project 2**
+10. Repeat the above steps 1-4 for **Project 2**
+11. Select the vpc networked named **fgt-qlabs-internal-vpc**
+11. Under **Peered VPC network** select **In another project** and enter the **Project 1** Project ID and webserver vpc network name **qwiklabs-webserver-public-vpc-"xxx"**
+13. Under **Eschange IPv4 custom routes**, select **Export Custom Routes**
+13. Click Create.
 
 ![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
 
@@ -756,7 +765,7 @@ In this chapter, we will create the dialup IPsec VPN hub on the on-ramp FortiGat
 
 #### Tidbit - There is no way to add forwarding rules to the Load Balancer using the GUI Console.  For this step, we will need to open a cloud shell and use the Google SDK.  As you will see in the following steps, we need to create forwarding rules to allow the load balancer to forward UDP ports 500 and 4500 to the FortiGate
 
-***The Load Balancer was created as part of Lab 2 in Project Two.  The commands in this Task will need to be input in Project Two***
+**The Load Balancer was created as part of Lab 2 in Project 2.  The commands in this Task will need to be input in Project 2**
 
 * We will be using the below Google sdk command to create the forwarding rule.  Copy and paste the below command into your favorite text editor.  The next few steps will help us get the require environment variables (project-id, lb-ip)
 
@@ -1187,9 +1196,9 @@ To revert changes and remove resources you created in this lab do the following:
 
 1.	To delete the demo application: in the Cloud Shell, issue the following command while in **GCP/qwiklabs/vpc-peering** directory:  
 
-    ```
+```
     terraform destroy
-    ```
+```
 
     confirm your decision to delete the resources by typing `yes`
 
