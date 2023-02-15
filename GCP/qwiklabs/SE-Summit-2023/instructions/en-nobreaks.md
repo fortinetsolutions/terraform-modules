@@ -97,7 +97,7 @@ In this step we will create the required VPC Networks and security rules needed.
 
 1. For "Name" use "untrust"
 1. For "Subnet Creation Mode", **Custom** is selected.
-1. Under **New Subnet** name the subnet "untrust-1" and select **us-central1** region from Dropdown
+1. Under **New Subnet** name the subnet **untrust-1** and select **us-central1** region from Dropdown
 1. Under **New Subnet** type "192.168.128.0/25" and select **Done**.
     ![console6](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/untrust-1-subnet.png)
 1. Under **Firewall Rules** select **untrust-allow-custom** and click on **EDIT** to the right of the rule.
@@ -106,14 +106,14 @@ In this step we will create the required VPC Networks and security rules needed.
     ![console7](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/untrust-allow.png)
 1. Click **CONFIRM**
 1. Click **CREATE**
-
-* Repeat the process to create a second VPC Network named "trust" and with a subnet CIDR of "192.168.129.0/25".
+1. Repeat the process to create a second VPC Network named **trust** and with a subnet CIDR of **192.168.129.0/25**.
 
 #### Tidbit - Normally we would recommend for Customers to lock down their ingress Firewall rules to only allow the Sources and Ports necessary.  In our lab excercise, we left everything open here, just to make things easier.
 
 ### Task 3 - Create FortiGate VM
 
 * At the top left of the screen click the Hamburger menu then Select **Compute Engine** > **VM instances**.
+
     ![console8](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/compute-engine.png)
 
 * Click **CREATE INSTANCE**
@@ -125,6 +125,7 @@ In this step we will create the required VPC Networks and security rules needed.
     ![console9](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/marketplace.png)
 1. In the next pop up, choose **Launch**
     ![console10](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/launch-fgt.png)
+1. In the Image Version dropdown under **FortiGate (PayG)** select 7.2.3
 1. Under **Networking** > **Network interfaces** click on the down arrow next to default.
     ![console11](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/default-fgt-int.png)
 1. Configure the Network as follows and Click **Done**.
@@ -134,7 +135,6 @@ In this step we will create the required VPC Networks and security rules needed.
 1. At the bottom, check box to accept terms and then click **DEPLOY**.
     ![console14](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/accept-deploy.png)
 1. The **Deployment Manager** screen pops up next.  Make note of the Admin URL and Temporary Admin password.
-
     ![console15](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/fortigate-temp-pw.png)
 
 #### Tidbit - We used ephemeral for the Public IP of the FortiGate on the untrust NIC.  This means that the IP address could change when the FortiGate is rebooted.  To avoid this, you can go to **VPC network** > **IP addresses** and **RESERVER EXTERNAL STATIC ADDRESS**
@@ -147,7 +147,7 @@ In this step we will create the required VPC Networks and security rules needed.
 
 1. Choose an appropriate name for the VM.
 1. Under **Boot disk** select **CHANGE**
-1. In the pop up select options as pictured below
+1. In the pop up select options as pictured below .Use **x86/amd** image
 
     ![console16](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/ubuntu-image.png)
 1. Click the down arrow to expand **Advanced options**.
@@ -191,7 +191,7 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
 ### Task 1 - Route Traffic from trust network to the internet through FortiGate
 
-* From the Hamburger Menu go to **Compute Engine** > **VM instances** and click on the previously created FortiGate.  Under the Details screen, copy the Primary internal IP address for nic1 (trust network).
+* From the Hamburger Menu go to **Compute Engine** > **VM instances** and click on the previously created FortiGate.  Under the Details screen, copy the Primary internal IP address for nic1 **(trust network)**.
 
     ![console18](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/fortigate-interfaces.png)
 
@@ -215,6 +215,8 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
 ### Task 2 - add static route in fortigate for trust network
 
+**Check Dashboard > Network, Routing widget and ensure that you have the 192.168.129.0/25 route.  If not, please complete this task.  If the route is there, move on to Task 3**
+
 * Under **Network** > **Static Routes** click on **Create New** and add a route with Destination 192.168.129.0/25, Gateway IP 192.168.129.1 for port2.
 
 ### Task 3 - Create Policy in FortiGate to allow traffic from trust to untrust
@@ -229,12 +231,12 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
   **Any Value not listed below will be left as default.**
 
-* Log into the FortiGate and navigate to **Policy & Objects** > ** Virtual IP's
+* Log into the FortiGate and navigate to **Policy & Objects** > **Virtual IP's**
 
 1. Click **Create New** > **Virtual IP**.
 1. Choose an appropriate name.
 1. Choose **port1** from the dropdown next to **Interface**
-1. for **Map to IPv4 address/range** input the IP address of the Ubuntu server you created earlier.  **HINT** - go to **Compute Engine** > **VM instances** to find the ip.
+1. for **Map to IPv4 address/range** input the internal IP address of the Ubuntu server you created earlier.  **HINT** - go to **Compute Engine** > **VM instances** to find the ip.
 1. Click to toggle **Port Forwarding**
 1. For **Protocol** select **TCP**
 1. For **Port Mapping Type** select **One to one**
@@ -248,11 +250,9 @@ In this step we will add routing, and policies to allow traffic from the Ubuntu 
 
     ![console23](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/vip-in-pol.png)
 
-* In your preferred browser, input **http://<fortigate public ip>:8080** (example http://34.72.196.194:8080).  You should get the default Apache2 landing page.
+* In your preferred browser, input **"http://(fortigate-public ip):8080"** (example http://34.72.196.194:8080).  You should get the default Apache2 landing page.
 
     ![console24](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/apache2.png)
-
-
 
 #### Tidbit - In this example, we are allowing all IPs inbound and we did not add any security features to our policy.  In a live environment, we would very likely lock this down to specific Source IP addresses as well as add IPS to our policy.  For even better security web servers should be protected by FortiWeb
 
@@ -330,7 +330,7 @@ All code for this lab is hosted in a public git repository. To use it start by c
 2.	Change current working directory to **labs/day0** inside the cloned repository:
 
 ```sh
-    cd se-summit-23/qwiklabs-fgt-terraform/labs/day0
+cd se-summit-23/qwiklabs-fgt-terraform-lab/labs/day0
 ```
 3. In the **Cloud Shell Editor** part of your Cloud Shell tab choose **File > Open** from the top menu and open the **qwiklabs-fgt-terraform/labs** folder. Cloud Shell Editor will be useful to navigate, review and edit terraform code during this lab.
 
@@ -393,14 +393,14 @@ After `terraform apply` command completes you will see several output values whi
 ### Reviewing the deployment
 Once everything is deployed you can connect to the FortiGates to verify they are running and formed the cluster properly. In an FGCP (FortiGate Clustering Protocol) high-availability cluster all configuration changes are managed by the primary instance and automatically copied to the secondary. You can manage the primary instance using your web browser – the web console is available on standard HTTPS port – or via SSH. You will find the public IP address of your newly deployed FortiGate as well as the initial password in the terraform outputs.
 
-1.	Select the value of `default_password` terraform output to copy it to clipboard
-2.	Click the `primary_fgt_mgmt` URL in the outputs to open it in a new browser tab
-3.	Log in as user `admin` with password from your clipboard
-4.	Change the initial password to your own
-5.	Login with your new password
-6.	Skip through dashboard configuration, possible firmware upgrade offer and the welcome video
-7.	Ignore the red FortiCare Support warning in the dashboard. It informs you that your support contract was not registered. Support contract is not available for this lab.
-8.	In the menu on the left select **System > HA**  
+1.Select the value of `default_password` terraform output to copy it to clipboard
+1. Click the `primary_fgt_mgmt` URL in the outputs to open it in a new browser tab
+1. Log in as user `admin` with password from your clipboard
+1. Change the initial password to your own
+1. Login with your new password
+1. Skip through dashboard configuration, possible firmware upgrade offer and the welcome video
+1. Ignore the red FortiCare Support warning in the dashboard. It informs you that your support contract was not registered. Support contract is not available for this lab.
+1. In the menu on the left select **System > HA**  
     In the table you should see two FortiGate instances with different serial numbers and roles marked as “Primary” and “Secondary”. Initially, the secondary instance might be marked as “Out of sync”, but you can continue without waiting for the cluster to synchronize the configuration.
 
 The **day0** module created a cluster and necessary load balancers, but did not create external load balancer frontend. External IP address and its related load balancer frontend will be created in the following step as part of the application deployment. You can verify that the load balancer **fgt-qlabs-bes-elb-us-central1** has no frontend attached in the GCP web console in **Network services** section available under the menu in top-left corner of the console. Use **Search** in the top bar if you cannot find **Network services** in the menu.
@@ -420,7 +420,7 @@ To enable access to the web server VM, **dayN** module utilizes a sample submodu
 
 Note how leveraging a reusable submodule can abstract creation of all necessary resources in Google Cloud and in FortiGate.
 
-```
+```sh
 module "secure_inbound" {
   source       = "./secure-inbound"
 
@@ -455,7 +455,7 @@ Terraform saves the current state of the deployment into a state file. State con
 
 State files can be read, parsed and imported by terraform using the following code used in **dayN/import-day0.tf** file:
 
-```
+```sh
 data "terraform_remote_state" "day0" {
   backend = "local"
 
@@ -558,8 +558,6 @@ In many organizations mixing manual and managed configuration is not desired. It
 
 ### Congratulations!
 Congratulations, you have successfully deployed and configured FortiGates in Google Cloud using terraform. The skills and concepts you have learned can help you build secure environments leveraging network security experience of FortiGuard Labs combined with cloud-native workflows, eliminating the requirement to interactively log into the firewall management console.
-
-
 
 ***
 
@@ -692,7 +690,7 @@ Before creating peerings go back and review the routing. Any new VPC Network is 
 8. Ignore the defaults which are selected.
 9. Click Create.
 
-![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_1.png)
+![VPC network peering details](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/project1-vpc-peering.png)
 
 Routes are only exchanged when the peering is done from both the sides .i.e. from the "Internal/Private/Trust VPC Network" and "Web Server VPC Network" and vice versa.
 
@@ -705,11 +703,9 @@ Move to **Project 2**
 13. Under **Eschange IPv4 custom routes**, select **Export Custom Routes**
 13. Click Create.
 
-![VPC network peering details](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_details_2.png)
+![VPC network peering details](https://raw.githubusercontent.com/fortidg/markdown-test/main/images/project1-vpc-peering.png)
 
 Within couple of seconds you will notice Status change to "Active" with Green Tick Icon, and routes being exchanged.
-
-![VPC network peering status](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/vpc-peering/instructions/img/vpc_peering_active.png)
 
 ## LAB 3 - Task 5: Add the Static route in FGT
 Login into the Primary FortiGate of the cluster and create a static route under "Network" menu
