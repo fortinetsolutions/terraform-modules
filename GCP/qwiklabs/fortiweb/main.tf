@@ -12,17 +12,17 @@ terraform {
 }
 
 provider "google" {
-  project     = var.project
-  region      = var.region
-  zone        = var.zone
+  project = var.project
+  region  = var.region
+  zone    = var.zone
 }
 
 module "random" {
-  source = "../../modules/random-generator"
+  source = "../modules/random-generator"
 }
 
 module "vpc" {
-  source = "../../modules/vpc"
+  source = "../modules/vpc"
   # Pass Variables
   name = var.name
   vpcs = var.vpcs
@@ -31,7 +31,7 @@ module "vpc" {
 }
 
 module "subnet" {
-  source = "../../modules/subnet"
+  source = "../modules/subnet"
 
   # Pass Variables
   name                     = var.name
@@ -45,7 +45,7 @@ module "subnet" {
 }
 
 module "firewall" {
-  source = "../../modules/firewall"
+  source = "../modules/firewall"
 
   # Values fetched from the Modules
   random_string = module.random.random_string
@@ -53,7 +53,7 @@ module "firewall" {
 }
 
 module "static-ip" {
-  source = "../../modules/static-ip"
+  source = "../modules/static-ip"
 
   # Pass Variables
   name   = var.name
@@ -70,15 +70,14 @@ data "google_compute_image" "fweb_image" {
 
 # FortiWeb
 module "instances" {
-  source = "../../modules/fortiweb"
+  source = "../modules/fortiweb"
 
   # Pass Variables
-  name            = var.name
-  service_account = var.service_account
-  zone            = var.zone
-  machine         = var.machine
-  image           = data.google_compute_image.fweb_image.self_link
-  license_file    = var.license_file
+  name         = var.name
+  zone         = var.zone
+  machine      = var.machine
+  image        = data.google_compute_image.fweb_image.self_link
+  license_file = var.license_file
   # Values fetched from the Modules
   random_string       = module.random.random_string
   public_vpc_network  = module.vpc.vpc_networks[0]
@@ -132,10 +131,5 @@ resource "google_compute_instance" "juice_shop" {
 
   labels = {
     container-vm = module.gce-container.vm_container_label
-  }
-
-  service_account {
-    email  = var.service_account
-    scopes = ["cloud-platform"]
   }
 }

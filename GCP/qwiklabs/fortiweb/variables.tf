@@ -1,5 +1,3 @@
-variable "credentials_file_path" {}
-variable "service_account" {}
 variable "project" {}
 variable "name" {}
 variable "region" {}

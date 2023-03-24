@@ -1,0 +1,4 @@
+config system global
+    set hostname fortiweb
+    set admintimeout 60
+end
