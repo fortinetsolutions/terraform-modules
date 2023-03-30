@@ -86,7 +86,7 @@ Before deploying the **fortiweb** module you have an opportunity to customize it
 As this lab is restricted to use us-central1 region, provide name the region in the **fortiweb/terraform.tfvars** file:
 `region = "us-central1"`
 
-You also have to indicate the GCP project to deploy to by setting `project` variable in **fortiweb/terraform.tfvars** to the name of your qwiklabs project indicated as **GCP Project ID** in the **Lab Details** panel. 
+You also have to indicate the GCP project to deploy to by setting `project` variable in **fortiweb/terraform.tfvars** to the name of your qwiklabs project indicated as **GCP Project ID** in the **Lab Details** panel.
 
 ### Web Server deployment
 Web Server deployment consists of 3 steps. Execute them now as described below:
@@ -113,14 +113,14 @@ Web Server deployment consists of 3 steps. Execute them now as described below:
 
     This command will attempt to create, delete or change the resources according to the plan. If run without providing a plan file `terraform apply` will create a new plan and immediately execute it after confirmation from operator. `terraform apply` should be executed every time after the code or variables change.
 
-After `terraform apply` command completes you will see several output values which will be necessary in later steps. Terraform outputs can be used to provide additional information to the operator.
+After `terraform apply` command completes you will see several output values which will be necessary in later steps. Terraform outputs can be used to provide additional information to the operator.  
 
 ### Reviewing the deployment
 Once everything is deployed you can see the sample page of the Web Server when you enter the External IP of the Compute Engine Instance.
-    >*Note: It is recommended not to have an External IP for this Web Server. 
+    >*Note: It is recommended not to have an External IP for this Web Server.
 
 ## Task 3: Connect to FortiWeb & WebServer
-In this step you will connect to the FortiWeb
+In this step you will connect to the FortiWeb.  Using the outputs from Terraform, in your favorite browser, input "https://**<FortiWeb-IP>**:8443".  This will result in a privacy error, due to the self signed certificate in FortiWeb.  Click on "Advanced" and then Proceed.  Input **admin** as the "Name" and **<FortiWeb-InstancID>** as the "Password".  You will be required to change your password.  Once this is complete, proceed to login.
 
 ![FortiWeb Login Page](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_login.png)
 
@@ -202,9 +202,9 @@ In this step you will connect to the FortiWeb
 ![FortiWeb Virtual Server Item Interface IP](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fweb_virtual_server_item_interface_ip.png)
 
 
-## Task 7:  Create Web Protection Profile  
+## Task 7:  Create Web Protection Policy  
 
-1. We will now create a Policy to apply a protection profile to protect our application Server. Before creating a policy let’s look at few default protection profiles that FortiWeb is configured with. The Inline Standard protection profile consists of signatures to protect against SQL injection, XSS and other generic attacks.
+1. We will now create a Policy to apply a protection profile to protect our application Server. Before creating a policy let’s look at few default protection profiles which are pre-configured on FortiWeb. The Inline Standard protection profile consists of signatures to protect against SQL injection, XSS and other generic attacks.
 
     ```  
     Navigate to Policy >> Web Protection Profile
@@ -212,9 +212,9 @@ In this step you will connect to the FortiWeb
 
 ![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp.png)
 
->*Note: You can create your custom Protection profile as well.*
+>*Note: We are only viewing existing Profiles.  You can create your custom Protection profile as well.*
 
-2. Now let’s create a Server policy. Input Name for the server policy, Select the Virtual Server, Server pool which we created in the earlier steps from the drop down and finally Select the HTTP service. In this step we are not attaching the Protection profile. Click OK.
+2. Now let’s create a Server policy. Input Name for the server policy, Select the Virtual Server, Server pool which we created in the earlier steps from the drop down and finally Select the HTTP service. In this step we are **not** attaching the Protection profile. Click OK.
 
 ![FortiWeb Policy Web Protection Profile](https://raw.githubusercontent.com/fortinetsolutions/terraform-modules/master/GCP/qwiklabs/fortiweb/instructions/img/fortiweb_policy_wpp_2.png)
 
